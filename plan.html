@@ -167,7 +167,28 @@ function site(){let s=`<rect x="-20" y="-22" width="82" height="96" fill="#fff"/
   s+=`<text x="-18" y="71.6" font-size="2" font-weight="800" fill="#16191d">SITE PLAN</text><text x="-18" y="73.4" font-size="1" fill="#5d636b">Dashed = suggested compound (wall not in the budget) · north arrow assumes the front faces east</text>`;
   return s}
 /* ===== electrical + plumbing drawings ===== */
-const MEPVB='-14 -20 64 76';
+const MEPVB='-14 -20 64 90';const WH=9.5;
+/* ===== full circuit wiring (shared by 2D drawings and 3D) ===== */
+const CKIND={light:['#c77700','Lighting circuit (DB → switchboards)'],socket:['#6d28d9','6A socket circuit'],power:['#db2777','16A power circuit (kitchen, geysers, washing machine, theatre)'],power3:['#be123c','3-phase circuit (borewell motor, AC outdoor)'],ac:['#0891b2','AC indoor circuit'],data:['#65a30d','TV / LAN cable (from router at DB)'],outdoor:['#a16207','Outdoor and garden lights (underground)'],feed:['#111827','Main cables: meter → DB → sub DB, inverter'],earth:['#15803d','Earth wire to earth pits']};
+const DBPOS=[[12.75,29.8],[19.2,16.5]],ERISER=[11.5,27.6],ACOUT=[32,4],GARDEN=[[14,50],[14,56],[14,62],[22,62],[22,56],[22,50]];
+const PHT={GY:6.5,CH:6.8,FR:1,MW:4.5,RO:4.5,WM:4,MTR:4};
+function nnOrder(st,pts){const out=[],left=pts.slice();let c=st;while(left.length){let bi=0,bd=1e9;left.forEach((p,i)=>{const d=Math.abs(p[0]-c[0])+Math.abs(p[1]-c[1]);if(d<bd){bd=d;bi=i}});c=left.splice(bi,1)[0];out.push(c)}return out}
+function circuits(fi){const d=EL[fi],db=DBPOS[fi],C=[],P=d.power;
+  const add=(id,label,kind,pts)=>{if(pts.length)C.push({id,label,kind,pts:nnOrder(db,pts)})};
+  const th=(x,y)=>fi===0&&x>24&&y>20,kit=(x,y)=>fi===0&&x<12&&y<10&&y>=0,isTh=g=>fi===0&&g.sw[0]===24.45&&g.sw[1]===27.2;
+  add(fi?'C2':'C1',fi?'First-floor lights & fans':'Ground-floor lights & fans','light',d.groups.filter(g=>!isTh(g)).map(g=>[g.sw[0],g.sw[1],4]));
+  add(fi?'C4':'C3',fi?'First-floor sockets':'Ground-floor sockets','socket',P.filter(p=>p[0]==='S'&&!th(p[1],p[2])&&!kit(p[1],p[2])).map(p=>[p[1],p[2],1]));
+  if(!fi)add('C5','Kitchen power','power',P.filter(p=>(p[0]==='P'&&['FR','MW','RO','CH'].includes(p[3]))||(p[0]==='S'&&kit(p[1],p[2]))).map(p=>[p[1],p[2],p[0]==='S'?3.6:PHT[p[3]]]));
+  P.filter(p=>p[0]==='P'&&p[3]==='GY').forEach((p,i)=>add('C'+((fi?8:6)+i),'Geyser','power',[[p[1],p[2],6.5]]));
+  if(!fi){add('C10','Washing machine','power',P.filter(p=>p[3]==='WM').map(p=>[p[1],p[2],4]));
+    const tg=d.groups.find(isTh);add('C11','Theatre','power',[[tg.sw[0],tg.sw[1],4]].concat(P.filter(p=>(p[0]==='S'||p[0]==='PR')&&th(p[1],p[2])).map(p=>[p[1],p[2],p[0]==='PR'?WH-.7:1])));
+    add('C14','Borewell motor (3-phase)','power3',[[-2.6,9.8,4]]);
+    add('C16','Outdoor & garden lights','outdoor',GARDEN.map(([x,y])=>[x,y,2.8]))}
+  add('C12','AC indoor units','ac',P.filter(p=>p[0]==='AC').map(p=>[p[1]+p[3]/2,p[2]+p[4]/2,7.6]));
+  add(fi?'TV/LAN-1':'TV/LAN-G','TV / LAN cable','data',P.filter(p=>p[0]==='TV'||p[0]==='D').map(p=>[p[1],p[2],1.5]));
+  return C}
+const manh=(a,b)=>[[a[0],a[1]],[b[0],a[1]],[b[0],b[1]]];
+
 const EL={0:{groups:[
   {sw:[10.4,3.6],pts:[['L',6,4.6],['L',2.2,8.6],['OL',12,-.6]]},
   {sw:[23.55,8.6],pts:[['L',16.5,4.8],['L',19.5,4.8],['F',18,7.6]]},
@@ -275,20 +296,37 @@ function mepBase(fl){const v=MEPVB.split(' ');let s=`<rect x="${v[0]}" y="${v[1]
   s+=`<g opacity=".5">${stairs(fl.st)}${walls(fl)}</g>`;
   s+=fl.rooms.map(([n,x,y,w,d])=>`<text x="${x+w/2}" y="${y+d/2+.3}" text-anchor="middle" font-size=".9" fill="#9aa0a6" font-weight="600">${n.split('|')[0]}</text>`).join('');
   return s}
+
+function circ2d(fi){let s='';const C=circuits(fi),db=DBPOS[fi],n=C.length;
+  C.forEach((c,i)=>{const col=CKIND[c.kind][0],o=(i-(n-1)/2)*.22;let cur=[db[0]+o,db[1]+o],d=`M${db[0]} ${db[1]}L${cur[0]} ${cur[1]}`;
+    c.pts.forEach(p=>{const corner=[p[0]+o*.5,cur[1]];d+=`L${corner[0]} ${corner[1]}L${p[0]} ${p[1]}`;cur=[p[0],p[1]]});
+    s+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="${c.kind==='power3'?.2:.12}" stroke-linejoin="round" ${c.kind==='data'?'stroke-dasharray=".6 .3"':c.kind==='outdoor'?'stroke-dasharray="1 .3 .2 .3"':''} opacity=".9"/>`;
+    const e=c.pts[c.pts.length-1];s+=c.pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r=".22" fill="${col}"/>`).join('')+`<g font-size=".75" font-weight="800"><rect x="${e[0]+.4}" y="${e[1]-1.25}" width="${c.id.length*.5+.4}" height="1" rx=".2" fill="#fff" stroke="${col}" stroke-width=".08"/><text x="${e[0]+.6}" y="${e[1]-.5}" fill="${col}">${c.id}</text></g>`});
+  const F=(pts,k,w,da)=>`<polyline points="${pts.map(p=>p.join(' ')).join(' ')}" fill="none" stroke="${CKIND[k][0]}" stroke-width="${w}" ${da?`stroke-dasharray="${da}"`:''}/>`;
+  const T=(x,y,t,c)=>`<text x="${x}" y="${y}" font-size=".8" font-weight="700" fill="${c||'#111827'}">${t}</text>`;
+  if(fi===0){s+=F([[13.8,40.8],[13.8,35],[13.3,35],[13.3,31.4]],'feed',.32)+T(14.3,37.6,'Main cable 4C × 10 mm² from EB meter (in conduit)');
+    s+=F([[12.75,29.8],[-3,29.8],[-3,30]],'earth',.16,'.5 .25')+F([[-3,29.8],[-3,26]],'earth',.16,'.5 .25')+T(-12.8,28.6,'Earth: 8 mm² Cu to 2 pits','#15803d');
+    s+=F([[12.4,29],[12.4,22.8],[5,22.8]],'feed',.2,'.8 .3')+T(5.6,22.2,'Inverter in/out 4 mm² → C15 backed loads');
+    s+=F([[12.75,29.8],[11.5,29.8],[11.5,27.6]],'feed',.32)+`<circle cx="11.5" cy="27.6" r=".6" fill="#fff" stroke="#111827" stroke-width=".16"/><path d="M11.5 27.1V26.3M11.2 26.6L11.5 26.2L11.8 26.6" stroke="#111827" stroke-width=".14" fill="none"/>`+T(7.3,26.2,'Riser ↑ sub DB + roof AC');
+    s+=`<rect x="12.8" y="40.4" width="2" height=".8" fill="none"/>`;GARDEN.forEach(([x,y])=>s+=`<circle cx="${x}" cy="${y}" r=".55" fill="#fef3c7" stroke="#a16207" stroke-width=".14"/><path d="M${x-.35} ${y-.35}L${x+.35} ${y+.35}M${x+.35} ${y-.35}L${x-.35} ${y+.35}" stroke="#a16207" stroke-width=".1"/>`);
+    s+=T(23,56.3,'Garden / driveway bollard lights','#a16207')+T(23,57.4,'armoured cable 2.5 mm², 18″ underground','#a16207')}
+  else{s+=`<circle cx="11.5" cy="27.6" r=".6" fill="#fff" stroke="#111827" stroke-width=".16"/>`+F([[11.5,27.6],[11.5,24.2],[19.2,24.2],[19.2,16.8]],'feed',.32)+T(11.9,23.6,'Sub-main 4C × 6 mm² from main DB');
+    s+=F([[11.5,27.6],[11.5,26],[-1.8,26],[-1.8,-8],[30.4,-8]],'power3',.22,'.9 .35')+`<rect x="30.4" y="-9.4" width="3.2" height="2.8" rx=".3" fill="#e5e7eb" stroke="#be123c" stroke-width=".16"/><text x="32" y="-7.7" text-anchor="middle" font-size=".7" font-weight="800" fill="#be123c">ODU</text><text x="32" y="-5.6" text-anchor="middle" font-size=".6" fill="#be123c">(on roof)</text>`+T(-1.2,-8.6,'C13 to AC outdoor unit on roof · 6 mm² 3-phase · isolator at unit','#be123c')}
+  return s}
 function mep(m){const fl=m.base,v=MEPVB.split(' ');let s=mepBase(fl);
   if(m.kind==='el'){const d=EL[m.floor];
     d.groups.forEach(g=>{g.pts.forEach(([k,x,y])=>{const mx=(g.sw[0]+x)/2,my=(g.sw[1]+y)/2,dx=x-g.sw[0],dy=y-g.sw[1];s+=`<path d="M${g.sw[0]} ${g.sw[1]}Q${mx-dy*.15} ${my+dx*.15} ${x} ${y}" fill="none" stroke="${EC}" stroke-width=".07" stroke-dasharray=".35 .25"/>`})});
-    d.power.forEach(p=>s+=sym(...p));d.groups.forEach(g=>{g.pts.forEach(p=>s+=sym(...p));s+=sym('SW',...g.sw)});
+    s+=circ2d(m.floor);d.power.forEach(p=>s+=sym(...p));d.groups.forEach(g=>{g.pts.forEach(p=>s+=sym(...p));s+=sym('SW',...g.sw)});
     s+=d.tags.map(([t,x,y])=>txt(x,y,t,.8,'#b4462e')).join('')}
   else{const d=PLB[m.floor];
     d.rain.forEach(p=>s+=pl(p,GN,.14,'.5 .3'));d.waste.forEach(p=>s+=pl(p,BR,.14,'.45 .25'));d.soil.forEach(p=>s+=pl(p,BR,.24));
     d.cw.forEach(p=>s+=pl(p,BL,.14));d.hw.forEach(p=>s+=pl(p,RD,.12));d.dlv.forEach(p=>s+=pl(p,BL,.26));
     d.items.forEach(p=>s+=sym(...p));d.fix.forEach(p=>s+=sym(...p));s+=d.tags.map(([t,x,y])=>txt(x,y,t,.8,'#b4462e')).join('')}
-  s+=dims(fl.W,fl.D).replace(`translate(${fl.W+6} -6)`,'translate(46 47)')+`<text x="${+v[0]+1}" y="${fl.D+11}" font-size="1.5" font-weight="800" fill="#16191d">${m.name.toUpperCase()}</text><text x="${+v[0]+1}" y="${fl.D+12.9}" font-size=".9" fill="#5d636b">Layout for planning · not to scale for fixing positions · final sizes and loads to be checked by a licensed electrician / plumber</text>`;
+  s+=dims(fl.W,fl.D).replace(`translate(${fl.W+6} -6)`,'translate(46 47)')+`<text x="${+v[0]+1}" y="${fl.D+27}" font-size="1.5" font-weight="800" fill="#16191d">${m.name.toUpperCase()}</text><text x="${+v[0]+1}" y="${fl.D+28.9}" font-size=".9" fill="#5d636b">Layout for planning · not to scale for fixing positions · final sizes and loads to be checked by a licensed electrician / plumber</text>`;
   return s}
 const LEG={el:[['L','Ceiling light'],['DL','Downlight'],['WL','Wall / outdoor light'],['F','Ceiling fan'],['EF','Exhaust fan'],['SW','Switchboard (near door, 4 ft)'],['S','6A socket'],['P','16A power socket (AC, geyser, fridge…)'],['AC','AC point (power + pipe provision; fit units where needed)'],['TV','TV / data point'],['DB','Distribution board'],['E','Earth pit'],['INV','Inverter']],
  pl:[['RISER','Cold-water down-take from tank'],['SVP','Soil & vent pipe (stack)'],['WC','Western WC'],['WB','Wash basin'],['SH','Shower'],['GY','Geyser'],['FT','Floor trap'],['TAP','Tap point'],['IC','Inspection chamber'],['GT','Gully trap'],['RWP','Rainwater pipe'],['RP','Recharge pit']]};
-const LINES={el:[[EC,'.35 .25','Lighting wire run (switch to point)']],pl:[[BL,'','Cold water (CPVC)'],[RD,'','Hot water (CPVC)'],[BR,'','Soil pipe (WC), 110 mm'],[BR,'.45 .25','Waste water (basin, shower, sink)'],[GN,'.5 .3','Rainwater to recharge pit']]};
+const LINES={el:[[EC,'.35 .25','Lighting wire run (switch to point)']].concat(Object.values(CKIND).map(([c,t])=>[c,t.startsWith('TV')?'.6 .3':t.startsWith('Outdoor')?'1 .3 .2 .3':t.startsWith('Earth')?'.5 .25':'',t])),pl:[[BL,'','Cold water (CPVC)'],[RD,'','Hot water (CPVC)'],[BR,'','Soil pipe (WC), 110 mm'],[BR,'.45 .25','Waste water (basin, shower, sink)'],[GN,'.5 .3','Rainwater to recharge pit']]};
 function legend(kind,floor){
   const ic=(k)=>`<svg viewBox="-1.2 -1.2 2.4 2.4" width="26" height="26" aria-hidden="true">${k==='AC'?sym('AC',-1,-.3,2,.6):k==='DB'?sym('DB',0,0,1.6,.8).replace(/<text.*<\/text>/,''):k==='SVP'||k==='RISER'?sym(k,0,0,''):k==='P'?sym('P',0,0):sym(k,0,0)}</svg>`;
   let h='<div class="leg">'+LEG[kind].map(([k,t])=>`<span>${ic(k)}${t}</span>`).join('')+LINES[kind].map(([c,da,t])=>`<span><svg width="30" height="10" aria-hidden="true"><line x1="1" y1="5" x2="29" y2="5" stroke="${c}" stroke-width="${t.startsWith('Soil')?4:2.4}" ${da?`stroke-dasharray="${da.split(' ').map(n=>n*12).join(' ')}"`:''}/></svg>${t}</span>`).join('')+'</div>';

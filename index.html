@@ -551,7 +551,51 @@ G.g.add(elG[0],plG[0]);F.g.add(elG[1],plG[1]);scene.add(mepOut);
 run3(mepOut,[[6,24.5],[-.6,24.5],[-.6,6]],Yr+.6,.13,mCW);run3(mepOut,[[6,24.5],[36.6,24.5],[36.6,16.5]],Yr+.6,.13,mCW);seg3(mepOut,6,24.5,Yr+.6,6,24.5,Yr+8.6,.13,mCW);
 seg3(mepOut,-2.4,22,.5,-2.4,22,Yr+.6,.16,mCW);run3(mepOut,[[-2.4,22],[3.3,22],[3.3,24.5]],Yr+.6,.16,mCW);seg3(mepOut,3.3,24.5,Yr+.6,3.3,24.5,Yr+8.6,.16,mCW);
 let showEl=false,showPl=false;
-function mepVis(){elG.forEach(g=>g.visible=showEl);plG.forEach(g=>g.visible=showPl);mepOut.children.forEach(c=>c.visible=c.material===mSW||c.material===mData||c.material===mWire?showEl:showPl);mepDirty=true}
+/* ===== full circuit wiring (shared by 2D drawings and 3D) ===== */
+const CKIND={light:['#c77700','Lighting circuit (DB → switchboards)'],socket:['#6d28d9','6A socket circuit'],power:['#db2777','16A power circuit (kitchen, geysers, washing machine, theatre)'],power3:['#be123c','3-phase circuit (borewell motor, AC outdoor)'],ac:['#0891b2','AC indoor circuit'],data:['#65a30d','TV / LAN cable (from router at DB)'],outdoor:['#a16207','Outdoor and garden lights (underground)'],feed:['#111827','Main cables: meter → DB → sub DB, inverter'],earth:['#15803d','Earth wire to earth pits']};
+const DBPOS=[[12.75,29.8],[19.2,16.5]],ERISER=[11.5,27.6],ACOUT=[32,4],GARDEN=[[14,50],[14,56],[14,62],[22,62],[22,56],[22,50]];
+const PHT={GY:6.5,CH:6.8,FR:1,MW:4.5,RO:4.5,WM:4,MTR:4};
+function nnOrder(st,pts){const out=[],left=pts.slice();let c=st;while(left.length){let bi=0,bd=1e9;left.forEach((p,i)=>{const d=Math.abs(p[0]-c[0])+Math.abs(p[1]-c[1]);if(d<bd){bd=d;bi=i}});c=left.splice(bi,1)[0];out.push(c)}return out}
+function circuits(fi){const d=EL[fi],db=DBPOS[fi],C=[],P=d.power;
+  const add=(id,label,kind,pts)=>{if(pts.length)C.push({id,label,kind,pts:nnOrder(db,pts)})};
+  const th=(x,y)=>fi===0&&x>24&&y>20,kit=(x,y)=>fi===0&&x<12&&y<10&&y>=0,isTh=g=>fi===0&&g.sw[0]===24.45&&g.sw[1]===27.2;
+  add(fi?'C2':'C1',fi?'First-floor lights & fans':'Ground-floor lights & fans','light',d.groups.filter(g=>!isTh(g)).map(g=>[g.sw[0],g.sw[1],4]));
+  add(fi?'C4':'C3',fi?'First-floor sockets':'Ground-floor sockets','socket',P.filter(p=>p[0]==='S'&&!th(p[1],p[2])&&!kit(p[1],p[2])).map(p=>[p[1],p[2],1]));
+  if(!fi)add('C5','Kitchen power','power',P.filter(p=>(p[0]==='P'&&['FR','MW','RO','CH'].includes(p[3]))||(p[0]==='S'&&kit(p[1],p[2]))).map(p=>[p[1],p[2],p[0]==='S'?3.6:PHT[p[3]]]));
+  P.filter(p=>p[0]==='P'&&p[3]==='GY').forEach((p,i)=>add('C'+((fi?8:6)+i),'Geyser','power',[[p[1],p[2],6.5]]));
+  if(!fi){add('C10','Washing machine','power',P.filter(p=>p[3]==='WM').map(p=>[p[1],p[2],4]));
+    const tg=d.groups.find(isTh);add('C11','Theatre','power',[[tg.sw[0],tg.sw[1],4]].concat(P.filter(p=>(p[0]==='S'||p[0]==='PR')&&th(p[1],p[2])).map(p=>[p[1],p[2],p[0]==='PR'?WH-.7:1])));
+    add('C14','Borewell motor (3-phase)','power3',[[-2.6,9.8,4]]);
+    add('C16','Outdoor & garden lights','outdoor',GARDEN.map(([x,y])=>[x,y,2.8]))}
+  add('C12','AC indoor units','ac',P.filter(p=>p[0]==='AC').map(p=>[p[1]+p[3]/2,p[2]+p[4]/2,7.6]));
+  add(fi?'TV/LAN-1':'TV/LAN-G','TV / LAN cable','data',P.filter(p=>p[0]==='TV'||p[0]==='D').map(p=>[p[1],p[2],1.5]));
+  return C}
+const manh=(a,b)=>[[a[0],a[1]],[b[0],a[1]],[b[0],b[1]]];
+
+const CMAT={};Object.entries(CKIND).forEach(([k,[c]])=>CMAT[k]=M(c,{emissive:c,emissiveIntensity:.45}));
+const mODU=M('#e5e7eb',{roughness:.5}),mPit=M('#15803d');
+[0,1].forEach(fi=>{const Yb=fi?Yf:PL,g=elG[fi],db=DBPOS[fi],C=circuits(fi);
+  C.forEach((c,i)=>{const m=CMAT[c.kind],r=c.kind==='power3'?.07:.045;
+    if(c.kind==='outdoor'){const z=.18;seg3(mepOut,db[0],db[1],Yb+4.6,db[0],db[1],z,r,m);let cur=[db[0],db[1]];
+      c.pts.forEach(p=>{const q=manh(cur,p);run3(mepOut,q,z,r,m);seg3(mepOut,p[0],p[1],z,p[0],p[1],p[2],r,m);cyl(mepOut,p[0],p[1],.25,p[2],.35,mLamp);cur=[p[0],p[1]]});return}
+    const zc=Yb+WH-.35-i*.09,o=(i-C.length/2)*.12;seg3(g,db[0]+o,db[1],Yb+5,db[0]+o,db[1],zc,r,m);let cur=[db[0]+o,db[1]];
+    c.pts.forEach(p=>{run3(g,manh(cur,p),zc,r,m);seg3(g,p[0],p[1],zc,p[0],p[1],Yb+p[2],r,m);cur=[p[0],p[1]]})});
+});
+/* feeders */
+const fm=CMAT.feed,em=CMAT.earth,p3=CMAT.power3;
+seg3(mepOut,13.8,40.8,PL+4,13.8,40.8,PL+.3,.09,fm);run3(mepOut,[[13.8,40.8],[13.8,35],[12.75,35],[12.75,29.8]],PL+.3,.09,fm);seg3(mepOut,12.75,29.8,PL+.3,12.75,29.8,PL+4,.09,fm);
+seg3(mepOut,12.75,29.8,PL+4,12.75,29.8,.12,.05,em);run3(mepOut,[[12.75,29.8],[-3,29.8],[-3,26]],.12,.05,em);[[-3,30],[-3,26]].forEach(([x,y])=>{cyl(mepOut,x,y,.5,0,.5,mPit);seg3(mepOut,x,y,.5,x,y,-3,.06,em)});
+run3(mepOut,[[12.4,29.8],[12.4,22.8],[5,22.8]],PL+.25,.06,fm);
+const rz0=PL+WH-.25,rz1=Yf+WH-.25;run3(mepOut,[[12.75,29.8],[11.5,29.8],[11.5,27.6]],rz0,.09,fm);seg3(mepOut,12.75,29.8,PL+6,12.75,29.8,rz0,.09,fm);
+seg3(mepOut,11.5,27.6,rz0,11.5,27.6,rz1,.09,fm);run3(mepOut,[[11.5,27.6],[11.5,24.2],[19.2,24.2],[19.2,16.5]],rz1,.09,fm);seg3(mepOut,19.2,16.5,rz1,19.2,16.5,Yf+5,.09,fm);
+seg3(mepOut,11.5,27.6,rz1,11.5,27.6,Yr+.45,.08,p3);run3(mepOut,[[11.5,27.6],[11.5,4],[ACOUT[0],4]],Yr+.45,.08,p3);
+box(mepOut,ACOUT[0]-1.6,ACOUT[1]-.6,3.2,1.2,Yr+.15,2.4,mODU);box(mepOut,ACOUT[0]-1.2,ACOUT[1]-.62,1.8,.05,Yr+.5,1.8,mSW);
+/* AC refrigerant lines from ODU down to the indoor coils (copper, insulated) */
+const mCu=M('#b87333',{metalness:.6,roughness:.4});
+EL[0].power.concat(EL[1].power.map(p=>p.concat(['F']))).filter(p=>p[0]==='AC').forEach(p=>{const fl=p[5]==='F',x=p[1]+p[3]/2,y=p[2]+p[4]/2,z=(fl?Yf:PL)+7.6;
+  run3(mepOut,[[ACOUT[0],ACOUT[1]],[ACOUT[0],-.9],[x,-.9]],Yr+.3,.05,mCu);seg3(mepOut,x,-.9,Yr+.3,x,-.9,z,.05,mCu);if(Math.abs(y+.9)>.5)run3(mepOut,[[x,-.9],[x,y]],z,.05,mCu)});
+const ELMATS=new Set([mSW,mData,mWire,mODU,mPit,mLamp,...Object.values(CMAT)]);
+function mepVis(){elG.forEach(g=>g.visible=showEl);plG.forEach(g=>g.visible=showPl);mepOut.children.forEach(c=>c.visible=ELMATS.has(c.material)||c.material===mCu?showEl:showPl);mepDirty=true}
 let mepDirty=false;mepVis();
 
 /* X-ray: see only wiring and plumbing through faint walls */
