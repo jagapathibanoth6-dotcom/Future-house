@@ -288,7 +288,7 @@ function paintAll(fl,g,U,fi,W,D){
       if(n<list.length){st=list[n];pv=st}}}
 }
 const SWINGS=[];let allOpen=true;
-function leaves(g,list){list.forEach(([o,at,a0,b0,sd,kind,hb])=>{let a=a0,b=b0;const w=b-a;const m=kind==='pooja'?M('#8a5a3a',{roughness:.5}):kind==='main'?TM('wood',1,2):kind==='back'?M('#7a5236',{roughness:.6}):M('#e9e1d4',{roughness:.6});
+function leaves(g,list){list.forEach(([o,at,a0,b0,sd,kind,hb])=>{let a=a0,b=b0;const w=b-a;const m=kind==='stair'?M('#8a5a3a',{roughness:.5}):kind==='pooja'?M('#8a5a3a',{roughness:.5}):kind==='main'?TM('wood',1,2):kind==='back'?M('#7a5236',{roughness:.6}):M('#e9e1d4',{roughness:.6});
   const pv=new THREE.Group();g.add(pv);let hx,hy,closed;
   if(o==='v'){const x0=sd>0?at+T/2:at-T/2-w+.12;hx=sd>0?at+T/2:at-T/2;hy=a+.12;box(pv,x0,a+.05,w-.12,.15,0,6.8,m);box(pv,sd>0?x0+w-.6:x0+.25,a+.2,.35,.08,3.1,.12,steel,false);box(pv,sd>0?x0+w-.6:x0+.25,a-.13,.35,.08,3.1,.12,steel,false);closed=sd>0?-Math.PI/2:Math.PI/2}
   else{const y0=sd>0?at+T/2:at-T/2-w+.12;hx=a+.12;hy=sd>0?at+T/2:at-T/2;box(pv,a+.05,y0,.15,w-.12,0,6.8,m);box(pv,a+.2,sd>0?y0+w-.6:y0+.25,.08,.35,3.1,.12,steel,false);box(pv,a-.13,sd>0?y0+w-.6:y0+.25,.08,.35,3.1,.12,steel,false);closed=sd>0?Math.PI/2:-Math.PI/2}
@@ -320,10 +320,10 @@ function floor(fl,Yb,idx){
   const cg=new THREE.Group();g.add(cg);scene.add(g);return {g,wg,cg};
 }
 function stairs(g,Yb){const m=M('#d8d0c4'),nose=walnut,fl=Yb>PL+1;/* upper flights float on a waist slab so you can see and walk beneath */
-  const step=(x,y,w,d,top)=>{if(fl){box(g,x,y,w,d,top-.62,.62,m)}else box(g,x,y,w,d,Yb,top-Yb,m)};
+  const step=(x,y,w,d,top,hollow)=>{if(fl||hollow){box(g,x,y,w,d,top-.62,.62,m)}else box(g,x,y,w,d,Yb,top-Yb,m)};
   for(let i=0;i<8;i++){step(9-i,24.5,1,3.5,Yb+(i+1)*.625);box(g,9-i,24.5,.1,3.5,Yb+(i+1)*.625-.06,.08,nose)}
   if(fl)box(g,0,21,2,7,Yb+4.5,.5,m);else box(g,0,21,2,7,Yb,5,m);
-  for(let i=0;i<8;i++){step(2+i,21,1,3.5,Yb+5+(i+1)*.625);box(g,3+i-.1,21,.1,3.5,Yb+5+(i+1)*.625-.06,.08,nose)}
+  for(let i=0;i<8;i++){step(2+i,21,1,3.5,Yb+5+(i+1)*.625,true);box(g,3+i-.1,21,.1,3.5,Yb+5+(i+1)*.625-.06,.08,nose)}
   box(g,1.9,24.4,8.2,.12,Yb+5,3.4,glassM,false);
   const rail=M('#2f3134',{metalness:.5,roughness:.4});
   for(let i=0;i<8;i++){box(g,9-i+.45,24.47,.08,.08,Yb+(i+1)*.625,3.2,rail);box(g,2+i+.45,24.33,.08,.08,Yb+5+(i+1)*.625,3.2,rail)}
@@ -362,7 +362,7 @@ const per=new THREE.Group();scene.add(per);cyl(per,18,42.2,.65,PL,2.7,M('#2f3a4a
 /* ground floor */
 const G=floor(GF,PL,0),gf=G.g,Y0=PL;
 box(G.wg,15.2,40.32,.4,.2,5.6,.6,glow);box(G.wg,20.4,40.32,.4,.2,5.6,.6,glow);box(G.wg,13.4,40.3,1.3,.08,5,.8,M('#c9a86a'));
-/* kitchen: U-shape. Fridge back-left, sink + microwave on the back wall, hob + chimney on the west wall, prep counter along the hall wall */
+/* kitchen: U-shape. Sink + hob on the west counter (sink under the window), microwave + RO on the back counter, fridge + prep counter on the store-room wall */
 {const body=M('#e9e2d6',{roughness:.55}),door=M('#f4efe6',{roughness:.45}),gapM=M('#b8afa2'),hdl=M('#8a8f94',{metalness:.4,roughness:.3}),top=stoneTop,
  ss=M('#cdd2d7',{metalness:.45,roughness:.25}),ssIn=M('#7d838a',{metalness:.4,roughness:.35}),blk=M('#141518',{roughness:.15}),brass=M('#c9a24a',{metalness:.5,roughness:.3});
  /* base cabinet: front 'x' (faces +x), 'y' (faces +y) or '-y' (faces -y); drawers at the start if dr>0 */
@@ -373,54 +373,55 @@ box(G.wg,15.2,40.32,.4,.2,5.6,.6,glow);box(G.wg,20.4,40.32,.4,.2,5.6,.6,glow);bo
    const F=(z,h)=>front==='x'?box(gf,x+w,y+a,.05,b,Y0+z,h,door):front==='y'?box(gf,x+a,y+d,b,.05,Y0+z,h,door):box(gf,x+a,y-.05,b,.05,Y0+z,h,door);
    const H=(z,len,vert)=>{const c=a+b/2;if(front==='x')box(gf,x+w+.05,y+(vert?a+b-.25:c-len/2),.05,vert?.06:len,Y0+z,vert?len:.06,hdl,false);else box(gf,(vert?x+a+b-.25:x+c-len/2),front==='y'?y+d+.05:y-.1,vert?.06:len,.05,Y0+z,vert?len:.06,hdl,false)};
    if(isDr){F(.42,.72);F(1.18,.72);F(1.94,.66);H(.95,.9);H(1.7,.9);H(2.4,.9)}else{F(.42,2.2);H(1.6,.8,true)}}}
- kcab(.3,.3,2.2,12.4,'x',2);/* west run, drawers under the hob */
- kcab(5.3,.3,4.5,2.2,'y',0);/* back run */
- kcab(2.5,10.75,9.6,1.95,'-y',1);/* prep run along the hall wall */
- box(gf,2.45,2.5,.1,8.25,Y0+2.7,.15,top);/* corner lip */
- /* splash-back tiles */
- box(gf,.3,.3,.06,12.4,Y0+2.85,2.35,M('#dfe7e3',{roughness:.3}),false);box(gf,5.3,.3,4.5,.06,Y0+2.85,2.35,M('#dfe7e3',{roughness:.3}),false);box(gf,2.5,12.64,9.6,.06,Y0+2.85,2.35,M('#dfe7e3',{roughness:.3}),false);
- /* fridge: side-by-side double door, stainless */
- box(gf,2.55,.3,2.65,2.3,Y0,6.1,ss);box(gf,2.6,2.6,1.27,.08,Y0+.1,5.9,ss);box(gf,3.93,2.6,1.22,.08,Y0+.1,5.9,ss);box(gf,3.88,2.6,.05,.09,Y0+.1,5.9,gapM,false);
- box(gf,3.7,2.68,.07,.1,Y0+2.2,2.6,hdl);box(gf,4.08,2.68,.07,.1,Y0+2.2,2.6,hdl);box(gf,2.9,2.68,.6,.02,Y0+3.6,.85,blk,false);box(gf,3.05,2.69,.3,.02,Y0+4.1,.18,M('#79c7ff',{emissive:'#3aa0ff',emissiveIntensity:.7}),false);
- box(gf,2.5,.3,2.75,2.4,Y0+6.15,WH-6.15,M('#c49a6c'));box(gf,5.2,.3,.1,2.4,Y0,WH,M('#c49a6c'));/* tall panel above and beside the fridge */
- /* sink: double bowl, drainer, gooseneck tap */
- box(gf,5.55,.55,3,1.75,Y0+2.85,.05,ss);box(gf,5.7,.75,1.25,1.4,Y0+2.86,.05,ssIn);box(gf,7.05,.75,1.25,1.4,Y0+2.86,.05,ssIn);
- cyl(gf,6.32,1.45,.11,Y0+2.92,.02,drainM);cyl(gf,7.67,1.45,.11,Y0+2.92,.02,drainM);
- cyl(gf,7,.5,.08,Y0+2.9,1.5,chrome);box(gf,6.95,.45,.1,.95,Y0+4.35,.1,chrome);cyl(gf,7,1.35,.05,Y0+4.05,.3,chrome);cyl(gf,7.3,.5,.05,Y0+2.9,.45,chrome);
- cyl(gf,5.75,.55,.09,Y0+2.9,.55,M('#3f9e5b'));box(gf,8.6,.45,.05,.05,Y0+2.9,0,chrome,false);
- /* microwave on the counter, RO purifier on the wall above */
- box(gf,8.55,.4,1.2,1.25,Y0+2.86,.85,M('#2a2c30'));box(gf,8.6,1.65,.8,.02,Y0+2.95,.68,blk,false);box(gf,9.45,1.65,.25,.02,Y0+3.0,.6,M('#3a3d42'),false);box(gf,9.5,1.66,.15,.02,Y0+3.45,.08,M('#7cffb0',{emissive:'#2bdc7a',emissiveIntensity:.8}),false);
- box(gf,8.7,.3,1,.6,Y0+4.9,1.7,M('#f2f4f6'));box(gf,8.75,.9,.9,.02,Y0+5.9,.5,M('#2a73c4'),false);cyl(gf,9.2,.75,.04,Y0+4.6,.3,chrome);
- /* hob + chimney */
- box(gf,.45,4.2,1.85,2.6,Y0+2.86,.05,blk);[[.95,4.8],[.95,6.2],[1.8,4.8],[1.8,6.2]].forEach(([a,b],i)=>{cyl(gf,a,b,.28,Y0+2.91,.03,M('#2f3135'));cyl(gf,a,b,.16,Y0+2.94,.04,brass);cyl(gf,2.52,4.5+i*.55,.07,Y0+2.35,.12,hdl)});
- box(gf,.3,4,2.1,3,Y0+6.3,.55,ss);box(gf,.32,4.05,2.05,2.9,Y0+6.28,.03,M('#5b6066'),false);box(gf,.4,4.95,1.1,1.1,Y0+6.85,WH-6.85,ss);
- box(gf,2.32,4.6,.02,1.8,Y0+6.38,.12,M('#fff3c4',{emissive:'#ffe08a',emissiveIntensity:.6}),false);
- cyl(gf,.95,4.8,.32,Y0+2.97,.55,ss);cyl(gf,.95,4.8,.33,Y0+3.52,.06,M('#2b2d31'));box(gf,.95,4.75,.9,.1,Y0+3.5,.08,blk);cyl(gf,.95,4.8,.05,Y0+3.58,.25,blk);/* pressure cooker */
- cyl(gf,1.8,6.2,.25,Y0+2.97,.3,M('#3a3c40'),.45);/* kadai */
- /* wall cabinets: back run (beside the RO) and over the prep run; open shelf with spice jars */
- const wcab=(x,y,w,d,face)=>{box(gf,x,y,w,d,Y0+5.2,2.6,body);const n=Math.max(1,Math.round((face==='x'?d:w)/1.6)),seg=(face==='x'?d:w)/n;
-   for(let i=0;i<n;i++){const a=i*seg+.04,b=seg-.08;if(face==='y'){box(gf,x+a,y+d,b,.05,Y0+5.25,2.5,door);box(gf,x+a+b-.22,y+d+.05,.06,.05,Y0+5.35,.6,hdl,false)}else if(face==='-y'){box(gf,x+a,y-.05,b,.05,Y0+5.25,2.5,door);box(gf,x+a+b-.22,y-.1,.06,.05,Y0+5.35,.6,hdl,false)}}
-   box(gf,x,y,w,d,Y0+5.15,.05,M('#fff3c4',{emissive:'#ffe08a',emissiveIntensity:.5}),false)};
- wcab(5.3,.3,3.3,1.15,'y');wcab(2.5,11.55,9.6,1.15,'-y');
- box(gf,5.4,.3,1.6,.6,Y0+4.3,.06,M('#c49a6c'));['#b5402a','#e0a33a','#6b8e23','#8b4513','#d4a017'].forEach((c,i)=>{cyl(gf,5.55+i*.3,.6,.11,Y0+4.36,.35,M('#f4f1ea',{transparent:true,opacity:.8}));cyl(gf,5.55+i*.3,.6,.1,Y0+4.36,.25,M(c));cyl(gf,5.55+i*.3,.6,.11,Y0+4.71,.06,M('#2b2d31'))});
- box(gf,.3,8.6,.08,1.6,Y0+4.4,.06,steel);[8.8,9.1,9.4,9.7,10].forEach(y=>box(gf,.38,y,.05,.04,Y0+3.6,.85,M('#555a60'),false));/* utensil rail */
- /* prep counter: mixer grinder, kettle, chopping board with vegetables, fruit basket, rice tin */
- box(gf,3,11.3,.75,.75,Y0+2.86,.55,M('#f2f2f2'));cyl(gf,3.37,11.67,.22,Y0+3.41,.55,M('#cfd4d8',{transparent:true,opacity:.7}));
- cyl(gf,4.4,11.7,.28,Y0+2.86,.75,M('#2d2f33'));box(gf,4.6,11.63,.2,.14,Y0+3.15,.35,blk);
- box(gf,5.4,11.1,1.7,1.1,Y0+2.86,.1,M('#b07a4a'));sph(gf,5.8,11.5,.16,Y0+3.08,M('#d9381e'));sph(gf,6.15,11.6,.14,Y0+3.06,M('#e07b1b'));box(gf,6.4,11.35,.6,.12,Y0+2.96,.1,M('#4f8a2b'));box(gf,6.6,11.75,.35,.05,Y0+2.97,.03,M('#d0d4d8'),false);
- cyl(gf,7.8,11.7,.42,Y0+2.86,.3,M('#a87b4f'),.36);sph(gf,7.7,11.6,.16,Y0+3.2,M('#e8c23a'));sph(gf,7.95,11.75,.16,Y0+3.2,M('#d9381e'));sph(gf,7.75,11.95,.15,Y0+3.2,M('#7cb342'));
- cyl(gf,9.2,11.8,.3,Y0+2.86,.8,ss);cyl(gf,9.2,11.8,.31,Y0+3.66,.06,M('#2b2d31'));
- /* front-loading washing machine under the prep counter */
- box(gf,8.2,10.62,1.9,1.95,Y0+.05,2.6,M('#f6f7f8',{roughness:.35}));box(gf,8.25,10.6,1.8,.03,Y0+2.15,.45,M('#e2e5e8'),false);
- {const dm=new THREE.Mesh(cylG,M('#9fb3c2',{transparent:true,opacity:.75,roughness:.05}));dm.scale.set(.55,.06,.55);dm.rotation.x=Math.PI/2;dm.position.set(9.15-CX,Y0+1.1,10.6-CY);gf.add(dm);
-  const rim=new THREE.Mesh(cylG,chrome);rim.scale.set(.66,.04,.66);rim.rotation.x=Math.PI/2;rim.position.set(9.15-CX,Y0+1.1,10.63-CY);gf.add(rim);
-  const knob=new THREE.Mesh(cylG,M('#c9ced3'));knob.scale.set(.14,.06,.14);knob.rotation.x=Math.PI/2;knob.position.set(9.75-CX,Y0+2.37,10.58-CY);gf.add(knob)}
- box(gf,8.4,10.58,.6,.02,Y0+2.27,.2,M('#79c7ff',{emissive:'#3aa0ff',emissiveIntensity:.6}),false);box(gf,8.25,10.6,.5,.02,Y0+.15,.25,M('#d5d9dd'),false);
- box(gf,3.2,10.35,.9,.6,Y0+.08,1.4,M('#7da1c4'));box(gf,3.15,10.3,1,.7,Y0+1.48,.08,M('#6b8db0'));/* laundry basket */
- /* floor runner, bin, window plant, hand towel */
- box(gf,3,3.2,1.6,7.2,Y0+.08,.04,M('#7a5c47',{roughness:1}),false);box(gf,6.2,2.7,2.2,1,Y0+.08,.04,M('#7a5c47',{roughness:1}),false);
- cyl(gf,2.15,12.35,.28,Y0,1.2,ss);cyl(gf,.25,2.6,.25,Y0+3.05,.35,potM);sph(gf,.25,2.6,.35,Y0+3.6,plantM);
- box(gf,2.56,3.2,.04,.5,Y0+2.1,.7,M('#c0392b'),false);
+  kcab(.3,.3,2.2,12.4,'x',2);/* west run: sink under the window, hob beside it */
+  kcab(2.5,.3,7.3,2.2,'y',0);/* back run */
+  kcab(5.3,10.75,6.8,1.95,'-y',1);/* prep run along the store-room wall */
+  box(gf,2.45,2.5,.1,7.9,Y0+2.7,.15,top);/* corner lip */
+  /* splash-back tiles */
+  box(gf,.3,.3,.06,12.4,Y0+2.85,2.35,M('#dfe7e3',{roughness:.3}),false);box(gf,2.5,.3,7.3,.06,Y0+2.85,2.35,M('#dfe7e3',{roughness:.3}),false);box(gf,5.3,12.64,6.8,.06,Y0+2.85,2.35,M('#dfe7e3',{roughness:.3}),false);
+  /* fridge on the store-room wall, doors facing the kitchen */
+  box(gf,2.55,10.4,2.65,2.3,Y0,6.1,ss);box(gf,2.6,10.32,1.27,.08,Y0+.1,5.9,ss);box(gf,3.93,10.32,1.22,.08,Y0+.1,5.9,ss);box(gf,3.88,10.31,.05,.09,Y0+.1,5.9,gapM,false);
+  box(gf,3.7,10.22,.07,.1,Y0+2.2,2.6,hdl);box(gf,4.08,10.22,.07,.1,Y0+2.2,2.6,hdl);box(gf,2.9,10.3,.6,.02,Y0+3.6,.85,blk,false);box(gf,3.05,10.29,.3,.02,Y0+4.1,.18,M('#79c7ff',{emissive:'#3aa0ff',emissiveIntensity:.7}),false);
+  box(gf,2.5,10.3,2.75,2.4,Y0+6.15,WH-6.15,M('#c49a6c'));box(gf,5.2,10.3,.1,2.4,Y0,WH,M('#c49a6c'));/* tall panel above and beside the fridge */
+  /* sink on the west counter under the window, to the right of the hob */
+  box(gf,.45,2.9,1.8,3,Y0+2.85,.05,ss);box(gf,.6,3.05,1.45,1.3,Y0+2.86,.05,ssIn);box(gf,.6,4.45,1.45,1.25,Y0+2.86,.05,ssIn);
+  cyl(gf,1.3,3.7,.11,Y0+2.92,.02,drainM);cyl(gf,1.3,5.05,.11,Y0+2.92,.02,drainM);
+  cyl(gf,.55,4.4,.08,Y0+2.9,1.5,chrome);box(gf,.5,4.35,.9,.1,Y0+4.35,.1,chrome);cyl(gf,1.35,4.4,.05,Y0+4.05,.3,chrome);cyl(gf,.55,4.75,.05,Y0+2.9,.45,chrome);
+  cyl(gf,.6,3,.09,Y0+2.9,.55,M('#3f9e5b'));
+  box(gf,2.8,.5,1.3,.8,Y0+2.86,.05,steel);for(let i=0;i<4;i++)box(gf,2.9+i*.3,.6,.04,.6,Y0+2.91,.45,M('#ffffff'),false);/* dish rack */
+  /* microwave on the counter, RO purifier on the wall above */
+  box(gf,8.55,.4,1.2,1.25,Y0+2.86,.85,M('#2a2c30'));box(gf,8.6,1.65,.8,.02,Y0+2.95,.68,blk,false);box(gf,9.45,1.65,.25,.02,Y0+3.0,.6,M('#3a3d42'),false);box(gf,9.5,1.66,.15,.02,Y0+3.45,.08,M('#7cffb0',{emissive:'#2bdc7a',emissiveIntensity:.8}),false);
+  box(gf,8.7,.3,1,.6,Y0+4.9,1.7,M('#f2f4f6'));box(gf,8.75,.9,.9,.02,Y0+5.9,.5,M('#2a73c4'),false);cyl(gf,9.2,.75,.04,Y0+4.6,.3,chrome);
+  /* hob + chimney, moved 2 ft along the west counter */
+  box(gf,.45,6.2,1.85,2.6,Y0+2.86,.05,blk);[[.95,6.8],[.95,8.2],[1.8,6.8],[1.8,8.2]].forEach(([a,b],i)=>{cyl(gf,a,b,.28,Y0+2.91,.03,M('#2f3135'));cyl(gf,a,b,.16,Y0+2.94,.04,brass);cyl(gf,2.52,6.5+i*.55,.07,Y0+2.35,.12,hdl)});
+  box(gf,.3,6,2.1,3,Y0+6.3,.55,ss);box(gf,.32,6.05,2.05,2.9,Y0+6.28,.03,M('#5b6066'),false);box(gf,.4,6.95,1.1,1.1,Y0+6.85,WH-6.85,ss);
+  box(gf,2.32,6.6,.02,1.8,Y0+6.38,.12,M('#fff3c4',{emissive:'#ffe08a',emissiveIntensity:.6}),false);
+  cyl(gf,.95,6.8,.32,Y0+2.97,.55,ss);cyl(gf,.95,6.8,.33,Y0+3.52,.06,M('#2b2d31'));box(gf,.95,6.75,.9,.1,Y0+3.5,.08,blk);cyl(gf,.95,6.8,.05,Y0+3.58,.25,blk);/* pressure cooker */
+  cyl(gf,1.8,8.2,.25,Y0+2.97,.3,M('#3a3c40'),.45);/* kadai */
+  /* wall cabinets: back run (beside the RO) and over the prep run; open shelf with spice jars */
+  const wcab=(x,y,w,d,face)=>{box(gf,x,y,w,d,Y0+5.2,2.6,body);const n=Math.max(1,Math.round((face==='x'?d:w)/1.6)),seg=(face==='x'?d:w)/n;
+    for(let i=0;i<n;i++){const a=i*seg+.04,b=seg-.08;if(face==='y'){box(gf,x+a,y+d,b,.05,Y0+5.25,2.5,door);box(gf,x+a+b-.22,y+d+.05,.06,.05,Y0+5.35,.6,hdl,false)}else if(face==='-y'){box(gf,x+a,y-.05,b,.05,Y0+5.25,2.5,door);box(gf,x+a+b-.22,y-.1,.06,.05,Y0+5.35,.6,hdl,false)}}
+    box(gf,x,y,w,d,Y0+5.15,.05,M('#fff3c4',{emissive:'#ffe08a',emissiveIntensity:.5}),false)};
+  wcab(2.6,.3,6,1.15,'y');wcab(5.3,11.55,6.8,1.15,'-y');
+  box(gf,5.4,.3,1.6,.6,Y0+4.3,.06,M('#c49a6c'));['#b5402a','#e0a33a','#6b8e23','#8b4513','#d4a017'].forEach((c,i)=>{cyl(gf,5.55+i*.3,.6,.11,Y0+4.36,.35,M('#f4f1ea',{transparent:true,opacity:.8}));cyl(gf,5.55+i*.3,.6,.1,Y0+4.36,.25,M(c));cyl(gf,5.55+i*.3,.6,.11,Y0+4.71,.06,M('#2b2d31'))});
+  box(gf,.3,9.4,.08,1.6,Y0+4.4,.06,steel);[9.6,9.9,10.2,10.5,10.8].forEach(y=>box(gf,.38,y,.05,.04,Y0+3.6,.85,M('#555a60'),false));/* utensil rail */
+  /* prep counter: mixer grinder, kettle, chopping board with vegetables, fruit basket, rice tin */
+  box(gf,5.6,11.3,.75,.75,Y0+2.86,.55,M('#f2f2f2'));cyl(gf,5.97,11.67,.22,Y0+3.41,.55,M('#cfd4d8',{transparent:true,opacity:.7}));
+  cyl(gf,6.9,11.7,.28,Y0+2.86,.75,M('#2d2f33'));box(gf,7.1,11.63,.2,.14,Y0+3.15,.35,blk);
+  box(gf,7.6,11.1,1.7,1.1,Y0+2.86,.1,M('#b07a4a'));sph(gf,8,11.5,.16,Y0+3.08,M('#d9381e'));sph(gf,8.35,11.6,.14,Y0+3.06,M('#e07b1b'));box(gf,8.6,11.35,.6,.12,Y0+2.96,.1,M('#4f8a2b'));box(gf,8.8,11.75,.35,.05,Y0+2.97,.03,M('#d0d4d8'),false);
+  cyl(gf,10.3,11.7,.42,Y0+2.86,.3,M('#a87b4f'),.36);sph(gf,10.2,11.6,.16,Y0+3.2,M('#e8c23a'));sph(gf,10.45,11.75,.16,Y0+3.2,M('#d9381e'));sph(gf,10.25,11.95,.15,Y0+3.2,M('#7cb342'));
+  cyl(gf,11.5,11.8,.3,Y0+2.86,.8,ss);cyl(gf,11.5,11.8,.31,Y0+3.66,.06,M('#2b2d31'));
+  /* front-loading washing machine under the prep counter */
+  box(gf,8.2,10.62,1.9,1.95,Y0+.05,2.6,M('#f6f7f8',{roughness:.35}));box(gf,8.25,10.6,1.8,.03,Y0+2.15,.45,M('#e2e5e8'),false);
+  {const dm=new THREE.Mesh(cylG,M('#9fb3c2',{transparent:true,opacity:.75,roughness:.05}));dm.scale.set(.55,.06,.55);dm.rotation.x=Math.PI/2;dm.position.set(9.15-CX,Y0+1.1,10.6-CY);gf.add(dm);
+   const rim=new THREE.Mesh(cylG,chrome);rim.scale.set(.66,.04,.66);rim.rotation.x=Math.PI/2;rim.position.set(9.15-CX,Y0+1.1,10.63-CY);gf.add(rim);
+   const knob=new THREE.Mesh(cylG,M('#c9ced3'));knob.scale.set(.14,.06,.14);knob.rotation.x=Math.PI/2;knob.position.set(9.75-CX,Y0+2.37,10.58-CY);gf.add(knob)}
+  box(gf,8.4,10.58,.6,.02,Y0+2.27,.2,M('#79c7ff',{emissive:'#3aa0ff',emissiveIntensity:.6}),false);box(gf,8.25,10.6,.5,.02,Y0+.15,.25,M('#d5d9dd'),false);
+  box(gf,11.3,9.4,.9,.6,Y0+.08,1.4,M('#7da1c4'));box(gf,11.25,9.35,1,.7,Y0+1.48,.08,M('#6b8db0'));/* laundry basket */
+  /* floor runner, bin, window plant, hand towel */
+  box(gf,2.9,3,1.4,6.4,Y0+.08,.04,M('#7a5c47',{roughness:1}),false);
+  cyl(gf,12.7,12.3,.28,Y0,1.2,ss);cyl(gf,.25,2.4,.25,Y0+3.05,.35,potM);sph(gf,.25,2.4,.35,Y0+3.6,plantM);
+  box(gf,2.56,3.2,.04,.5,Y0+2.1,.7,M('#c0392b'),false);
 }
 /* 3 ft counter between kitchen and dining, storage underneath */
 box(gf,13.3,4,1.4,6,Y0,2.8,M('#d9cfc0'));box(gf,13.3,4,1.4,6,Y0,.3,charcoal,false);box(gf,12.9,3.9,2.2,6.2,Y0+2.8,.2,stoneTop);
@@ -458,6 +459,15 @@ rug(gf,Y0,14,12.5,8,6,'#a99478');box(gf,22.7,11,1,3,Y0,2.8,walnut);plant(gf,Y0,2
 rug(gf,Y0,14,22.5,8,4,'#9c8a73');box(gf,12.35,21.3,.06,2.4,Y0+3.5,2.4,M('#4c6f8a'),false);
 box(gf,12.3,34,1.4,5,Y0,3,walnut);box(gf,12.32,34.5,.06,4,Y0+4,3,mirror);
 box(gf,22.8,34.6,1,3.8,Y0,2.8,teak);plant(gf,Y0,22.4,38.4,1.1);sph(gf,18,34,.9,Y0+7.4,glow);cyl(gf,18,34,.04,Y0+8.3,1.2,dark);rug(gf,Y0,15,32,6,5,'#7b2e2e');
+/* under-stair store: space below the upper flight, closed by a partition with a small door */
+{const wm=M('#efe9df'),rack=M('#8d9399',{metalness:.3,roughness:.5});
+ box(gf,10,24.38,.2,.25,Y0,WH,wm);box(gf,11.8,24.38,.2,.25,Y0,WH,wm);box(gf,10.2,24.38,1.6,.25,Y0+6.4,WH-6.4,wm);/* partition at the foot of the stairs */
+ box(gf,2,24.4,8,.1,Y0+5.5,.1,wm,false);for(let i=0;i<8;i++)box(gf,2+i,24.42,1,.1,Y0,5+(i+1)*.625-.62,wm);/* side wall under the flight */
+ [[5,21.3,1.4,3],[7.6,21.3,2.2,1.2]].forEach(([x,y,w,d])=>{[0,1.5,3,4.5].forEach(z=>box(gf,x,y,w,d,Y0+.3+z,.06,rack));[[x,y],[x+w-.08,y],[x,y+d-.08],[x+w-.08,y+d-.08]].forEach(([a,b])=>box(gf,a,b,.08,.08,Y0,5,rack))});
+ box(gf,5.1,21.4,1.2,.9,Y0+.36,1,M('#2f5b8a'));box(gf,5.1,22.5,1.2,.8,Y0+.36,1.3,M('#7a2533'));box(gf,7.7,21.4,.9,.9,Y0+1.86,.8,M('#c8a165'));box(gf,8.7,21.4,.9,.9,Y0+1.86,.9,M('#b88e55'));
+ box(gf,10.2,21.5,.9,.7,Y0,1.6,M('#2b2d31'));box(gf,10.25,22.2,.8,.02,Y0+1,.3,M('#7cffb0',{emissive:'#2bdc7a',emissiveIntensity:.7}),false);box(gf,11,21.4,.7,1.1,Y0,1.4,M('#1f2a36'));/* inverter + battery */
+ sph(gf,8.5,22.8,.25,Y0+8.6,glow)}
+leaves(G.wg,[['h',24.5,10.2,11.8,1,'stair']]);
 /* bedroom 1 */
 bed(gf,Y0,2.6,28.3,6,6.8,'n','#7a94ab');sideTable(gf,Y0,.9,28.6);sideTable(gf,Y0,8.8,28.6);
 wardrobe(gf,Y0,10.2,34,1.8,5.6,'e');table(gf,Y0,3,38.2,4,1.6,2.5,oak);chair(gf,Y0,4.25,36.4,'n','#a8b3bd');rug(gf,Y0,2,35.4,7,2.2,'#d2c2a6');
@@ -579,7 +589,7 @@ const EL={0:{groups:[
   {sw:[10.4,3.6],pts:[['L',6,4.6],['L',2.2,8.6],['L',6,11],['L',12.5,7],['OL',12,-.6]]},
   {sw:[23.55,9.5],pts:[['L',17,5],['L',21,5],['F',19,9],['L',19,12]]},
   {sw:[12.6,20.55],pts:[['L',15,13],['L',21,13],['L',15,18.5],['L',21,18.5],['F',18,15.5]]},{sw:[12.45,16.4],pts:[['L',3.5,15],['L',9,15],['L',3.5,19]]},{sw:[12.45,20.4],pts:[['DL',8.6,19],['DL',10.6,19]]},
-  {sw:[11.55,27.4],pts:[['L',6,24.5]]},
+  {sw:[11.55,27.4],pts:[['L',6,24.5],['L',8.5,22.8]]},
   {sw:[23.55,27.4],pts:[['L',15,24.5],['L',21,24.5]]},
   {sw:[15.2,39.5],pts:[['L',18,34],['L',18,30.5],['WL',15.3,40.6],['WL',20.7,40.6],['L',18,42]]},
   {sw:[11.55,34],pts:[['F',6,33.5],['L',6,37.5]]},
@@ -587,7 +597,7 @@ const EL={0:{groups:[
   {sw:[23.55,19.2],pts:[['L',27,18],['EF',29.5,20.6]]},
   {sw:[34.6,13.55],pts:[['L',33,18],['EF',33.5,21.5]]},
   {sw:[24.45,27.2],pts:[['DL',27,23.5],['DL',33,23.5],['DL',27,30],['DL',33,30],['DL',27,36],['DL',33,36]]}],
- power:[['P',2.6,.45,'FR'],['P',7.6,.45,'MW'],['P',10,.45,'RO'],['P',.45,5.4,'CH'],['S',5,.45],['S',.45,8.6],['S',4,12.55],['S',8,12.55],
+ power:[['P',3.9,12.55,'FR'],['P',7.6,.45,'MW'],['P',10,.45,'RO'],['P',.45,7.4,'CH'],['S',5,.45],['S',.45,8.6],['S',4,12.55],['S',8,12.55],
   ['S',23.55,3],['S',13.1,7],['P',9.1,12.55,'WM'],
   ['AC',23.25,18.2,.6,2.8],['S',12.45,12],['S',4,20.55],['S',10,20.55],['S',.45,12],['S',23.55,20.2],
   ['DB',12.75,29.8,.7,1.6],['M',13.8,40.8],['B',21.6,40.6],['S',23.55,36],
@@ -595,8 +605,8 @@ const EL={0:{groups:[
   ['AC',28.5,.15,3,.6],['S',25.9,.45],['S',34.3,.45],['S',35.55,12.6],['TV',24.45,4],
   ['P',25,21.55,'GY'],['P',31.1,21.55,'GY'],
   ['AC',35.15,31,.6,3],['PR',30,25.5],['S',25.6,39.55],['S',34.4,39.55],['D',30,39.55,'HDMI'],
-  ['E',-3,30],['E',-3,26],['INV',5,22.8],['P',-2.6,9.8,'MTR']],
- tags:[['Main DB + RCCB',16.4,29.3],['Inverter under the stairs',6,27.5],['Earth pits',-3,33.4],['Motor starter',-2.6,11.6]]},
+  ['E',-3,30],['E',-3,26],['INV',10.6,22.4],['P',-2.6,9.8,'MTR']],
+ tags:[['Main DB + RCCB',16.4,29.3],['Inverter in under-stair store',6,27.5],['Earth pits',-3,33.4],['Motor starter',-2.6,11.6]]},
  1:{groups:[
   {sw:[16.6,15.55],pts:[['F',10,8],['L',13,12]]},
   {sw:[7.45,3.5],pts:[['L',3.5,4],['EF',3.5,.45]]},
@@ -613,12 +623,12 @@ const EL={0:{groups:[
  tags:[['Sub DB',19.2,18.2],['AC outdoor unit, solar and water tanks are on the roof',18,-3]]}};
 const PLB={0:{fix:[['WC',28.9,17.3],['WB',28.45,14.8],['SH',28,20.4],['FT',27.6,19.6],['GY',25,21.5],
    ['WC',31.5,19.5],['WB',30.8,15.7],['SH',34.4,20.2],['FT',33.6,19.4],['GY',31.1,21.5],
-   ['KS',7.4,1.4],['TAP',9.6,1.1],['WM',9.1,12.1],['WS',9,-4.5],['TAP',14,-1],['TAP',-6,44],['TAP',24,46]],
+   ['KS',1.3,4.4],['TAP',9.6,1.1],['WM',9.1,12.1],['WS',9,-4.5],['TAP',14,-1],['TAP',-6,44],['TAP',24,46]],
   cw:[[[36.6,16.5],[36.6,17.5],[24.6,17.5]],[[28.45,17.5],[28.45,14.8]],[[28.9,17.5],[28.9,17.3]],[[28,17.5],[28,20.4]],[[25,17.5],[25,21.5]],[[30.8,17.5],[30.8,15.7]],[[31.5,17.5],[31.5,19.5]],[[34.4,17.5],[34.4,20.2]],[[31.1,17.5],[31.1,21.5]],
-   [[-.6,6],[.3,6],[.3,.5],[9.6,.5]],[[7.4,.5],[7.4,1.4]],[[-.6,6],[-.6,-.8],[14,-.8]],[[9.6,.5],[10.7,.5],[10.7,12.1],[9.1,12.1]],[[9,-.8],[9,-4.5]],[[-6,40],[-6,44]],[[24,40.6],[24,46]]],
+   [[-.6,6],[.3,6],[.3,.5],[9.6,.5]],[[.3,4.4],[1.3,4.4]],[[-.6,6],[-.6,-.8],[14,-.8]],[[9.6,.5],[10.7,.5],[10.7,12.1],[9.1,12.1]],[[9,-.8],[9,-4.5]],[[-6,40],[-6,44]],[[24,40.6],[24,46]]],
   hw:[[[25,21.5],[25,20.8],[28,20.8],[28,20.4]],[[25,20.8],[25,16.2],[28.45,16.2],[28.45,14.8]],[[31.1,21.5],[31.1,21],[34.4,21],[34.4,20.2]],[[31.1,21],[31.1,16.4],[30.8,16.4],[30.8,15.7]]],
   soil:[[[28.9,17.3],[29.6,17.3],[29.6,18.4],[38.6,18.4]],[[31.5,19.5],[31.5,18.4]],[[36.6,12.5],[38.6,12.5]],[[38.6,18.4],[38.6,-8],[40,-8]],[[-.6,14],[-2,14],[-2,-8],[38.6,-8]],[[-.6,1],[-2,1]],[[36.6,1],[38.6,1]]],
-  waste:[[[27.6,19.6],[27.6,19],[37.6,19]],[[37.6,19],[38.6,19]],[[7.4,1.4],[7.4,-.2],[5,-.2],[5,-2]],[[9.1,12.1],[10.9,12.1],[10.9,-.2],[7.4,-.2]],[[9,-4.5],[5,-4.5],[5,-2]],[[5,-2],[5,-8]]],
+  waste:[[[27.6,19.6],[27.6,19],[37.6,19]],[[37.6,19],[38.6,19]],[[1.3,4.4],[.2,4.4],[.2,-.2],[5,-.2],[5,-2]],[[9.1,12.1],[10.9,12.1],[10.9,-.2],[5,-.2]],[[9,-4.5],[5,-4.5],[5,-2]],[[5,-2],[5,-8]]],
   rain:[[[-.6,40.6],[-10,40.6],[-10,37.8]],[[-.6,-.6],[-12,-.6],[-12,36],[-11.6,36]],[[36.6,-.6],[45,-.6],[45,28]],[[36.6,40.6],[45,40.6],[45,32]]],
   dlv:[[[-10,-12],[-10,0.6],[-9,1]],[[-2.4,8.6],[-2.4,22],[-.6,22]]],
   items:[['RISER',36.6,16.5,'R1'],['RISER',-.6,6,'R2'],['SVP',36.6,12.5,'SVP2'],['SVP',-.6,14,'SVP1'],['SVP',-.6,1,'SVP3'],['SVP',36.6,1,'SVP4'],['GT',37.6,19],['GT',5,-2],
@@ -852,7 +862,7 @@ renderer.xr.addEventListener('sessionstart',enterVR);renderer.xr.addEventListene
 const vdir=new THREE.Vector3(),vright=new THREE.Vector3(),UP=new THREE.Vector3(0,1,0);
 function vrStep(now){const dt=lastT?Math.min(.1,(now-lastT)/1000):0;lastT=now;
   const ses=renderer.xr.getSession();if(!ses)return;
-  renderer.xr.getCamera(cam).getWorldPosition(headW);const px=headW.x+CX,py=headW.z+CY,sh=stairH(px,py);let ty;
+  renderer.xr.getCamera(cam).getWorldPosition(headW);const px=headW.x+CX,py=headW.z+CY;let sh=stairH(px,py);if(sh!==null&&!onStair&&vrLevel===0&&py<24.5)sh=null;/* under-stair store: stay on the floor */let ty;
   if(sh!==null&&vrLevel!==-1){onStair=true;lastSH=sh;ty=PL+sh}
   else{if(onStair){vrLevel=lastSH>7.5?1:0;onStair=false}
     const inside=px>-.5&&px<36.5&&py>-.5&&py<40.5;if(vrLevel===-1&&inside)vrLevel=0;else if(vrLevel===0&&!inside)vrLevel=-1;
