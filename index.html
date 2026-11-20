@@ -64,6 +64,7 @@ button:disabled{opacity:.6;cursor:default}
     <button id="doorBtn" aria-pressed="false">Open theatre door</button>
     <button id="elBtn" aria-pressed="false">Show electrical</button>
     <button id="plBtn" aria-pressed="false">Show plumbing</button>
+    <button id="xrBtn" aria-pressed="false">X-ray: wiring &amp; plumbing only</button>
     <button id="vrBtn" disabled>Checking VR…</button>
     <label id="vidLbl" class="filebtn">Play my video on the theatre screen <input id="vidIn" type="file" accept="video/*" hidden></label>
   </div>
@@ -94,7 +95,7 @@ button:disabled{opacity:.6;cursor:default}
     <li><b>Bathrooms</b>Wall-hung style WC, vanity with mirror, glass shower corner in each bathroom.</li>
     <li><b>First-floor hall and office</b>L-shaped sofa set facing the office and the stairs, hanging swing chair, reading shelf, open office desk with monitor and bookshelf.</li>
     <li><b>Covered balcony</b>Left: wooden reclining sleeping chair, with a round wooden table and four chairs beside it. Right: modern woven egg swing chair hanging from the ceiling. Planters along the glass railing, wooden ceiling with lights.</li>
-    <li><b>Electrical and plumbing</b>Use Show electrical / Show plumbing to see switchboards at 4 ft, sockets, ceiling light and fan points with their wire runs, the distribution boards, meter, inverter and earth pits; and cold (blue) and hot (red) water lines, geysers, drain pipes (brown), stacks, inspection chambers, septic tank, soak pit, sump, borewell, overhead tanks and rainwater pipes to the recharge pits. Best seen in the Ground / First floor inside views.</li>
+    <li><b>Electrical and plumbing</b>Use Show electrical / Show plumbing to see switchboards at 4 ft, sockets, ceiling light and fan points with their wire runs, the distribution boards, meter, inverter and earth pits; and cold (blue) and hot (red) water lines, geysers, drain pipes (brown), stacks, inspection chambers, septic tank, soak pit, sump, borewell, overhead tanks and rainwater pipes to the recharge pits. Best seen in the Ground / First floor inside views. X-ray turns the whole house into faint glass on a dark background so only the wiring and pipes stand out, as if you were looking through the walls.</li>
     <li><b>Outside</b>Compound wall with sliding gate, paved driveway with garden lights, open parking with a car, front lawn, trees, kitchen garden and wash area at the back, water tank on the roof.</li>
   </ul>
 </div>
@@ -552,6 +553,19 @@ seg3(mepOut,-2.4,22,.5,-2.4,22,Yr+.6,.16,mCW);run3(mepOut,[[-2.4,22],[3.3,22],[3
 let showEl=false,showPl=false;
 function mepVis(){elG.forEach(g=>g.visible=showEl);plG.forEach(g=>g.visible=showPl);mepOut.children.forEach(c=>c.visible=c.material===mSW||c.material===mData||c.material===mWire?showEl:showPl);mepDirty=true}
 let mepDirty=false;mepVis();
+
+/* X-ray: see only wiring and plumbing through faint walls */
+const ghostWall=new THREE.MeshBasicMaterial({color:'#9fb0c0',transparent:true,opacity:.13,depthWrite:false}),ghostOther=new THREE.MeshBasicMaterial({color:'#c4ccd4',transparent:true,opacity:.04,depthWrite:false});
+const MEPROOTS=[elG[0],elG[1],plG[0],plG[1],mepOut];const origMat=new Map();let xray=false;
+function inMEP(o){for(let p=o;p;p=p.parent)if(MEPROOTS.includes(p))return true;return false}
+function inWalls(o){for(let p=o.parent;p;p=p.parent)if(p===G.wg||p===F.wg)return true;return false}
+function setXray(on){xray=on;
+  scene.traverse(o=>{if(!o.isMesh||inMEP(o))return;if(on){if(!origMat.has(o))origMat.set(o,{m:o.material,c:o.castShadow});o.material=inWalls(o)?ghostWall:ghostOther;o.castShadow=false}
+    else if(origMat.has(o)){const r=origMat.get(o);o.material=r.m;o.castShadow=r.c}});
+  if(!on)origMat.clear();
+  if(on){showEl=showPl=true;elBtn.setAttribute('aria-pressed',true);plBtn.setAttribute('aria-pressed',true);F.g.visible=slab.visible=R.visible=true;G.wg.scale.y=F.wg.scale.y=1;G.cg.visible=F.cg.visible=false}
+  scene.background=new THREE.Color(on?'#10161d':'#cfe0ea');scene.fog.color.set(on?'#10161d':'#cfe0ea');
+  xrBtn.setAttribute('aria-pressed',on);mepVis()}
 /* views and room tour */
 const V={front:{pos:[48,34,78],tg:[2,10,6]},back:{pos:[-46,36,-66],tg:[0,10,0]},gf:{pos:[22,64,52],tg:[0,PL,2]},ff:{pos:[22,74,52],tg:[0,Yf,2]},top:{pos:[0.1,120,6],tg:[0,0,0]}};
 const TOUR=[['Entrance foyer',0,13.5,39,20,30],['Hall',0,23,20.5,3,11.5],['Kitchen',0,10.6,2.5,1.5,7],['Dining',0,21.5,9.5,15,2],['Bedroom 1',0,10.5,38.5,4,30],['Bedroom 2',0,25.5,12.5,32,2],['Home theatre',0,30,21.5,30,39.5],['Common bath',0,25,19.5,28.5,15],['First-floor hall',1,14,26.5,32,18],['Bedroom 3',1,15,14.5,3,3],['Bedroom 4',1,21,14.5,33,3],['Open office',1,30,29.5,32,39],['Covered balcony',1,24,30,4,38]];
@@ -573,6 +587,7 @@ sel.addEventListener('change',()=>{if(sel.value==='')return;const [n,fl,x,y,tx,t
 document.querySelectorAll('#views [data-v]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.v)));
 const doorBtn=document.getElementById('doorBtn');doorBtn.addEventListener('click',()=>{doorT=doorT?0:3.9;doorBtn.setAttribute('aria-pressed',!!doorT);doorBtn.textContent=doorT?'Close theatre door':'Open theatre door'});
 const elBtn=document.getElementById('elBtn'),plBtn=document.getElementById('plBtn');
+const xrBtn=document.getElementById('xrBtn');xrBtn.addEventListener('click',()=>{setXray(!xray);if(xray&&cur!=='front'&&cur!=='back')setView('front');});
 elBtn.addEventListener('click',()=>{showEl=!showEl;elBtn.setAttribute('aria-pressed',showEl);mepVis()});plBtn.addEventListener('click',()=>{showPl=!showPl;plBtn.setAttribute('aria-pressed',showPl);mepVis()});
 const labBtn=document.getElementById('labBtn');labBtn.addEventListener('click',()=>{showLab=!showLab;labBtn.setAttribute('aria-pressed',showLab)});
 
