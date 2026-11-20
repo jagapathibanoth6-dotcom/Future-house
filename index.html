@@ -202,9 +202,44 @@ function tvUnit(g,Y,x,y,w,back){const ew=back==='e'||back==='w',p=P(x,y,ew?1.4:w
 function plant(g,Y,x,y,r){cyl(g,x,y,r*.55,Y,1.4,potM,r*.42);sph(g,x,y,r*.95,Y+1.6+r*.7,plantM)}
 function lamp(g,Y,x,y){cyl(g,x,y,.5,Y,.15,dark);cyl(g,x,y,.06,Y+.15,4.6,dark);cyl(g,x,y,.8,Y+4.6,.9,M('#f3ead8',{emissive:'#ffdca0',emissiveIntensity:.3}),.5)}
 function pendant(g,Y,x,y,r){cyl(g,x,y,.03,Y+6.6,WH-6.6,dark);sph(g,x,y,r||.5,Y+6.4,glow)}
-function wc(g,Y,x,y,back){const ew=back==='e'||back==='w',p=P(x,y,ew?2.4:1.6,ew?1.6:2.4,back);PB(g,Y,p,.1,0,1.4,.5,1.4,1.4,white);const [a,b,c,d]=p.r(.25,.55,1.1,1.6);box(g,a,b,c,d,Y,1.35,white);box(g,a+.05,b+.05,c-.1,d-.1,Y+1.35,.1,M('#e8e8e4'))}
-function vanity(g,Y,x,y,w,back){const ew=back==='e'||back==='w',p=P(x,y,ew?1.6:w,ew?w:1.6,back);PB(g,Y,p,0,0,p.W,p.D,1,1.7,oak);PB(g,Y,p,0,0,p.W,p.D,2.7,.12,white);const [a,b,c,d]=p.r(p.W/2-.7,.3,1.4,1);box(g,a,b,c,d,Y+2.82,.3,white);PB(g,Y,p,p.W/2-.06,.2,.12,.12,2.82,.7,steel);PB(g,Y,p,.1,0,p.W-.2,.06,3.8,2.6,mirror)}
-function shower(g,Y,x,y,w,d,gx,gy){box(g,x,y,w,d,Y,.15,M('#ffffff'));if(gx!==null)box(g,gx-.04,y,.08,d,Y,6.6,glassM,false);if(gy!==null)box(g,x,gy-.04,w,.08,Y,6.6,glassM,false);cyl(g,x+w/2,y+d/2,.35,Y+6.8,.08,steel)}
+const ceramic=M('#fbfbf8',{roughness:.25}),bowlIn=M('#e9ecee',{roughness:.2}),chrome=M('#d7dadd',{metalness:.95,roughness:.15}),blackM=M('#1d1f22',{metalness:.6,roughness:.35}),drainM=M('#5b5f64',{metalness:.8,roughness:.3});
+function wc(g,Y,x,y,back){const ew=back==='e'||back==='w',p=P(x,y,ew?2.4:1.6,ew?1.6:2.4,back);
+  PB(g,Y,p,.05,0,1.5,.35,0,3.4,M('#cfc8bb'));PB(g,Y,p,.05,0,1.5,.04,3.4,.08,stoneTop);/* boxed-in concealed cistern */
+  PB(g,Y,p,.5,.35,.6,.03,2.6,.4,chrome);PB(g,Y,p,.53,.37,.25,.02,2.65,.3,M('#f2f2f2'));PB(g,Y,p,.82,.37,.25,.02,2.65,.3,M('#f2f2f2'));/* dual flush plate */
+  PB(g,Y,p,.4,.35,.8,.9,0,.9,ceramic);PB(g,Y,p,.3,.45,1,1.35,.9,.5,ceramic);/* pan */
+  PB(g,Y,p,.36,.5,.88,1.25,1.4,.06,M('#ffffff',{roughness:.15}));PB(g,Y,p,.36,.45,.88,.1,1.46,.08,chrome);/* seat + hinge */
+  PB(g,Y,p,1.7>p.W?p.W-.05:1.6,.6,.06,.4,2.2,.06,chrome);/* paper holder */
+  const [a,b]=p.r(p.W/2,1.35,0,0);cyl(g,a,b,.1,Y+2.8,.3,chrome)}
+function vanity(g,Y,x,y,w,back){const ew=back==='e'||back==='w',p=P(x,y,ew?1.7:w,ew?w:1.7,back);
+  /* floating cupboard with two doors, handles and a toe-light */
+  PB(g,Y,p,0,0,p.W,1.55,.9,1.75,oak);PB(g,Y,p,.04,1.55,p.W/2-.06,.04,.98,1.6,M('#a77b52'));PB(g,Y,p,p.W/2+.02,1.55,p.W/2-.06,.04,.98,1.6,M('#a77b52'));
+  PB(g,Y,p,p.W/2-.25,1.59,.06,.05,1.6,.9,blackM);PB(g,Y,p,p.W/2+.19,1.59,.06,.05,1.6,.9,blackM);PB(g,Y,p,.1,.2,p.W-.2,1.2,.82,.06,glow);
+  /* stone top + round vessel basin + tall mixer */
+  PB(g,Y,p,-.05,0,p.W+.1,1.7,2.65,.12,stoneTop);const [cx,cy]=p.r(p.W/2,.95,0,0);
+  cyl(g,cx,cy,.62,Y+2.77,.42,ceramic,.5);cyl(g,cx,cy,.52,Y+2.9,.3,bowlIn,.42);cyl(g,cx,cy,.08,Y+3.19,.02,drainM);
+  const [fx,fy]=p.r(p.W/2,.25,0,0);cyl(g,fx,fy,.07,Y+2.77,1.35,chrome);const [sx,sy]=p.r(p.W/2,.25,0,0);PB(g,Y,p,p.W/2-.05,.2,.1,.55,4.02,.1,chrome);const [kx,ky]=p.r(p.W/2+.22,.25,0,0);cyl(g,kx,ky,.05,Y+3.5,.25,chrome);
+  /* mirror cupboard with backlight */
+  PB(g,Y,p,.05,0,p.W-.1,.05,3.85,3.05,glow);PB(g,Y,p,.15,0,p.W-.3,.5,3.95,2.85,M('#e9e3d8'));PB(g,Y,p,.17,.5,p.W/2-.2,.03,4,2.75,mirror);PB(g,Y,p,p.W/2+.03,.5,p.W/2-.2,.03,4,2.75,mirror);PB(g,Y,p,p.W/2-.01,.5,.02,.04,4,2.75,blackM);
+  /* towel ring, soap, toothbrush cup */
+  PB(g,Y,p,p.W+.1>2.6?p.W-.1:p.W,.05,.05,.25,3.3,.05,chrome);const [tx,ty]=p.r(p.W-.25,.45,0,0);cyl(g,tx,ty,.13,Y+2.77,.35,M('#7fa7b5'));const [ox,oy]=p.r(.3,.45,0,0);box(g,ox-.18,oy-.12,.36,.24,Y+2.77,.1,M('#e8d9b5'))}
+function shower(g,Y,x,y,w,d,gx,gy){
+  box(g,x,y,w,d,Y,.15,ceramic);/* tray */
+  /* linear drain along the wall side */
+  const wallY=gy!==null?(Math.abs(gy-y)<.01?y+d:y):null,wallX=gx!==null?(Math.abs(gx-x)<.01?x+w:x):null;
+  if(gx!==null){box(g,x+.15,y+.15,w-.3,.04,Y+.15,.6,M('#cfd4d8'),false);box(g,gx-.04,y,.08,d,Y,6.6,glassM,false);box(g,gx-.06,y,.12,.08,Y,6.6,chrome);box(g,gx-.06,y,.12,d,Y+6.55,.08,chrome)}
+  if(gy!==null){box(g,x,gy-.04,w,.08,Y,6.6,glassM,false);box(g,x,gy-.06,.08,.12,Y,6.6,chrome);box(g,x,gy-.06,w,.12,Y+6.55,.08,chrome)}
+  /* shower column on the wall facing the glass */
+  let cx,cy,ax,ay;if(wallX!==null){cx=wallX+(wallX===x?.12:-.12);cy=y+d/2;ax=x+w/2;ay=cy}else{cy=wallY+(wallY===y?.12:-.12);cx=x+w/2;ax=cx;ay=y+d/2}
+  cyl(g,cx,cy,.05,Y+3.4,3.6,chrome);/* riser pipe */
+  box(g,Math.min(cx,ax)-.03,Math.min(cy,ay)-.03,Math.abs(ax-cx)+.06,Math.abs(ay-cy)+.06,Y+6.95,.07,chrome);/* arm */
+  box(g,ax-.5,ay-.5,1,1,Y+6.85,.08,chrome);box(g,ax-.45,ay-.45,.9,.9,Y+6.83,.02,M('#4b4f54'));/* rain head */
+  const ox=wallX!==null?(wallX===x?.03:-.09):0,oy=wallY!==null?(wallY===y?.03:-.09):0;
+  box(g,cx-.25,cy-.25,.5,.5,Y+3.25,.02,chrome,false);cyl(g,cx,cy,.12,Y+3.45,.12,chrome);/* mixer valve */
+  cyl(g,cx+(wallY!==null?.35:0),cy+(wallX!==null?.35:0),.05,Y+3.9,.6,blackM);/* hand shower */
+  /* tiled niche shelf with bottles */
+  const nx=wallX!==null?cx:x+.2,ny=wallY!==null?cy:y+.2;
+  box(g,nx-(wallX!==null?.1:0),ny-(wallY!==null?.1:0),wallX!==null?.25:.9,wallY!==null?.25:.9,Y+4.2,.06,stoneTop);
+  [['#e0a33a',0],['#3f7fb8',.28],['#f2f2f2',.56]].forEach(([c,o])=>cyl(g,nx+(wallY!==null?o-.3+.45:0),ny+(wallX!==null?o-.3+.45:0),.08,Y+4.26,.42,M(c)));}
 function counter(g,Y,x,y,w,d,doors,along){box(g,x,y,w,d,Y,2.7,M('#d9cfc0'));box(g,x-.05,y-.05,w+.1,d+.1,Y+2.7,.15,stoneTop);box(g,x+.05,y+.05,w-.1,d-.1,Y,.35,charcoal,false);
   if(doors){const n=Math.round((along==='x'?w:d)/2);for(let i=1;i<n;i++){if(along==='x')box(g,x+i*w/n-.03,y+d,.06,.03,Y+.45,2.1,walnut,false);else box(g,x+w,y+i*d/n-.03,.03,.06,Y+.45,2.1,walnut,false)}}}
 function recliner(g,Y,x,y,back){const p=P(x,y,2.3,3,back),m=M('#7a2533');PB(g,Y,p,0,.9,2.3,2.1,0,1.5,m);PB(g,Y,p,.25,0,1.8,.9,0,3.6,m);PB(g,Y,p,0,.3,.35,2.4,0,2.3,M('#5c1b26'));PB(g,Y,p,1.95,.3,.35,2.4,0,2.3,M('#5c1b26'));PB(g,Y,p,.35,.95,1.6,1.9,1.5,.35,M('#8c3040'))}
@@ -318,7 +353,15 @@ box(G.wg,10.1,-.15,3.8,.25,0,6.82,teak);
 box(G.wg,15.2,40.32,.4,.2,5.6,.6,glow);box(G.wg,20.4,40.32,.4,.2,5.6,.6,glow);box(G.wg,13.4,40.3,1.3,.08,5,.8,M('#c9a86a'));
 /* kitchen */
 counter(gf,Y0,.3,2.6,2.2,7.1,true,'y');counter(gf,Y0,4.6,.3,5.2,2.2,true,'x');
-box(gf,6.2,.6,2.4,1.6,Y0+2.62,.25,M('#4a4d52',{metalness:.6,roughness:.3}));cyl(gf,7.4,1.2,.06,Y0+2.85,.9,steel);
+/* double-bowl stainless sink with drainboard and gooseneck tap */
+{const ss=M('#c9ced3',{metalness:.85,roughness:.25}),ssIn=M('#6f757b',{metalness:.8,roughness:.35});
+ box(gf,5.6,.55,3.4,1.8,Y0+2.85,.05,ss);box(gf,5.75,.75,1.3,1.4,Y0+2.86,.05,ssIn);box(gf,7.15,.75,1.1,1.4,Y0+2.86,.05,ssIn);
+ cyl(gf,6.4,1.45,.11,Y0+2.9,.02,drainM);cyl(gf,7.7,1.45,.11,Y0+2.9,.02,drainM);
+ for(let i=0;i<5;i++)box(gf,8.35+i*.12,.8,.04,1.3,Y0+2.9,.02,ssIn,false);/* drainboard grooves */
+ cyl(gf,7.1,.45,.08,Y0+2.9,1.5,chrome);box(gf,7.05,.42,.1,1,Y0+4.35,.1,chrome);cyl(gf,7.1,1.35,.05,Y0+4.05,.3,chrome);cyl(gf,7.4,.45,.05,Y0+2.9,.5,chrome);/* tap + lever */
+ cyl(gf,5.85,.5,.09,Y0+2.9,.55,M('#3f9e5b'));/* soap */
+ box(gf,8.4,.7,.6,1.3,Y0+2.92,.05,steel);for(let i=0;i<4;i++)box(gf,8.45,.8+i*.3,.5,.04,Y0+2.97,.45,M('#ffffff'),false);/* dish rack with plates */
+}
 box(gf,.5,4.2,1.8,2.6,Y0+2.86,.06,dark);[[1,4.8],[1,6.2],[1.8,4.8],[1.8,6.2]].forEach(([a,b])=>cyl(gf,a,b,.25,Y0+2.9,.04,M('#555')));
 box(gf,.3,4,2,3,Y0+6.2,.6,steel);box(gf,.6,4.9,1,1.2,Y0+6.8,WH-6.8,steel);
 box(gf,4.6,.3,5.2,1.3,Y0+5.2,2.6,M('#d9cfc0'));box(gf,.3,8,1.3,1.6,Y0+5.2,2.6,M('#d9cfc0'));
