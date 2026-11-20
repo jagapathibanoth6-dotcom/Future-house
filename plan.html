@@ -148,6 +148,8 @@ function plan(fl){const v=fl.vb.split(" ");let s=`<rect x="${v[0]}" y="${v[1]}" 
   s+=fl.rooms.map(([n,x,y,w,d,t])=>`<rect x="${x}" y="${y}" width="${w}" height="${d}" fill="${COL[t]}"/>`).join('');
   s+=fl.dash.map(([x,y,w,d])=>`<rect x="${x}" y="${y}" width="${w}" height="${d}" fill="none" stroke="#55595f" stroke-width=".12" stroke-dasharray=".5 .4"/>`).join('');
   s+=furn(fl.furn)+stairs(fl.st)+walls(fl);
+  if(fl===F[0]){s+=[0,1,2].map(k=>`<rect x="10.2" y="${-1-k}" width="3.6" height="1" fill="#e7e1d6" stroke="#55595f" stroke-width=".1"/>`).join('');
+    s+=`<rect x="8.2" y="7.8" width="1.9" height="1.9" fill="#fff" stroke="#334155" stroke-width=".1"/><circle cx="9.15" cy="8.75" r=".6" fill="none" stroke="#334155" stroke-width=".1"/><text x="9.15" y="7.4" text-anchor="middle" font-size=".7" fill="#334155">WM</text>`}
   s+=fl.rooms.map(([n,x,y,w,d])=>{const cx=x+w/2,cy=y+d/2,ls=n.split('|'),fs=w<9?1.05:1.3,top=cy-(ls.length-1)*fs*.55-.3;
     return `<text text-anchor="middle" font-size="${fs}" font-weight="700" fill="#16191d" paint-order="stroke" stroke="#fff" stroke-width=".35">${ls.map((l,i)=>`<tspan x="${cx}" y="${top+i*fs*1.1}">${l}</tspan>`).join('')}</text><text x="${cx}" y="${top+(ls.length-1)*fs*1.1+1.4}" text-anchor="middle" font-size="1" fill="#5d636b" paint-order="stroke" stroke="#fff" stroke-width=".3">${w}′×${d}′</text>`}).join('');
   s+=fl.tags.map(([t,x,y])=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="1" font-weight="700" fill="#b4462e">${t}</text>`).join('');
@@ -157,6 +159,7 @@ function site(){let s=`<rect x="-20" y="-22" width="82" height="96" fill="#fff"/
   s+=`<rect x="-14" y="-16" width="64" height="82" fill="#eef5e6" stroke="#55595f" stroke-width=".3" stroke-dasharray="1.2 .8"/>`;
   for(let i=0;i<7;i++)s+=`<rect x="${16+i*3.6}" y="-14" width="2" height="6" fill="#c8ddb2"/>`;s+=`<text x="26" y="-6.4" text-anchor="middle" font-size="1.4" font-weight="700" fill="#3f6b33">Kitchen garden</text>`;
   s+=`<rect x="0" y="-6" width="12" height="6" fill="${COL.outdoor}" stroke="#55595f" stroke-width=".15" stroke-dasharray=".6 .5"/><text x="6" y="-2.4" text-anchor="middle" font-size="1.2" fill="#16191d">Wash area</text>`;
+  s+=[0,1,2].map(k=>`<rect x="10.2" y="${-1-k}" width="3.6" height="1" fill="#e7e1d6" stroke="#55595f" stroke-width=".1"/>`).join('')+`<path d="M12 -.4V-2.7M11.6 -2.3L12 -2.8L12.4 -2.3" stroke="#16191d" stroke-width=".12" fill="none"/><text x="14.3" y="-1.3" font-size=".8" fill="#16191d">3 steps down</text>`;
   s+=`<rect x="0" y="0" width="36" height="40" fill="#e7ddcd" stroke="#1b1e22" stroke-width=".6"/><text x="18" y="19" text-anchor="middle" font-size="2.6" font-weight="800" fill="#16191d">HOUSE</text><text x="18" y="22" text-anchor="middle" font-size="1.5" fill="#5d636b">36′ × 40′ · G+1</text>`;
   s+=`<rect x="13" y="40" width="10" height="4" fill="${COL.outdoor}" stroke="#55595f" stroke-width=".15" stroke-dasharray=".6 .5"/>`;
   s+=`<rect x="15" y="44" width="6" height="22" fill="#e3d6bf"/><rect x="25" y="48" width="20" height="12" fill="#e3d6bf"/><text x="35" y="54.6" text-anchor="middle" font-size="1.5" fill="#16191d">Open parking</text>`;
@@ -202,7 +205,7 @@ const EL={0:{groups:[
   {sw:[34.6,13.55],pts:[['L',33,17],['EF',35.5,17.2]]},
   {sw:[24.45,27.2],pts:[['DL',27,23.5],['DL',33,23.5],['DL',27,30],['DL',33,30],['DL',27,36],['DL',33,36]]}],
  power:[['P',2.6,.45,'FR'],['P',7.6,.45,'MW'],['P',10,.45,'RO'],['P',.45,5.4,'CH'],['S',5,.45],['S',.45,8.6],['S',4,9.55],['S',8,9.55],
-  ['S',23.55,3],['S',13.1,7],['P',8,-.5,'WM'],
+  ['S',23.55,3],['S',13.1,7],['P',9.1,9.55,'WM'],
   ['AC',4.5,10.15,3,.6],['TV',6,20.55],['S',4,20.55],['S',8,20.55],['S',.45,12],['S',23.55,20.2],
   ['DB',12.75,29.8,.7,1.6],['M',13.8,40.8],['B',21.6,40.6],['S',23.55,36],
   ['AC',3.5,28.15,3,.6],['S',1.6,28.45],['S',9.6,28.45],['S',5,39.55],
@@ -227,12 +230,12 @@ const EL={0:{groups:[
  tags:[['Sub DB',19.2,18.2],['AC outdoor unit, solar and water tanks are on the roof',18,-3]]}};
 const PLB={0:{fix:[['WC',28.8,18.6],['WB',26.6,14.8],['SH',28.9,15.3],['FT',27.5,17],['GY',25,19.4],
    ['WC',35.1,18.6],['WB',31.6,19.2],['SH',35,15.2],['FT',33,17],['GY',30.5,15],
-   ['KS',7.4,1.4],['TAP',9.6,1.1],['WM',8,-1.4],['WS',9,-4.5],['TAP',14,-1],['TAP',-6,44],['TAP',24,46]],
+   ['KS',7.4,1.4],['TAP',9.6,1.1],['WM',9.1,9.1],['WS',9,-4.5],['TAP',14,-1],['TAP',-6,44],['TAP',24,46]],
   cw:[[[36.6,16.5],[24.6,16.5]],[[35,16.5],[35,15.2]],[[35.1,16.5],[35.1,18.6]],[[31.6,16.5],[31.6,19.2]],[[30.5,16.5],[30.5,15]],[[28.9,16.5],[28.9,15.3]],[[28.8,16.5],[28.8,18.6]],[[26.6,16.5],[26.6,14.8]],[[25,16.5],[25,19.4]],
-   [[-.6,6],[.3,6],[.3,.5],[9.6,.5]],[[7.4,.5],[7.4,1.4]],[[-.6,6],[-.6,-.8],[14,-.8]],[[8,-.8],[8,-1.4]],[[9,-.8],[9,-4.5]],[[-6,40],[-6,44]],[[24,40.6],[24,46]]],
+   [[-.6,6],[.3,6],[.3,.5],[9.6,.5]],[[7.4,.5],[7.4,1.4]],[[-.6,6],[-.6,-.8],[14,-.8]],[[9.6,.5],[10.7,.5],[10.7,9.1],[9.1,9.1]],[[9,-.8],[9,-4.5]],[[-6,40],[-6,44]],[[24,40.6],[24,46]]],
   hw:[[[25,19.4],[25,15.6],[28.9,15.6]],[[25,15.6],[26.6,15.2]],[[30.5,15],[34.4,15]],[[30.5,15],[30.5,18.8],[31.6,18.8]]],
   soil:[[[28.8,18.6],[28.8,19.4],[38.6,19.4]],[[35.1,18.6],[35.1,19.4]],[[36.6,12.5],[38.6,12.5]],[[38.6,19.4],[38.6,-8],[40,-8]],[[-.6,14],[-2,14],[-2,-8],[38.6,-8]]],
-  waste:[[[27.5,17],[37.6,17]],[[37.6,17],[38.6,17]],[[7.4,1.4],[7.4,-.2],[5,-.2],[5,-2]],[[8,-1.4],[5,-2]],[[9,-4.5],[5,-4.5],[5,-2]],[[5,-2],[5,-8]]],
+  waste:[[[27.5,17],[37.6,17]],[[37.6,17],[38.6,17]],[[7.4,1.4],[7.4,-.2],[5,-.2],[5,-2]],[[9.1,9.1],[10.9,9.1],[10.9,-.2],[7.4,-.2]],[[9,-4.5],[5,-4.5],[5,-2]],[[5,-2],[5,-8]]],
   rain:[[[-.6,40.6],[-10,40.6],[-10,37.8]],[[-.6,-.6],[-12,-.6],[-12,36],[-11.6,36]],[[36.6,-.6],[45,-.6],[45,28]],[[36.6,40.6],[45,40.6],[45,32]]],
   dlv:[[[-10,-12],[-10,0.6],[-9,1]],[[-2.4,8.6],[-2.4,22],[-.6,22]]],
   items:[['RISER',36.6,16.5,'R1'],['RISER',-.6,6,'R2'],['SVP',36.6,12.5,'SVP2'],['SVP',-.6,14,'SVP1'],['GT',37.6,17],['GT',5,-2],
