@@ -83,7 +83,7 @@ button:disabled{opacity:.6;cursor:default}
       <li>Put on the headset, open the <b>Meta Quest Browser</b> and go to <b>jagapathibanoth6-dotcom.github.io/Future-house</b>.</li>
       <li>Tap the big <b>🥽 Enter VR</b> button on the model. You start outside on the driveway at real size.</li>
       <li><b>Left stick</b> walk (walk onto the stairs to climb up or down) · <b>Right stick</b> left/right to turn, push up or pull down to fly up or down (A, B or X lands you back on a floor) · <b>Trigger</b> point at any door and pull to open or close it · <b>Y</b> open or close all doors · <b>A / B</b> next / previous room · <b>X</b> back outside.</li>
-      <li>The theatre screen always plays the welcome clip; its sound plays only while you are inside the theatre.</li>
+      <li>The theatre screen always plays the 10-second movie clip; its sound plays only while you are inside the theatre.</li>
       <li>Walk around your play area for real, too: one step in your room is one step in the house.</li>
     </ol>
   </section>
@@ -93,7 +93,7 @@ button:disabled{opacity:.6;cursor:default}
     <li><b>Front design</b>White walls, stone-clad plinth, teak cladding on the theatre front, charcoal box frame around the first floor, wooden fins on the office window, glass balcony railing, concrete canopy over the sit-out.</li>
     <li><b>Floors</b>Large marble-look tiles in the hall, dining, foyer and passage; wood-look tiles in the bedrooms; anti-skid tiles in the bathrooms; carpet in the theatre; wooden deck on the balcony.</li>
     <li><b>Kitchen</b>Walled off from the hall; U-shaped counter with hob and chimney, sink under the back counter, tall fridge, wall cabinets; a 3 ft high counter between the kitchen and dining with storage underneath (cupboards on the kitchen side, open shelves on the dining side); back door beside the dining.</li>
-    <li><b>Home theatre</b>The screen plays a 5-second looping welcome clip, or your own video (use the button under the model). Entered from the back end, off the passage, through a light-proof sliding door (use the Open theatre door button to slide it open) (dark solid panel with seals, sliding on a ceiling track). A walkway along the side leads to two rows of four recliners, back row on a raised step; large screen with tower speakers; fabric acoustic panels; aisle step lights.</li>
+    <li><b>Home theatre</b>The screen plays a 10-second looping movie clip with sound, or your own video (use the button under the model). Entered from the back end, off the passage, through a light-proof sliding door (use the Open theatre door button to slide it open) (dark solid panel with seals, sliding on a ceiling track). A walkway along the side leads to two rows of four recliners, back row on a raised step; large screen with tower speakers; fabric acoustic panels; aisle step lights.</li>
     <li><b>Bedrooms</b>Queen beds with headboards and side tables, wardrobes, dressing table or study desk; first-floor bedrooms have the bath and the wardrobe inside the room.</li>
     <li><b>Bathrooms</b>Wall-hung style WC, vanity with mirror, glass shower corner in each bathroom.</li>
     <li><b>First-floor hall and office</b>L-shaped sofa set facing the office and the stairs, hanging swing chair, reading shelf, open office desk with monitor and bookshelf.</li>
@@ -355,7 +355,7 @@ wc(gf,Y0,34.2,17.5,'s');vanity(gf,Y0,30.4,18.3,2.6,'s');shower(gf,Y0,33.8,14.2,2
 /* theatre */
 box(gf,26.2,21.6,9.5,5,Y0,1.2,M('#3c1d25'));box(gf,25.4,23.2,.8,3,Y0,.6,M('#3c1d25'));
 [26.5,28.8,31.1,33.4].forEach(x=>{recliner(gf,Y0+1.2,x,22,'n');recliner(gf,Y0,x,27,'n')});
-/* theatre screen: 5-second looping clip, or the viewer's own video */
+/* theatre screen: 10-second movie clip, or the viewer's own video */
 const clipCv=document.createElement('canvas');clipCv.width=640;clipCv.height=360;const clipCx=clipCv.getContext('2d');
 const clipTex=new THREE.CanvasTexture(clipCv);clipTex.encoding=THREE.sRGBEncoding;const clipM=new THREE.MeshBasicMaterial({map:clipTex,toneMapped:false});
 let userVideo=null,clipFrame=0;
