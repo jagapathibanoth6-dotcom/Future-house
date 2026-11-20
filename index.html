@@ -64,7 +64,6 @@ button:disabled{opacity:.6;cursor:default}
     <button id="labBtn" aria-pressed="true">Room names</button>
     <button id="doorBtn" aria-pressed="false">Open theatre door</button>
     <button id="allDoorBtn" aria-pressed="true">Close all doors</button>
-    <button id="sndBtn" aria-pressed="false">Theatre sound on</button>
     <button id="elBtn" aria-pressed="false">Show electrical</button>
     <button id="plBtn" aria-pressed="false">Show plumbing</button>
     <button id="xrBtn" aria-pressed="false">X-ray: wiring &amp; plumbing only</button>
@@ -83,8 +82,8 @@ button:disabled{opacity:.6;cursor:default}
     <ol>
       <li>Put on the headset, open the <b>Meta Quest Browser</b> and go to <b>jagapathibanoth6-dotcom.github.io/Future-house</b>.</li>
       <li>Tap the big <b>🥽 Enter VR</b> button on the model. You start outside on the driveway at real size.</li>
-      <li><b>Left stick</b> walk (walk onto the stairs to climb up or down) · <b>Right stick</b> left/right to turn, push up to jump upstairs, pull down to jump downstairs · <b>Trigger</b> point at any door and pull to open or close it · <b>Y</b> open or close all doors · <b>A / B</b> next / previous room · <b>X</b> back outside.</li>
-      <li>The theatre screen plays the welcome clip with sound; it gets louder as you walk into the theatre.</li>
+      <li><b>Left stick</b> walk (walk onto the stairs to climb up or down) · <b>Right stick</b> left/right to turn, push up or pull down to fly up or down (A, B or X lands you back on a floor) · <b>Trigger</b> point at any door and pull to open or close it · <b>Y</b> open or close all doors · <b>A / B</b> next / previous room · <b>X</b> back outside.</li>
+      <li>The theatre screen always plays the welcome clip; its sound plays only while you are inside the theatre.</li>
       <li>Walk around your play area for real, too: one step in your room is one step in the house.</li>
     </ol>
   </section>
@@ -270,7 +269,7 @@ const FLOORTEX={living:['marble',.5,.5],kitchen:['marble',.5,.5],circ:['marble',
 const picks=[],labels=[];
 function floor(fl,Yb,idx){
   const g=new THREE.Group(),wg=new THREE.Group();wg.position.y=Yb;g.add(wg);
-  fl.rooms.forEach(r=>{const [n,x,y,w,d,t]=r;const [tx,sx,sy]=FLOORTEX[t]||FLOORTEX.circ;const tile=box(g,x+.3,y+.3,w-.6,d-.6,Yb,.08+(t==='bath'?.04:0),TM(tx,w*sx,d*sy),false);tile.userData={r,fl:idx};picks.push(tile);
+  fl.rooms.forEach(r=>{const [n,x,y,w,d,t]=r;const [tx,sx,sy]=FLOORTEX[t]||FLOORTEX.circ;const sw=idx===1&&n==='Stairs';const tile=sw?box(g,10.3,y+.3,1.4,d-.6,Yb,.08,TM(tx,1.4*sx,d*sy),false):box(g,x+.3,y+.3,w-.6,d-.6,Yb,.08+(t==='bath'?.04:0),TM(tx,w*sx,d*sy),false);tile.userData={r,fl:idx};picks.push(tile);
     if(n==='Hall'&&w===12&&d===5)return;
     const el=document.createElement('div');el.className='lab';el.textContent=n;view.appendChild(el);labels.push({el,fl:idx,p:new THREE.Vector3(x+w/2-CX,Yb+1.2,y+d/2-CY)})});
   const U=walls(fl,wg);paintAll(fl,wg,U,idx,36,40);dressWindows(fl,wg,idx,36,40);leaves(wg,fl.leaves||[]);stairs(g,Yb);
@@ -360,24 +359,24 @@ box(gf,26.2,21.6,9.5,5,Y0,1.2,M('#3c1d25'));box(gf,25.4,23.2,.8,3,Y0,.6,M('#3c1d
 const clipCv=document.createElement('canvas');clipCv.width=640;clipCv.height=360;const clipCx=clipCv.getContext('2d');
 const clipTex=new THREE.CanvasTexture(clipCv);clipTex.encoding=THREE.sRGBEncoding;const clipM=new THREE.MeshBasicMaterial({map:clipTex,toneMapped:false});
 let userVideo=null,clipFrame=0;
-window.__drawClip=function(now){if(userVideo){return}if((clipFrame++)%2)return;const c=clipCx,W=640,H=360,t=(now/1000)%5,k=t/5;
+window.__drawClip=function(now){if(userVideo){if(userVideo.readyState>=2&&!userVideo.paused&&(clipFrame++)%2===0){try{clipCx.drawImage(userVideo,0,0,640,360);clipTex.needsUpdate=true}catch(e){}}return}if((clipFrame++)%2)return;const c=clipCx,W=640,H=360,t=(now/1000)%5,k=t/5;
   const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,`hsl(${220-k*190},60%,${18+k*30}%)`);g.addColorStop(1,`hsl(${30+k*10},80%,${30+k*25}%)`);c.fillStyle=g;c.fillRect(0,0,W,H);
   const sy=H*.82-k*H*.45;c.fillStyle='rgba(255,220,140,.95)';c.beginPath();c.arc(W*.5,sy,46,0,7);c.fill();
   c.fillStyle='#2f4a2a';c.beginPath();c.moveTo(0,H);for(let x=0;x<=W;x+=20)c.lineTo(x,H*.8+Math.sin(x/60+t)*8);c.lineTo(W,H);c.fill();
   c.fillStyle='#f7f5f0';c.fillRect(W*.36,H*.6,W*.28,H*.22);c.fillStyle='#3a3c40';c.fillRect(W*.36,H*.56,W*.28,H*.05);c.fillStyle='#8a5a3a';c.fillRect(W*.55,H*.66,W*.06,H*.16);
   c.globalAlpha=Math.min(1,t*1.2);c.fillStyle='#fff';c.textAlign='center';c.font='bold 40px sans-serif';c.fillText('Welcome home',W/2,H*.2);c.font='24px sans-serif';c.fillText('Parvathagiri Home Theatre',W/2,H*.3);c.globalAlpha=1;
   c.fillStyle='rgba(255,255,255,.25)';c.fillRect(40,H-18,W-80,5);c.fillStyle='#fff';c.fillRect(40,H-18,(W-80)*k,5);clipTex.needsUpdate=true};
-const scr=box(gf,25,39.45,10,.15,Y0+1.8,5.8,clipM);
+const scr=box(gf,25,39.38,10,.1,Y0+1.8,5.8,clipM);
 const tv=document.createElement('video');tv.src='theatre.mp4';tv.loop=true;tv.muted=true;tv.playsInline=true;tv.setAttribute('playsinline','');tv.crossOrigin='anonymous';tv.preload='auto';
-let tvTex=null;tv.addEventListener('playing',()=>{if(userVideo&&userVideo!==tv)return;if(!tvTex){tvTex=new THREE.VideoTexture(tv);tvTex.encoding=THREE.sRGBEncoding}clipM.map=tvTex;clipM.needsUpdate=true;userVideo=tv});
+tv.addEventListener('playing',()=>{if(userVideo&&userVideo!==tv)return;userVideo=tv});
 tv.addEventListener('error',()=>{});tv.play().catch(()=>{});
 window.__theatreSound=function(on){const v=userVideo||tv;if(on){v.muted=false;v.play().catch(()=>{})}else v.muted=true};
 window.__theatreVideo=()=>userVideo||tv;
 document.addEventListener('pointerdown',()=>{if(tv.paused&&!(userVideo&&userVideo!==tv))tv.play().catch(()=>{})},{once:true});
 const vidIn=document.getElementById('vidIn');if(vidIn)vidIn.addEventListener('change',()=>{const f=vidIn.files&&vidIn.files[0];if(!f)return;
   const v=document.createElement('video');v.src=URL.createObjectURL(f);v.loop=true;v.muted=false;v.playsInline=true;v.crossOrigin='anonymous';
-  tv.pause();v.play().catch(()=>{v.muted=true;v.play().catch(()=>{})});const vt=new THREE.VideoTexture(v);vt.encoding=THREE.sRGBEncoding;clipM.map=vt;clipM.needsUpdate=true;userVideo=v;
-  document.getElementById('vidLbl').firstChild.textContent='Playing your video ✓ ';});box(gf,24.85,39.4,10.3,.12,Y0+1.65,6.1,dark);
+  tv.pause();v.play().catch(()=>{v.muted=true;v.play().catch(()=>{})});userVideo=v;
+  document.getElementById('vidLbl').firstChild.textContent='Playing your video ✓ ';});box(gf,24.85,39.5,10.3,.12,Y0+1.65,6.1,dark);
 [24.5,34.6].forEach(x=>box(gf,x,37.6,.9,1,Y0,4.6,M('#1a1a1d')));
 for(let i=0;i<6;i++){const yy=21+i*3;if(yy+2.4<21.6||yy>26.6)box(gf,24.32,yy,.25,2.4,Y0+1.5,5.5,M('#5a2532'));box(gf,35.43,yy,.25,2.4,Y0+1.5,5.5,M('#5a2532'))}
 for(let i=0;i<5;i++)box(gf,26.6+i*2,26.65,.4,.1,Y0+1.25,.06,glow,false);for(let i=0;i<6;i++)box(gf,24.35,27+i*2,.08,.4,Y0+.6,.1,glow,false);
@@ -646,7 +645,6 @@ sel.addEventListener('change',()=>{if(sel.value==='')return;const [n,fl,x,y,tx,t
   fly([x-CX,Yb+5.3,y-CY],[tx-CX,Yb+3.6,ty-CY]);info.innerHTML='<b>'+n+'</b>Eye-level view · drag to look around';info.style.display='block'});
 document.querySelectorAll('#views [data-v]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.v)));
 const doorBtn=document.getElementById('doorBtn');doorBtn.addEventListener('click',()=>setTheatreDoor(!doorT));document.getElementById('allDoorBtn').addEventListener('click',()=>setAllDoors(!allOpen));
-const sndBtn=document.getElementById('sndBtn');let sndOn=false;sndBtn.addEventListener('click',()=>{sndOn=!sndOn;window.__theatreSound(sndOn);sndBtn.setAttribute('aria-pressed',sndOn);sndBtn.textContent=sndOn?'Theatre sound off':'Theatre sound on'});
 const elBtn=document.getElementById('elBtn'),plBtn=document.getElementById('plBtn');
 const xrBtn=document.getElementById('xrBtn');xrBtn.addEventListener('click',()=>{setXray(!xray);if(xray&&cur!=='front'&&cur!=='back')setView('front');});
 elBtn.addEventListener('click',()=>{showEl=!showEl;elBtn.setAttribute('aria-pressed',showEl);mepVis()});plBtn.addEventListener('click',()=>{showPl=!showPl;plBtn.setAttribute('aria-pressed',showPl);mepVis()});
@@ -674,7 +672,13 @@ function size(){const w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,
 const ro=new ResizeObserver(size);ro.observe(view);
 cam.position.set(...V.front.pos);ctl.target.set(...V.front.tg);size();
 const v3=new THREE.Vector3();
-function loop(now){window.__drawClip(now);animDoors(.15);if(renderer.xr.isPresenting){vrStep(now);renderer.render(scene,cam);return}
+const camW=new THREE.Vector3();
+function theatreAudio(){const v=window.__theatreVideo();if(renderer.xr.isPresenting)renderer.xr.getCamera(cam).getWorldPosition(camW);else cam.getWorldPosition(camW);
+  const x=camW.x+CX,y=camW.z+CY,inside=x>24.3&&x<35.7&&y>20.3&&y<39.7&&camW.y>PL&&camW.y<Yf;
+  const act=!navigator.userActivation||navigator.userActivation.hasBeenActive;
+  if(inside&&act){if(v.muted){v.muted=false;v.volume=1}}else if(!v.muted)v.muted=true;
+  if(v.paused&&v.readyState>=2&&!v.__busy){v.__busy=true;v.play().catch(()=>{v.muted=true;return v.play()}).catch(()=>{}).finally(()=>{v.__busy=false})}}
+function loop(now){window.__drawClip(now);animDoors(.15);theatreAudio();if(renderer.xr.isPresenting){vrStep(now);renderer.render(scene,cam);return}
   if(anim){let k=Math.min(1,(now-anim.t0)/800);k=k<.5?2*k*k:1-((-2*k+2)**2)/2;cam.position.lerpVectors(anim.fp,anim.tp,k);ctl.target.lerpVectors(anim.ft,anim.tt,k);if(k>=1)anim=null}
   DOORS.forEach(d=>{d.position.z+=(doorT-d.position.z)*.12});
   ctl.update();renderer.render(scene,cam);
@@ -687,10 +691,10 @@ function loop(now){window.__drawClip(now);animDoors(.15);if(renderer.xr.isPresen
 /* ---------------- VR (Meta Quest, WebXR) ---------------- */
 renderer.xr.enabled=true;renderer.xr.setReferenceSpaceType('local-floor');
 const dolly=new THREE.Group();scene.add(dolly);dolly.add(cam);
-const FT=3.28084,doorHolder=new THREE.Group();let vrMerged=null,hiddenList=[],vrIdx=0,lastT=0,turnLatch=false,btnPrev={},vrLevel=-1,onStair=false,lastSH=0,vLatch=false;
+const FT=3.28084,doorHolder=new THREE.Group();let vrMerged=null,hiddenList=[],vrIdx=0,lastT=0,turnLatch=false,btnPrev={},vrLevel=-1,onStair=false,flying=false,lastSH=0,vLatch=false;
 const ctrls=[0,1].map(i=>{const c=renderer.xr.getController(i);const lg=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0),new THREE.Vector3(0,0,-1)]);const ln=new THREE.Line(lg,new THREE.LineBasicMaterial({color:0xffffff}));ln.scale.z=1.5;c.add(ln);dolly.add(c);return c});
 const VRSPOTS=[['Outside, front',-1,18,58,18,30]].concat(TOUR);
-function vrGo(i){vrIdx=(i+VRSPOTS.length)%VRSPOTS.length;const [n,fl,x,y,tx,ty]=VRSPOTS[vrIdx];const fy=fl===-1?0:fl===0?PL:Yf;vrLevel=fl;onStair=false;
+function vrGo(i){vrIdx=(i+VRSPOTS.length)%VRSPOTS.length;const [n,fl,x,y,tx,ty]=VRSPOTS[vrIdx];const fy=fl===-1?0:fl===0?PL:Yf;vrLevel=fl;onStair=false;flying=false;
   dolly.position.set(x-CX,fy,y-CY);dolly.rotation.y=Math.atan2(-(tx-x),-(ty-y))}
 function buildVRMerged(){
   if(vrMerged)return;if(!THREE.BufferGeometryUtils){vrMerged=new THREE.Group();return}
@@ -715,7 +719,7 @@ function vrJump(l){if(l===1){dolly.position.set(14-CX,Yf,22.8-CY);dolly.rotation
 function stairH(x,y){if(!(x>=0&&x<10&&y>=21&&y<28))return null;if(x<2)return 5;return y>=24.5?(10-x)/8*5:5+(x-2)/8*5}
 const headW=new THREE.Vector3(),rayM=new THREE.Matrix4(),rayC=new THREE.Raycaster();
 ctrls.forEach(c=>c.addEventListener('selectstart',()=>{rayM.identity().extractRotation(c.matrixWorld);rayC.ray.origin.setFromMatrixPosition(c.matrixWorld);rayC.ray.direction.set(0,0,-1).applyMatrix4(rayM);rayC.far=40;const h=rayC.intersectObjects(doorMeshes(),false);if(h.length)toggleHit(h[0].object)}));
-function exitVR(){if(vrMerged)vrMerged.visible=false;DOORS.forEach(d=>{G.wg.attach(d);d.position.z=doorT});SWINGS.forEach(d=>d.userData.home.attach(d));const tvv=window.__theatreVideo();if(!sndOn)tvv.muted=true;doorHolder.visible=false;hiddenList.forEach(c=>c.visible=true);hiddenList=[];sun.castShadow=true;
+function exitVR(){if(vrMerged)vrMerged.visible=false;DOORS.forEach(d=>{G.wg.attach(d);d.position.z=doorT});SWINGS.forEach(d=>d.userData.home.attach(d));doorHolder.visible=false;hiddenList.forEach(c=>c.visible=true);hiddenList=[];sun.castShadow=true;
   dolly.position.set(0,0,0);dolly.rotation.set(0,0,0);dolly.scale.setScalar(1);setView('front')}
 renderer.xr.addEventListener('sessionstart',enterVR);renderer.xr.addEventListener('sessionend',exitVR);
 const vdir=new THREE.Vector3(),vright=new THREE.Vector3(),UP=new THREE.Vector3(0,1,0);
@@ -726,22 +730,21 @@ function vrStep(now){const dt=lastT?Math.min(.1,(now-lastT)/1000):0;lastT=now;
   else{if(onStair){vrLevel=lastSH>7.5?1:0;onStair=false}
     const inside=px>-.5&&px<36.5&&py>-.5&&py<40.5;if(vrLevel===-1&&inside)vrLevel=0;else if(vrLevel===0&&!inside)vrLevel=-1;
     ty=vrLevel===1?Yf:vrLevel===0?PL:0}
-  dolly.position.y+=(ty-dolly.position.y)*Math.min(1,dt*8);
-  {const tvv=window.__theatreVideo();const dx=px-30,dy=py-32;tvv.volume=Math.max(0,Math.min(1,1-Math.hypot(dx,dy)/22))*(vrLevel===0?1:.25)}
+  if(!flying)dolly.position.y+=(ty-dolly.position.y)*Math.min(1,dt*8);
   renderer.xr.getCamera(cam).getWorldDirection(vdir);vdir.y=0;if(vdir.lengthSq()<1e-6)return;vdir.normalize();vright.crossVectors(vdir,UP).normalize();
   for(const src of ses.inputSources){const gp=src.gamepad;if(!gp)continue;const ax=gp.axes[2]||0,ay=gp.axes[3]||0,h=src.handedness;
     const pressed=i=>!!(gp.buttons[i]&&gp.buttons[i].pressed),edge=i=>{const k=h+i,p=pressed(i),e=p&&!btnPrev[k];btnPrev[k]=p;return e};
     if(h==='left'){const sp=5*dt;if(Math.abs(ay)>.15)dolly.position.addScaledVector(vdir,-ay*sp);if(Math.abs(ax)>.15)dolly.position.addScaledVector(vright,ax*sp);
       if(edge(4))vrGo(0);if(edge(5))setAllDoors(!allOpen)}
     if(h==='right'){if(Math.abs(ax)>.7){if(!turnLatch){dolly.rotation.y-=Math.sign(ax)*Math.PI/6;turnLatch=true}}else turnLatch=false;
-      if(Math.abs(ay)>.75){if(!vLatch){vLatch=true;if(ay<0&&vrLevel!==1)vrJump(1);else if(ay>0&&vrLevel===1)vrJump(0)}}else vLatch=false;
+      if(Math.abs(ay)>.3&&Math.abs(ax)<.5){flying=true;dolly.position.y=Math.max(-1,Math.min(Yr+30,dolly.position.y-ay*6*dt))}
       if(edge(4))vrGo(vrIdx+1);if(edge(5))vrGo(vrIdx-1)}}
 }
 const vrBtn=document.getElementById('vrBtn'),vrBig=document.getElementById('vrBig'),vrMsg=document.getElementById('vrMsg');
 function vrSay(t){vrMsg.textContent=t;vrMsg.hidden=!t}
 function vrLabel(t){vrBtn.textContent=t;vrBig.textContent='🥽 '+t}
 function startVR(){if(renderer.xr.isPresenting){renderer.xr.getSession().end();return}
-  {const tvv=window.__theatreVideo();tvv.muted=false;tvv.play().catch(()=>{tvv.muted=true;tvv.play().catch(()=>{})})}
+  {const tvv=window.__theatreVideo();tvv.play().catch(()=>{})}
   navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor','bounded-floor']}).then(sn=>{renderer.xr.setSession(sn);vrLabel('Exit VR');vrSay('');sn.addEventListener('end',()=>vrLabel('Enter VR'))}).catch(e=>vrSay('Could not start VR ('+e.name+'). In the Quest Browser, allow VR for this site when asked, then tap again.'))}
 function enableVR(){vrBtn.disabled=false;vrBig.hidden=false;vrLabel('Enter VR');vrBtn.onclick=startVR;vrBig.onclick=startVR}
 if(!window.isSecureContext){vrLabel('VR needs the https link');vrSay('Open https://jagapathibanoth6-dotcom.github.io/Future-house/ in the Meta Quest Browser for VR.')}
