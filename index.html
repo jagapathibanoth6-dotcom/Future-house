@@ -435,7 +435,7 @@ box(gf,13.3,4,1.4,6,Y0,2.8,M('#d9cfc0'));box(gf,13.3,4,1.4,6,Y0,.3,charcoal,fals
 for(let i=1;i<3;i++)box(gf,13.27,4+i*2-.03,.04,.06,Y0+.4,2.2,walnut,false);[5,7,9].forEach(y=>box(gf,13.25,y-.6,.05,.08,Y0+1.8,.5,steel,false));
 box(gf,14.7,4.1,.06,5.8,Y0+1.4,.08,oak,false);for(let i=1;i<3;i++)box(gf,14.68,4+i*2-.04,.08,.08,Y0+.3,2.5,oak,false);
 [[14.35,4.8,'#c56b4a'],[14.35,6.4,'#4c6f8a'],[14.35,8.6,'#d9b36c']].forEach(([x,y,c],i)=>box(gf,x,y-.5,.3,1,Y0+(i%2?1.5:.35),.9,M(c)));
-cyl(gf,12,5.2,.25,Y0+3,.9,M('#4c6f8a'));cyl(gf,12,8.6,.35,Y0+3,.4,M('#c9a86a'));
+cyl(gf,14,5.2,.25,Y0+3,.9,M('#4c6f8a'));cyl(gf,14,8.6,.35,Y0+3,.4,M('#c9a86a'));
 
 /* dining */
 table(gf,Y0,17.4,4,6,3.6,2.5,teak);[18.6,20.4,22.2].forEach(x=>{chair(gf,Y0,x-.75,2.3,'n');chair(gf,Y0,x-.75,7.8,'s')});
@@ -463,7 +463,7 @@ rug(gf,Y0,16.4,3,8,5.6,'#c8b89c');
 /* hall (sofa removed): open, with a console, plant and lamp */
 rug(gf,Y0,14,12.5,8,6,'#a99478');plant(gf,Y0,22.8,20,1);
 /* passage + foyer */
-rug(gf,Y0,14,22.5,8,4,'#9c8a73');box(gf,12.35,21.3,.06,2.4,Y0+3.5,2.4,M('#4c6f8a'),false);
+rug(gf,Y0,14,22.5,8,4,'#9c8a73');
 box(gf,12.3,34,1.4,5,Y0,3,walnut);box(gf,12.32,34.5,.06,4,Y0+4,3,mirror);
 box(gf,22.8,34.6,1,3.8,Y0,2.8,teak);plant(gf,Y0,22.4,38.4,1.1);rug(gf,Y0,15,32,6,5,'#7b2e2e');
 /* under-stair store: space below the upper flight, small door from the passage/hall side */
@@ -488,11 +488,11 @@ vanity(gf,Y0,27.2,14.3,2.5,'n');wc(gf,Y0,27.3,16.5,'e');shower(gf,Y0,26.4,19,3.3
 vanity(gf,Y0,30.3,14.5,2.5,'w');wc(gf,Y0,30.3,18.7,'w');shower(gf,Y0,33.1,18.6,2.6,3.1,33.1,18.6);geyser(gf,Y0,30.5,20.7,'s');towelRail(gf,Y0,31.8,21.2,1.2,'s','#9fb6c9');bathMat(gf,Y0,32.1,15,1.1,1.8);bathMat(gf,Y0,33.3,17.6,2.2,.9,'#d9cfc0');exhaust(gf,Y0,33.8,21.6,false);
 /* theatre */
 {const pf=M('#3c1d25'),nose=M('#c8a05a',{emissive:'#a8781a',emissiveIntensity:.4});
- box(gf,26.3,24.6,9.3,3.4,Y0,1.4,pf);box(gf,26.3,28,9.3,3.4,Y0,.7,pf);/* tiered platforms */
- box(gf,26.3,27.95,9.3,.06,Y0+1.36,.05,nose,false);box(gf,26.3,31.35,9.3,.06,Y0+.66,.05,nose,false);
- box(gf,25.5,27.2,.8,.8,Y0,.7,pf);box(gf,25.5,26.4,.8,.8,Y0,1.4,pf);/* aisle steps */
- const sr=(Y,x,y)=>{const p=P(x,y,2,2.6,'n'),m=M('#7a2533');PB(gf,Y,p,0,.8,2,1.8,0,1.3,m);PB(gf,Y,p,.2,0,1.6,.8,0,3.1,m);PB(gf,Y,p,0,.25,.3,2.1,0,2,M('#5c1b26'));PB(gf,Y,p,1.7,.25,.3,2.1,0,2,M('#5c1b26'));PB(gf,Y,p,.3,.85,1.4,1.6,1.3,.3,M('#8c3040'))};
- [26.6,28.75,30.9,33.05].forEach(x=>{sr(Y0+1.4,x,24.9);sr(Y0+.7,x,28.3);sr(Y0,x,31.7)})}
+ box(gf,27.3,22.3,8.4,3.3,Y0,1.4,pf);box(gf,27.3,25.6,8.4,3.3,Y0,.7,pf);/* tiered platforms from the back wall */
+ box(gf,27.3,25.55,8.4,.06,Y0+1.36,.05,nose,false);box(gf,27.3,28.85,8.4,.06,Y0+.66,.05,nose,false);
+ box(gf,26.5,24.6,.8,.9,Y0,.7,pf);box(gf,26.5,23.7,.8,.9,Y0,1.4,pf);/* aisle steps */
+ const sr=(Y,x,y)=>{const p=P(x,y,1.8,2.4,'n'),m=M('#7a2533');PB(gf,Y,p,0,.75,1.8,1.65,0,1.25,m);PB(gf,Y,p,.18,0,1.44,.75,0,2.9,m);PB(gf,Y,p,0,.2,.26,2,0,1.9,M('#5c1b26'));PB(gf,Y,p,1.54,.2,.26,2,0,1.9,M('#5c1b26'));PB(gf,Y,p,.26,.8,1.28,1.5,1.25,.28,M('#8c3040'))};
+ [27.6,29.6,31.6,33.6].forEach(x=>{sr(Y0+1.4,x,22.5);sr(Y0+.7,x,25.8);sr(Y0,x,29.1)})}
 /* theatre screen: 10-second movie clip, or the viewer's own video */
 const clipCv=document.createElement('canvas');clipCv.width=640;clipCv.height=360;const clipCx=clipCv.getContext('2d');
 const clipTex=new THREE.CanvasTexture(clipCv);clipTex.encoding=THREE.sRGBEncoding;const clipM=new THREE.MeshBasicMaterial({map:clipTex,toneMapped:false});
@@ -519,7 +519,7 @@ const vidIn=document.getElementById('vidIn');if(vidIn)vidIn.addEventListener('ch
 for(let i=0;i<6;i++){const yy=21+i*3;if(yy+2.4<21.6||yy>26.6)box(gf,24.32,yy,.25,2.4,Y0+1.5,5.5,M('#5a2532'));box(gf,35.43,yy,.25,2.4,Y0+1.5,5.5,M('#5a2532'))}
 for(let i=0;i<5;i++)box(gf,26.6+i*2,26.65,.4,.1,Y0+1.25,.06,glow,false);for(let i=0;i<6;i++)box(gf,24.35,27+i*2,.08,.4,Y0+.6,.1,glow,false);
 /* sit-out */
-chair(gf,Y0,13.6,41.4,'w','#3b3d42');chair(gf,Y0,20.9,41.4,'e','#3b3d42');cyl(gf,18,40.9,.6,Y0,1.8,teak);plant(gf,Y0,13.8,43.3,.9);plant(gf,Y0,22.2,43.3,.9);
+chair(gf,Y0,13.6,41.4,'w','#3b3d42');chair(gf,Y0,20.9,41.4,'e','#3b3d42');plant(gf,Y0,13.8,43.3,.9);plant(gf,Y0,22.2,43.3,.9);
 
 /* fans + AC, ground floor */
 ac(G.cg,3.5,28.35,3,.8,Y0);ac(G.cg,28.5,.35,3,.8,Y0);ac(G.cg,23.1,18.2,.8,2.8,Y0);ac(G.cg,34.85,33,.8,3,Y0);
@@ -535,10 +535,10 @@ const F=floor(FF,Yf,1),ff=F.g,Y1=Yf;
 ac(F.cg,.35,9,.8,3,Y1);ac(F.cg,34.85,9,.8,3,Y1);ac(F.cg,28,16.35,3,.8,Y1);
 /* bedroom 3 */
 bed(ff,Y1,.3,8.6,6.8,6.4,'w','#6f8fa8');box(ff,.4,15.05,1.4,.6,Y1,1.9,walnut);cyl(ff,1.1,15.35,.4,Y1+1.9,.6,M('#f3ead8',{emissive:'#ffdca0',emissiveIntensity:.25}),.3);wardrobe(ff,Y1,16.1,1,1.8,9,'e');
-rug(ff,Y1,7.6,2,6,4,'#cdbb9e');chair(ff,Y1,10,1,'n','#b9905f');chair(ff,Y1,12.2,1,'n','#b9905f');cyl(ff,11.95,2.9,.5,Y1,1.6,teak);lamp(ff,Y1,14.8,8);
+rug(ff,Y1,7.6,2,6,4,'#cdbb9e');chair(ff,Y1,10,1,'n','#b9905f');chair(ff,Y1,12.2,1,'n','#b9905f');cyl(ff,11.95,2.9,.5,Y1,1.6,teak);
 /* bedroom 4 */
 bed(ff,Y1,28.9,8.6,6.8,6.4,'e','#a07a5c');box(ff,34.2,15.05,1.4,.6,Y1,1.9,walnut);cyl(ff,34.9,15.35,.4,Y1+1.9,.6,M('#f3ead8',{emissive:'#ffdca0',emissiveIntensity:.25}),.3);wardrobe(ff,Y1,18.1,1,1.8,9,'w');
-rug(ff,Y1,22,2,6,4,'#cdbb9e');table(ff,Y1,22.5,.4,4,1.6,2.5,oak);chair(ff,Y1,23.75,2.2,'s','#a8b3bd');lamp(ff,Y1,21.2,8);
+rug(ff,Y1,22,2,6,4,'#cdbb9e');table(ff,Y1,22.5,.4,4,1.6,2.5,oak);chair(ff,Y1,23.75,2.2,'s','#a8b3bd');
 /* baths inside bedrooms */
 /* bath, Bedroom 3 (7x8) in the back corner: shower by the window, WC on the back wall, basin + mirror on the inner wall */
 shower(ff,Y1,.3,.3,2.7,2.7,3,3);wc(ff,Y1,4.4,.3,'n');vanity(ff,Y1,.5,6,2.5,'s');geyser(ff,Y1,3.6,6.7,'s');towelRail(ff,Y1,3.4,7.2,1.9,'s','#d9b98f');bathMat(ff,Y1,.8,4.9,2,1);bathMat(ff,Y1,3.2,.8,.9,1.6,'#d9cfc0');exhaust(ff,Y1,3.6,.4,false);
@@ -551,7 +551,7 @@ box(ff,3,19.6,7,1.2,Y1,6.5,walnut);for(let i=1;i<4;i++)box(ff,3.05,19.55,6.9,1.1
 plant(ff,Y1,13,26.8,1.1);plant(ff,Y1,35,16.9,1);
 /* office */
 table(ff,Y1,29,37.2,6,2.4,2.5,oak,charcoal);box(ff,31.2,38.6,1.8,.1,Y1+2.6,1.2,screenM);box(ff,31.9,38.5,.3,.3,Y1+2.5,.2,dark);
-chair(ff,Y1,31.4,35,'n','#2f3134');box(ff,27.4,28.6,1.2,2.2,Y1,7,walnut);for(let i=1;i<5;i++)box(ff,27.35,28.65,1.1,2.1,Y1+i*1.4,.08,oak,false);plant(ff,Y1,35,29.2,1);lamp(ff,Y1,35.2,35.4);
+chair(ff,Y1,31.4,35,'n','#2f3134');box(ff,27.4,28.6,1.2,2.2,Y1,7,walnut);for(let i=1;i<5;i++)box(ff,27.35,28.65,1.1,2.1,Y1+i*1.4,.08,oak,false);plant(ff,Y1,35,29.2,1);
 /* covered balcony */
 const rail=M('#2f3134',{metalness:.4,roughness:.4});
 piece(ff,'h',40,1,26.4,Y1,3.4,glassM,.08);piece(ff,'h',40,1,26.4,Y1+3.4,.15,rail,.25);
@@ -611,13 +611,13 @@ const EL={0:{groups:[
  power:[['P',11.2,12.55,'FR'],['P',7.6,.45,'MW'],['P',9.2,.45,'RO'],['P',.45,7.4,'CH'],['S',5,.45],['S',.45,8.6],['S',4,12.55],['S',8,12.55],
   ['S',23.55,3],['S',15,.45],['P',8.75,12.55,'WM'],
   ['AC',23.25,18.2,.6,2.8],['S',13,13.45],['S',4,20.55],['S',10,20.55],['S',.45,12.6],['S',23.55,20.2],
-  ['DB',12.45,29.1,.7,1.6],['M',13.8,40.8],['B',21.6,40.6],['S',23.55,36],['BS',3.1,28.45],['BS',8.4,28.45],['BS',26,.45],['BS',34.4,.45],
+  ['DB',23.55,38.6,.7,1.6],['M',13.8,40.8],['B',21.6,40.6],['S',23.55,36],['BS',3.1,28.45],['BS',8.4,28.45],['BS',26,.45],['BS',34.4,.45],
   ['AC',3.5,28.15,3,.6],['S',1.6,28.45],['S',9.6,28.45],['S',5,39.55],
   ['AC',28.5,.15,3,.6],['S',25.9,.45],['S',34.3,.45],['S',35.55,12.6],['TV',24.45,4],
   ['P',25,21.55,'GY'],['P',31.1,21.55,'GY'],
   ['AC',35.15,31,.6,3],['PR',30,25.5],['S',25.6,39.55],['S',34.4,39.55],['D',30,39.55,'HDMI'],
   ['E',-3,30],['E',-3,26],['INV',10.7,23.7],['P',-2.6,9.8,'MTR']],
- tags:[['Main DB + RCCB',16.4,29.3],['Inverter in under-stair store',6,27.5],['Earth pits',-3,33.4],['Motor starter',-2.6,11.6]]},
+ tags:[['Main DB + RCCB',20.6,37.4],['Inverter in under-stair store',6,27.5],['Earth pits',-3,33.4],['Motor starter',-2.6,11.6]]},
  1:{groups:[
   {sw:[16.6,15.55],pts:[['F',10,8],['L',13,12]]},
   {sw:[7.45,3.4],pts:[['L',3.5,4],['EF',3.5,.45]]},
@@ -738,7 +738,7 @@ seg3(mepOut,-2.4,22,.5,-2.4,22,Yr+.6,.16,mCW);run3(mepOut,[[-2.4,22],[3.3,22],[3
 let showEl=false,showPl=false;
 /* ===== full circuit wiring (shared by 2D drawings and 3D) ===== */
 const CKIND={light:['#c77700','Lighting circuit (DB → switchboards)'],socket:['#6d28d9','6A socket circuit'],power:['#db2777','16A power circuit (kitchen, geysers, washing machine, theatre)'],power3:['#be123c','3-phase circuit (borewell motor, AC outdoor)'],ac:['#0891b2','AC indoor circuit'],data:['#65a30d','TV / LAN cable (from router at DB)'],outdoor:['#a16207','Outdoor and garden lights (underground)'],feed:['#111827','Main cables: meter → DB → sub DB, inverter'],earth:['#15803d','Earth wire to earth pits']};
-const DBPOS=[[12.45,29.1],[19.2,16.45]],ERISER=[11.5,27.6],ACOUT=[32,4],GARDEN=[[14,50],[14,56],[14,62],[22,62],[22,56],[22,50]];
+const DBPOS=[[23.55,38.6],[19.2,16.45]],ERISER=[11.5,27.6],ACOUT=[32,4],GARDEN=[[14,50],[14,56],[14,62],[22,62],[22,56],[22,50]];
 const PHT={GY:6.5,CH:6.8,FR:1,MW:4.5,RO:4.5,WM:4,MTR:4};
 function nnOrder(st,pts){const out=[],left=pts.slice();let c=st;while(left.length){let bi=0,bd=1e9;left.forEach((p,i)=>{const d=Math.abs(p[0]-c[0])+Math.abs(p[1]-c[1]);if(d<bd){bd=d;bi=i}});c=left.splice(bi,1)[0];out.push(c)}return out}
 function circuits(fi){const d=EL[fi],db=DBPOS[fi],C=[],P=d.power;
@@ -768,10 +768,10 @@ const mODU=M('#e5e7eb',{roughness:.5}),mPit=M('#15803d');
 });
 /* feeders */
 const fm=CMAT.feed,em=CMAT.earth,p3=CMAT.power3;
-seg3(mepOut,13.8,40.8,PL+4,13.8,40.8,PL+.3,.09,fm);run3(mepOut,[[13.8,40.8],[13.8,35],[12.45,35],[12.45,29.1]],PL+.3,.09,fm);seg3(mepOut,12.45,29.1,PL+.3,12.45,29.1,PL+4,.09,fm);
-seg3(mepOut,12.45,29.1,PL+4,12.45,29.1,.12,.05,em);run3(mepOut,[[12.45,29.1],[-3,29.8],[-3,26]],.12,.05,em);[[-3,30],[-3,26]].forEach(([x,y])=>{cyl(mepOut,x,y,.5,0,.5,mPit);seg3(mepOut,x,y,.5,x,y,-3,.06,em)});
-run3(mepOut,[[12.2,28.6],[12.2,23.7],[10.7,23.7]],PL+.25,.06,fm);
-const rz0=PL+WH-.25,rz1=Yf+WH-.25;run3(mepOut,[[12.45,29.1],[11.5,29.8],[11.5,27.6]],rz0,.09,fm);seg3(mepOut,12.45,29.1,PL+6,12.45,29.1,rz0,.09,fm);
+seg3(mepOut,13.8,40.8,PL+4,13.8,40.8,PL+.3,.09,fm);run3(mepOut,[[13.8,40.8],[13.8,39.1],[23.4,39.1],[23.4,38.6]],PL+.3,.09,fm);seg3(mepOut,23.4,38.6,PL+.3,23.4,38.6,PL+4,.09,fm);
+seg3(mepOut,23.4,38.6,PL+4,23.4,38.6,.12,.05,em);run3(mepOut,[[23.4,38.6],[23.4,41.6],[-3,41.6],[-3,26]],.12,.05,em);[[-3,30],[-3,26]].forEach(([x,y])=>{cyl(mepOut,x,y,.5,0,.5,mPit);seg3(mepOut,x,y,.5,x,y,-3,.06,em)});
+run3(mepOut,[[23,38.2],[23,28.6],[12.2,28.6],[12.2,23.7],[10.7,23.7]],PL+.25,.06,fm);
+const rz0=PL+WH-.25,rz1=Yf+WH-.25;run3(mepOut,[[23.4,38.6],[22.8,38.6],[22.8,28.3],[11.5,28.3],[11.5,27.6]],rz0,.09,fm);seg3(mepOut,23.4,38.6,PL+6,23.4,38.6,rz0,.09,fm);
 seg3(mepOut,11.5,27.6,rz0,11.5,27.6,rz1,.09,fm);run3(mepOut,[[11.5,27.6],[11.5,24.2],[19.2,24.2],[19.2,16.45]],rz1,.09,fm);seg3(mepOut,19.2,16.45,rz1,19.2,16.45,Yf+5,.09,fm);
 seg3(mepOut,11.5,27.6,rz1,11.5,27.6,Yr+.45,.08,p3);run3(mepOut,[[11.5,27.6],[11.5,4],[ACOUT[0],4]],Yr+.45,.08,p3);
 box(mepOut,ACOUT[0]-1.6,ACOUT[1]-.6,3.2,1.2,Yr+.15,2.4,mODU);box(mepOut,ACOUT[0]-1.2,ACOUT[1]-.62,1.8,.05,Yr+.5,1.8,mSW);

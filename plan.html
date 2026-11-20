@@ -102,7 +102,7 @@ const GF={name:'Ground floor',vb:'-8 -11 56 66',W:36,D:40,
   ['v',0,2,6,'win'],['h',0,16,22,'win'],['v',0,10,12,'win'],['v',0,15,18,'win'],['v',0,22,27,'win'],['v',0,31,37,'win'],['h',40,3,9,'win'],['h',0,27,33,'win'],['v',36,3,11,'win'],['v',36,15,19,'win'],['h',40,13,15,'win'],['h',40,21,23,'win']],
  dash:[[13,40,10,4],[6,-6,12,6]],
  tags:[['Main door (middle)',29.5,42.4],['← Back door (from the kitchen)',30,-1.4],['3 ft counter, storage below',14,3.2],['Theatre sliding door →',17.6,27.2],['FRONT · ROAD SIDE',18,49.6]],
- furn:'R .6 1 2.6 11.2|R 2.6 .6 7.2 2.4|C 1.9 6.8|C 1.9 8.2|R 2.8 .6 3 1.6|R 5.3 10.8 4.55 2.2|R 10 10.4 2.4 2.3|R 13.2 4 1.6 6|R 17.4 4 6 3.6|C 18.6 2.8|C 20.4 2.8|C 22.2 2.8|C 18.6 8.8|C 20.4 8.8|C 22.2 8.8|R .4 13.4 8 1.2|R .4 19.4 6.2 1.2|R .4 15 1.2 4|R 7.4 17.6 1 2.8|R 4 28.4 3.5 6.6|R 9 37.8 2.4 1.6|R 27 .6 6.5 6.8|R 27.3 16.5 2.4 1.6|R 27.2 14.4 2.5 1.4|R 26.4 19 3.3 2.7|R 30.4 18.7 2.4 1.6|R 30.4 14.5 1.4 2.5|R 33.1 18.6 2.6 3.1|L 25 39.2 35 39.2|R 26.6 25 8.6 2.6|R 26.6 28.4 8.6 2.6|R 26.6 31.8 8.6 2.6|R 12.6 34.5 1 4|T 22.4 38.4 1.1|C 14.5 42|C 21.5 42|Z 16 44 4 3|R 7 -5 4 2',
+ furn:'R .6 1 2.6 11.2|R 2.6 .6 7.2 2.4|C 1.9 6.8|C 1.9 8.2|R 2.8 .6 3 1.6|R 5.3 10.8 4.55 2.2|R 10 10.4 2.4 2.3|R 13.2 4 1.6 6|R 17.4 4 6 3.6|C 18.6 2.8|C 20.4 2.8|C 22.2 2.8|C 18.6 8.8|C 20.4 8.8|C 22.2 8.8|R .4 13.4 8 1.2|R .4 19.4 6.2 1.2|R .4 15 1.2 4|R 7.4 17.6 1 2.8|R 4 28.4 3.5 6.6|R 9 37.8 2.4 1.6|R 27 .6 6.5 6.8|R 27.3 16.5 2.4 1.6|R 27.2 14.4 2.5 1.4|R 26.4 19 3.3 2.7|R 30.4 18.7 2.4 1.6|R 30.4 14.5 1.4 2.5|R 33.1 18.6 2.6 3.1|L 25 39.2 35 39.2|R 27.6 22.5 7.8 2.4|R 27.6 25.8 7.8 2.4|R 27.6 29.1 7.8 2.4|R 12.6 34.5 1 4|T 22.4 38.4 1.1|C 14.5 42|C 21.5 42|Z 16 44 4 3|R 7 -5 4 2',
  st:[0,21]};
 const FF={name:'First floor',vb:'-8 -11 56 66',W:36,D:40,
  rooms:[['Bedroom 3',0,0,18,16,'bed'],['Bedroom 4',18,0,18,16,'bed'],['Bath',0,0,7,8,'bath'],['Bath',29,0,7,8,'bath'],['Hall',12,16,24,12,'living'],['Hall (left)',0,16,12,5,'living'],['Stairs',0,21,12,7,'circ'],['Covered balcony',0,28,27,12,'outdoor',1],['Office',27,28,9,12,'office']],
@@ -173,7 +173,7 @@ function site(){let s=`<rect x="-20" y="-22" width="82" height="96" fill="#fff"/
 const MEPVB='-14 -20 64 90';const WH=9.5;
 /* ===== full circuit wiring (shared by 2D drawings and 3D) ===== */
 const CKIND={light:['#c77700','Lighting circuit (DB → switchboards)'],socket:['#6d28d9','6A socket circuit'],power:['#db2777','16A power circuit (kitchen, geysers, washing machine, theatre)'],power3:['#be123c','3-phase circuit (borewell motor, AC outdoor)'],ac:['#0891b2','AC indoor circuit'],data:['#65a30d','TV / LAN cable (from router at DB)'],outdoor:['#a16207','Outdoor and garden lights (underground)'],feed:['#111827','Main cables: meter → DB → sub DB, inverter'],earth:['#15803d','Earth wire to earth pits']};
-const DBPOS=[[12.45,29.1],[19.2,16.45]],ERISER=[11.5,27.6],ACOUT=[32,4],GARDEN=[[14,50],[14,56],[14,62],[22,62],[22,56],[22,50]];
+const DBPOS=[[23.55,38.6],[19.2,16.45]],ERISER=[11.5,27.6],ACOUT=[32,4],GARDEN=[[14,50],[14,56],[14,62],[22,62],[22,56],[22,50]];
 const PHT={GY:6.5,CH:6.8,FR:1,MW:4.5,RO:4.5,WM:4,MTR:4};
 function nnOrder(st,pts){const out=[],left=pts.slice();let c=st;while(left.length){let bi=0,bd=1e9;left.forEach((p,i)=>{const d=Math.abs(p[0]-c[0])+Math.abs(p[1]-c[1]);if(d<bd){bd=d;bi=i}});c=left.splice(bi,1)[0];out.push(c)}return out}
 function circuits(fi){const d=EL[fi],db=DBPOS[fi],C=[],P=d.power;
@@ -207,13 +207,13 @@ const EL={0:{groups:[
  power:[['P',11.2,12.55,'FR'],['P',7.6,.45,'MW'],['P',9.2,.45,'RO'],['P',.45,7.4,'CH'],['S',5,.45],['S',.45,8.6],['S',4,12.55],['S',8,12.55],
   ['S',23.55,3],['S',15,.45],['P',8.75,12.55,'WM'],
   ['AC',23.25,18.2,.6,2.8],['S',13,13.45],['S',4,20.55],['S',10,20.55],['S',.45,12.6],['S',23.55,20.2],
-  ['DB',12.45,29.1,.7,1.6],['M',13.8,40.8],['B',21.6,40.6],['S',23.55,36],['BS',3.1,28.45],['BS',8.4,28.45],['BS',26,.45],['BS',34.4,.45],
+  ['DB',23.55,38.6,.7,1.6],['M',13.8,40.8],['B',21.6,40.6],['S',23.55,36],['BS',3.1,28.45],['BS',8.4,28.45],['BS',26,.45],['BS',34.4,.45],
   ['AC',3.5,28.15,3,.6],['S',1.6,28.45],['S',9.6,28.45],['S',5,39.55],
   ['AC',28.5,.15,3,.6],['S',25.9,.45],['S',34.3,.45],['S',35.55,12.6],['TV',24.45,4],
   ['P',25,21.55,'GY'],['P',31.1,21.55,'GY'],
   ['AC',35.15,31,.6,3],['PR',30,25.5],['S',25.6,39.55],['S',34.4,39.55],['D',30,39.55,'HDMI'],
   ['E',-3,30],['E',-3,26],['INV',10.7,23.7],['P',-2.6,9.8,'MTR']],
- tags:[['Main DB + RCCB',16.4,29.3],['Inverter in under-stair store',6,27.5],['Earth pits',-3,33.4],['Motor starter',-2.6,11.6]]},
+ tags:[['Main DB + RCCB',20.6,37.4],['Inverter in under-stair store',6,27.5],['Earth pits',-3,33.4],['Motor starter',-2.6,11.6]]},
  1:{groups:[
   {sw:[16.6,15.55],pts:[['F',10,8],['L',13,12]]},
   {sw:[7.45,3.4],pts:[['L',3.5,4],['EF',3.5,.45]]},
@@ -308,10 +308,10 @@ function circ2d(fi){let s='';const C=circuits(fi),db=DBPOS[fi],n=C.length;
     const e=c.pts[c.pts.length-1];s+=c.pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r=".22" fill="${col}"/>`).join('')+`<g font-size=".75" font-weight="800"><rect x="${e[0]+.4}" y="${e[1]-1.25}" width="${c.id.length*.5+.4}" height="1" rx=".2" fill="#fff" stroke="${col}" stroke-width=".08"/><text x="${e[0]+.6}" y="${e[1]-.5}" fill="${col}">${c.id}</text></g>`});
   const F=(pts,k,w,da)=>`<polyline points="${pts.map(p=>p.join(' ')).join(' ')}" fill="none" stroke="${CKIND[k][0]}" stroke-width="${w}" ${da?`stroke-dasharray="${da}"`:''}/>`;
   const T=(x,y,t,c)=>`<text x="${x}" y="${y}" font-size=".8" font-weight="700" fill="${c||'#111827'}">${t}</text>`;
-  if(fi===0){s+=F([[13.8,40.8],[13.8,35],[13.3,35],[13.3,31.4]],'feed',.32)+T(14.3,37.6,'Main cable 4C × 10 mm² from EB meter (in conduit)');
-    s+=F([[12.45,29.1],[-3,29.8],[-3,30]],'earth',.16,'.5 .25')+F([[-3,29.8],[-3,26]],'earth',.16,'.5 .25')+T(-12.8,28.6,'Earth: 8 mm² Cu to 2 pits','#15803d');
-    s+=F([[12.2,28.6],[12.2,23.7],[10.7,23.7]],'feed',.2,'.8 .3')+T(5.4,23.3,'Inverter in/out 4 mm² → C15 backed loads');
-    s+=F([[12.45,29.1],[11.5,29.8],[11.5,27.6]],'feed',.32)+`<circle cx="11.5" cy="27.6" r=".6" fill="#fff" stroke="#111827" stroke-width=".16"/><path d="M11.5 27.1V26.3M11.2 26.6L11.5 26.2L11.8 26.6" stroke="#111827" stroke-width=".14" fill="none"/>`+T(7.3,26.2,'Riser ↑ sub DB + roof AC');
+  if(fi===0){s+=F([[13.8,40.8],[13.8,39.1],[23.1,39.1],[23.1,38.6]],'feed',.32)+T(13.2,38.6,'Main cable 4C × 10 mm² from EB meter (in conduit)');
+    s+=F([[23.55,38.6],[23.55,41.6],[-3,41.6],[-3,30]],'earth',.16,'.5 .25')+F([[-3,29.8],[-3,26]],'earth',.16,'.5 .25')+T(-12.8,28.6,'Earth: 8 mm² Cu to 2 pits','#15803d');
+    s+=F([[23,38.2],[23,28.6],[12.2,28.6],[12.2,23.7],[10.7,23.7]],'feed',.2,'.8 .3')+T(5.4,23.3,'Inverter in/out 4 mm² → C15 backed loads');
+    s+=F([[23.55,38.6],[22.8,38.6],[22.8,28.3],[11.5,28.3],[11.5,27.6]],'feed',.32)+`<circle cx="11.5" cy="27.6" r=".6" fill="#fff" stroke="#111827" stroke-width=".16"/><path d="M11.5 27.1V26.3M11.2 26.6L11.5 26.2L11.8 26.6" stroke="#111827" stroke-width=".14" fill="none"/>`+T(7.3,26.2,'Riser ↑ sub DB + roof AC');
     s+=`<rect x="12.8" y="40.4" width="2" height=".8" fill="none"/>`;GARDEN.forEach(([x,y])=>s+=`<circle cx="${x}" cy="${y}" r=".55" fill="#fef3c7" stroke="#a16207" stroke-width=".14"/><path d="M${x-.35} ${y-.35}L${x+.35} ${y+.35}M${x+.35} ${y-.35}L${x-.35} ${y+.35}" stroke="#a16207" stroke-width=".1"/>`);
     s+=T(23,56.3,'Garden / driveway bollard lights','#a16207')+T(23,57.4,'armoured cable 2.5 mm², 18″ underground','#a16207')}
   else{s+=`<circle cx="11.5" cy="27.6" r=".6" fill="#fff" stroke="#111827" stroke-width=".16"/>`+F([[11.5,27.6],[11.5,24.2],[19.2,24.2],[19.2,16.8]],'feed',.32)+T(11.9,23.6,'Sub-main 4C × 6 mm² from main DB');
