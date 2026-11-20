@@ -62,6 +62,8 @@ button:disabled{opacity:.6;cursor:default}
     <button data-v="top" aria-pressed="false">Top view</button>
     <button id="labBtn" aria-pressed="true">Room names</button>
     <button id="doorBtn" aria-pressed="false">Open theatre door</button>
+    <button id="elBtn" aria-pressed="false">Show electrical</button>
+    <button id="plBtn" aria-pressed="false">Show plumbing</button>
     <button id="vrBtn" disabled>Checking VR…</button>
     <label id="vidLbl" class="filebtn">Play my video on the theatre screen <input id="vidIn" type="file" accept="video/*" hidden></label>
   </div>
@@ -92,6 +94,7 @@ button:disabled{opacity:.6;cursor:default}
     <li><b>Bathrooms</b>Wall-hung style WC, vanity with mirror, glass shower corner in each bathroom.</li>
     <li><b>First-floor hall and office</b>L-shaped sofa set facing the office and the stairs, hanging swing chair, reading shelf, open office desk with monitor and bookshelf.</li>
     <li><b>Covered balcony</b>Left: wooden reclining sleeping chair, with a round wooden table and four chairs beside it. Right: modern woven egg swing chair hanging from the ceiling. Planters along the glass railing, wooden ceiling with lights.</li>
+    <li><b>Electrical and plumbing</b>Use Show electrical / Show plumbing to see switchboards at 4 ft, sockets, ceiling light and fan points with their wire runs, the distribution boards, meter, inverter and earth pits; and cold (blue) and hot (red) water lines, geysers, drain pipes (brown), stacks, inspection chambers, septic tank, soak pit, sump, borewell, overhead tanks and rainwater pipes to the recharge pits. Best seen in the Ground / First floor inside views.</li>
     <li><b>Outside</b>Compound wall with sliding gate, paved driveway with garden lights, open parking with a car, front lawn, trees, kitchen garden and wash area at the back, water tank on the roof.</li>
   </ul>
 </div>
@@ -430,13 +433,125 @@ const R=new THREE.Group();scene.add(R);
 [['h',21,0,12],['v',0,21,28],['h',28,0,12],['v',12,24,28]].forEach(s=>piece(R,s[0],s[1],s[2],s[3],Yr,8,wallM,T,T/2));
 piece(R,'v',12,21,24,Yr+7,1,wallM);box(R,-.5,20.5,13,8,Yr+8,.5,slabM);box(R,10,21,2,3.5,Yr-.5,.5,slabM);box(R,11.85,21.2,.25,2.6,Yr,6.8,teak);
 stairs(ff,Yf);
-cyl(R,6,24.5,2.3,Yr+8.5,4.6,M('#1f1f22'));
+cyl(R,3.3,24.5,2.2,Yr+8.5,4.4,M('#1f1f22'));cyl(R,8.7,24.5,2.2,Yr+8.5,4.4,M('#1f1f22'));
 box(R,-.9,39.4,37.8,2.4,Yr-1.6,4.85,charcoal);box(R,-.9,27.6,1.8,14.2,Yf-.5,H+4.35,charcoal);box(R,35.1,39.4,1.8,2.4,Yf-.5,H+4.35,charcoal);
 box(R,.3,28.3,26.1,11.4,Yr-.66,.16,TM('wood',6,3),false);
 [[6,32],[13,32],[20,32],[6,37],[13,37],[20,37]].forEach(([x,y])=>box(R,x,y,1,1,Yr-.7,.05,glow,false));
 for(let i=0;i<3;i++)box(R,30+i*2,2,1.4,.9,Yr,.9,M('#9aa0a6'));
 for(let x of [-.5,36.2])for(let y of [4,16,34])box(R,x,y,.3,.3,PL,2*H-PL+3,M('#b5b0a6'));
 
+const EL={0:{groups:[
+  {sw:[10.4,3.6],pts:[['L',6,4.6],['L',2.2,8.6],['OL',12,-.6]]},
+  {sw:[23.55,8.6],pts:[['L',16.5,4.8],['L',19.5,4.8],['F',18,7.6]]},
+  {sw:[11,20.55],pts:[['L',4,13],['L',12,13],['L',20,13],['L',4,18.5],['L',20,18.5],['F',8,15.5],['F',17,15.5]]},
+  {sw:[11.55,27.4],pts:[['L',6,24.5]]},
+  {sw:[23.55,27.4],pts:[['L',15,24.5],['L',21,24.5]]},
+  {sw:[15.2,39.5],pts:[['L',18,34],['L',18,30.5],['WL',15.3,40.6],['WL',20.7,40.6],['L',18,42]]},
+  {sw:[11.55,34],pts:[['F',6,33.5],['L',6,37.5]]},
+  {sw:[24.45,10.2],pts:[['F',30,7.6],['L',30,11.6]]},
+  {sw:[23.55,18.8],pts:[['L',27,17],['EF',27,14.5]]},
+  {sw:[34.6,13.55],pts:[['L',33,17],['EF',35.5,17.2]]},
+  {sw:[24.45,27.2],pts:[['DL',27,23.5],['DL',33,23.5],['DL',27,30],['DL',33,30],['DL',27,36],['DL',33,36]]}],
+ power:[['P',2.6,.45,'FR'],['P',7.6,.45,'MW'],['P',10,.45,'RO'],['P',.45,5.4,'CH'],['S',5,.45],['S',.45,8.6],['S',4,9.55],['S',8,9.55],
+  ['S',23.55,3],['S',13.1,7],['P',8,-.5,'WM'],
+  ['AC',4.5,10.15,3,.6],['TV',6,20.55],['S',4,20.55],['S',8,20.55],['S',.45,12],['S',23.55,20.2],
+  ['DB',12.75,29.8,.7,1.6],['M',13.8,40.8],['B',21.6,40.6],['S',23.55,36],
+  ['AC',3.5,28.15,3,.6],['S',1.6,28.45],['S',9.6,28.45],['S',5,39.55],
+  ['AC',28.5,.15,3,.6],['S',25.9,.45],['S',34.3,.45],['S',35.55,12.6],['TV',24.45,4],
+  ['P',25,19.55,'GY'],['P',30.45,15,'GY'],
+  ['AC',35.15,31,.6,3],['PR',30,25.5],['S',25.6,39.55],['S',34.4,39.55],['D',30,39.55,'HDMI'],
+  ['E',-3,30],['E',-3,26],['INV',5,22.8],['P',-2.6,9.8,'MTR']],
+ tags:[['Main DB + RCCB',16.4,29.3],['Inverter under the stairs',6,27.5],['Earth pits',-3,33.4],['Motor starter',-2.6,11.6]]},
+ 1:{groups:[
+  {sw:[16.6,15.55],pts:[['F',10,8],['L',13,12]]},
+  {sw:[7.45,9.4],pts:[['L',3.5,12.5],['EF',.5,12.5]]},
+  {sw:[23.6,15.55],pts:[['F',26,8],['L',23,12]]},
+  {sw:[28.55,9.4],pts:[['L',32.5,12.5],['EF',35.5,12.5]]},
+  {sw:[11,20.55],pts:[['L',6,18.5],['L',16,22],['L',23,19.5],['L',23,25],['L',33,22],['F',19,22],['F',29,22]]},
+  {sw:[11.55,27.4],pts:[['L',6,24.5]]},
+  {sw:[35.55,28.8],pts:[['L',31.5,32],['F',31.5,35]]},
+  {sw:[13.4,27.55],pts:[['DL',6,32],['DL',13,32],['DL',20,32],['DL',6,37],['DL',13,37],['DL',20,37],['F',13,34.5]]}],
+ power:[['AC',1,.15,3,.6],['S',.45,7.9],['S',10,.45],['S',12,15.55],['P',3.5,15.55,'GY'],
+  ['AC',32,.15,3,.6],['S',35.55,7.9],['S',24.5,.45],['S',20.45,13],['P',32.5,15.55,'GY'],
+  ['AC',28,16.15,3,.6],['S',25.6,16.45],['S',35.55,26.5],['S',13,27.55],['SDB',19.2,16.5,1.4,.6],
+  ['S',30,39.55],['S',33,39.55],['D',31.5,39.55,'LAN'],['S',.45,31],['S',26.55,38.5]],
+ tags:[['Sub DB',19.2,18.2],['AC outdoor unit, solar and water tanks are on the roof',18,-3]]}};
+const PLB={0:{fix:[['WC',28.8,18.6],['WB',26.6,14.8],['SH',28.9,15.3],['FT',27.5,17],['GY',25,19.4],
+   ['WC',35.1,18.6],['WB',31.6,19.2],['SH',35,15.2],['FT',33,17],['GY',30.5,15],
+   ['KS',7.4,1.4],['TAP',9.6,1.1],['WM',8,-1.4],['WS',9,-4.5],['TAP',14,-1],['TAP',-6,44],['TAP',24,46]],
+  cw:[[[36.6,16.5],[24.6,16.5]],[[35,16.5],[35,15.2]],[[35.1,16.5],[35.1,18.6]],[[31.6,16.5],[31.6,19.2]],[[30.5,16.5],[30.5,15]],[[28.9,16.5],[28.9,15.3]],[[28.8,16.5],[28.8,18.6]],[[26.6,16.5],[26.6,14.8]],[[25,16.5],[25,19.4]],
+   [[-.6,6],[.3,6],[.3,.5],[9.6,.5]],[[7.4,.5],[7.4,1.4]],[[-.6,6],[-.6,-.8],[14,-.8]],[[8,-.8],[8,-1.4]],[[9,-.8],[9,-4.5]],[[-6,40],[-6,44]],[[24,40.6],[24,46]]],
+  hw:[[[25,19.4],[25,15.6],[28.9,15.6]],[[25,15.6],[26.6,15.2]],[[30.5,15],[34.4,15]],[[30.5,15],[30.5,18.8],[31.6,18.8]]],
+  soil:[[[28.8,18.6],[28.8,19.4],[38.6,19.4]],[[35.1,18.6],[35.1,19.4]],[[36.6,12.5],[38.6,12.5]],[[38.6,19.4],[38.6,-8],[40,-8]],[[-.6,14],[-2,14],[-2,-8],[38.6,-8]]],
+  waste:[[[27.5,17],[37.6,17]],[[37.6,17],[38.6,17]],[[7.4,1.4],[7.4,-.2],[5,-.2],[5,-2]],[[8,-1.4],[5,-2]],[[9,-4.5],[5,-4.5],[5,-2]],[[5,-2],[5,-8]]],
+  rain:[[[-.6,40.6],[-10,40.6],[-10,37.8]],[[-.6,-.6],[-12,-.6],[-12,36],[-11.6,36]],[[36.6,-.6],[45,-.6],[45,28]],[[36.6,40.6],[45,40.6],[45,32]]],
+  dlv:[[[-10,-12],[-10,0.6],[-9,1]],[[-2.4,8.6],[-2.4,22],[-.6,22]]],
+  items:[['RISER',36.6,16.5,'R1'],['RISER',-.6,6,'R2'],['SVP',36.6,12.5,'SVP2'],['SVP',-.6,14,'SVP1'],['GT',37.6,17],['GT',5,-2],
+   ['IC',38.6,19.4],['IC',38.6,6],['IC',38.6,-8],['IC',-2,14],['IC',-2,-8],['IC',5,-8],['IC',20,-8],
+   ['ST',40,-12,7,6],['SP',44,-16,2.2],['SUMP',-9,1,6,6],['BW',-10,-12],['MOTOR',-2.4,8.6],['RP',-10,36],['RP',45,30],
+   ['RWP',-.6,-.6],['RWP',36.6,-.6],['RWP',-.6,40.6],['RWP',36.6,40.6]],
+  tags:[['Septic tank',43.5,-4.6],['Soak pit',44,-12.6],['Sump 10,000 L',-6,4.4],['Borewell',-10,-14.4],['Motor',-2.4,7.2],['Delivery to tanks ↑',-7.2,23.6],['Recharge pit',-10,39.4],['Recharge pit',45,26.6]]},
+ 1:{fix:[['WC',1.2,14.4],['WB',1.2,10.4],['SH',5.6,14.8],['FT',3.5,12.8],['GY',3.5,15.5],['WC',34.8,14.4],['WB',34.8,10.4],['SH',30.4,14.8],['FT',32.5,12.8],['GY',32.5,15.5],['FT',1,39]],
+  cw:[[[-.6,6],[-.6,12.2],[1.2,12.2]],[[1.2,12.2],[1.2,10.4]],[[1.2,12.2],[1.2,14.4]],[[1.2,12.2],[5.6,12.2],[5.6,14.8]],[[3.5,12.2],[3.5,15.5]],
+   [[36.6,16.5],[36.6,12.2],[34.8,12.2]],[[34.8,12.2],[34.8,10.4]],[[34.8,12.2],[34.8,14.4]],[[34.8,12.2],[30.4,12.2],[30.4,14.8]],[[32.5,12.2],[32.5,15.5]]],
+  hw:[[[3.5,15.5],[3.5,14.8],[5.6,14.8]],[[3.5,14.8],[2,14.8],[2,10.6],[1.4,10.6]],[[32.5,15.5],[32.5,14.8],[30.4,14.8]],[[32.5,14.8],[34,14.8],[34,10.6],[34.6,10.6]]],
+  soil:[[[1.2,14.4],[-.6,14.4],[-.6,14]],[[34.8,14.4],[36.6,14.4],[36.6,12.5]]],
+  waste:[[[5.6,14.8],[3.5,12.8],[-.6,13.4]],[[1.2,10.4],[-.6,13.4]],[[30.4,14.8],[32.5,12.8],[36.6,13]],[[34.8,10.4],[36.6,13]],[[1,39],[-.6,40.6]]],
+  rain:[],dlv:[],
+  items:[['RISER',36.6,16.5,'R1'],['RISER',-.6,6,'R2'],['SVP',36.6,12.5,'SVP2'],['SVP',-.6,14,'SVP1'],['RWP',-.6,-.6],['RWP',36.6,-.6],['RWP',-.6,40.6],['RWP',36.6,40.6]],
+  tags:[['Overhead tanks 2 × 1,500 L on the stair-room roof; down-takes R1 (east) and R2 (west)',18,-3],['Balcony floor drain → rainwater pipe',8,41.6]]}};
+
+/* ---------- electrical + plumbing layers ---------- */
+const pipeG=new THREE.CylinderGeometry(1,1,1,8);
+function seg3(g,x1,y1,z1,x2,y2,z2,r,m){const A=new THREE.Vector3(x1-CX,z1,y1-CY),B=new THREE.Vector3(x2-CX,z2,y2-CY),L=A.distanceTo(B);if(L<1e-3)return;
+  const c=new THREE.Mesh(pipeG,m);c.scale.set(r,L,r);c.position.copy(A).add(B).multiplyScalar(.5);c.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),B.clone().sub(A).normalize());g.add(c)}
+function run3(g,pts,z,r,m){for(let i=1;i<pts.length;i++)seg3(g,pts[i-1][0],pts[i-1][1],z,pts[i][0],pts[i][1],z,r,m)}
+const mWire=M('#e08a00',{emissive:'#e08a00',emissiveIntensity:.35}),mCW=M('#2563c9'),mHW=M('#dc2626'),mSoil=M('#7c4a1e'),mWaste=M('#a0704a'),mRain=M('#16a34a'),
+  mSW=M('#1b1d21'),mSock=M('#ffffff',{emissive:'#ffffff',emissiveIntensity:.2}),mPow=M('#c2410c'),mData=M('#16a34a'),mLamp=M('#ffd27a',{emissive:'#ffcc66',emissiveIntensity:.8}),mConc=M('#a39b8f'),mSump=M('#9bb7d4');
+const PH={GY:6.5,CH:6.8,FR:1,MW:4.5,RO:4.5,WM:4,MTR:4};
+const elG=[new THREE.Group(),new THREE.Group()],plG=[new THREE.Group(),new THREE.Group()],mepOut=new THREE.Group();
+G.g.add(elG[0],plG[0]);F.g.add(elG[1],plG[1]);scene.add(mepOut);
+[0,1].forEach(fi=>{const Yb=fi?Yf:PL,top=Yb+WH-.15,g=elG[fi],d=EL[fi];
+  d.groups.forEach(gr=>{const [sx,sy]=gr.sw;box(g,sx-.3,sy-.3,.6,.6,Yb+3.7,.6,mSW);seg3(g,sx,sy,Yb+4.3,sx,sy,top,.05,mWire);
+    gr.pts.forEach(([k,x,y])=>{const wall=k==='WL'||k==='OL';const z=wall?Yb+7:top;seg3(g,sx,sy,top,x,y,top,.05,mWire);if(wall)seg3(g,x,y,top,x,y,z,.05,mWire);
+      if(k==='F')cyl(g,x,y,.55,top-.15,.15,mWire);else if(k==='EF')cyl(g,x,y,.45,top-.1,.12,M('#9aa0a6'));else sph(g,x,y,k==='DL'?.22:.3,z-.15,mLamp)})});
+  d.power.forEach(([k,x,y,a,b])=>{
+    if(k==='S'){const z=(fi===0&&x<12&&y<10)?Yb+3.6:Yb+1;box(g,x-.22,y-.22,.44,.44,z,.44,mSock)}
+    else if(k==='P')box(g,x-.25,y-.25,.5,.5,(x<0||y<0?PL:Yb)+(PH[a]||4),.5,mPow);
+    else if(k==='TV'||k==='D')box(g,x-.22,y-.22,.44,.44,Yb+1.5,.44,mData);
+    else if(k==='DB'||k==='SDB'){const w=a>b?a:.4,dd=a>b?.4:b;box(g,x-w/2,y-dd/2,w,dd,Yb+4,2,mSW)}
+    else if(k==='M')box(mepOut,x-.6,y-.25,1.2,.5,PL+4,1.4,mSW);
+    else if(k==='B')box(g,x-.15,y-.15,.3,.3,Yb+4.5,.3,mSW);
+    else if(k==='E'){cyl(mepOut,x,y,.6,0,.35,mData);seg3(mepOut,x,y,.35,-.3,y,.35,.04,mData)}
+    else if(k==='INV')box(g,x-.9,y-.5,1.8,1,Yb,1.6,mSW);
+    else if(k==='PR')box(g,x-.6,y-.4,1.2,.8,top-.7,.6,mSW)});
+});
+[0,1].forEach(fi=>{const Yb=fi?Yf:PL,g=plG[fi],d=PLB[fi];const zS=fi?Yf-.25:.35;
+  d.cw.forEach(p=>run3(g,p,Yb+2.2,.12,mCW));d.hw.forEach(p=>run3(g,p,Yb+2.6,.1,mHW));
+  d.soil.forEach(p=>run3(fi?g:mepOut,p,zS,.22,mSoil));d.waste.forEach(p=>run3(fi?g:mepOut,p,zS+.05,.14,mWaste));
+  d.rain.forEach(p=>run3(mepOut,p,.25,.15,mRain));d.dlv.forEach(p=>run3(mepOut,p,.5,.16,mCW));
+  d.fix.forEach(([k,x,y])=>{if(k==='FT')cyl(g,x,y,.3,Yb+.09,.04,mSoil);if(k==='GY'){cyl(g,x,y,.55,Yb+5.8,1.5,white);cyl(g,x,y,.12,Yb+5.6,.25,steel)}
+    if(k==='TAP'&&fi===0&&(y>40||y<0)){cyl(mepOut,x,y,.08,0,2.6,mCW);box(mepOut,x-.15,y-.15,.3,.3,2.5,.3,steel)}});
+  if(fi)return;
+  d.items.forEach(([k,x,y,a,b])=>{
+    if(k==='IC')box(mepOut,x-.7,y-.7,1.4,1.4,0,.45,mConc);
+    else if(k==='GT')cyl(mepOut,x,y,.6,0,.45,mConc);
+    else if(k==='ST'){box(mepOut,x,y,a,b,0,.6,mConc);box(mepOut,x+.4,y+.4,1.2,1.2,.6,.1,mSW);box(mepOut,x+a-1.6,y+b-1.6,1.2,1.2,.6,.1,mSW)}
+    else if(k==='SP'){cyl(mepOut,x,y,a,0,.45,mConc);cyl(mepOut,x,y,a*.4,.45,.08,mSW)}
+    else if(k==='SUMP'){box(mepOut,x,y,a,b,0,.5,mSump);box(mepOut,x+a/2-.7,y+b/2-.7,1.4,1.4,.5,.1,mSW)}
+    else if(k==='BW'){cyl(mepOut,x,y,.9,0,.4,mConc);cyl(mepOut,x,y,.25,.4,1.6,mCW)}
+    else if(k==='MOTOR')box(mepOut,x-.8,y-.5,1.6,1,0,1.1,mCW);
+    else if(k==='RP'){cyl(mepOut,x,y,1.6,0,.4,mConc);cyl(mepOut,x,y,1.1,.4,.06,mRain)}
+    else if(k==='RWP')seg3(mepOut,x,y,Yr,x,y,.25,.18,mRain);
+    else if(k==='SVP')seg3(mepOut,x,y,Yr+3.8,x,y,.35,.22,mSoil);
+    else if(k==='RISER')seg3(mepOut,x,y,Yr+.6,x,y,PL+2.2,.13,mCW)});
+});
+/* tank down-takes over the roof and the delivery pipe up the west side */
+run3(mepOut,[[6,24.5],[-.6,24.5],[-.6,6]],Yr+.6,.13,mCW);run3(mepOut,[[6,24.5],[36.6,24.5],[36.6,16.5]],Yr+.6,.13,mCW);seg3(mepOut,6,24.5,Yr+.6,6,24.5,Yr+8.6,.13,mCW);
+seg3(mepOut,-2.4,22,.5,-2.4,22,Yr+.6,.16,mCW);run3(mepOut,[[-2.4,22],[3.3,22],[3.3,24.5]],Yr+.6,.16,mCW);seg3(mepOut,3.3,24.5,Yr+.6,3.3,24.5,Yr+8.6,.16,mCW);
+let showEl=false,showPl=false;
+function mepVis(){elG.forEach(g=>g.visible=showEl);plG.forEach(g=>g.visible=showPl);mepOut.children.forEach(c=>c.visible=c.material===mSW||c.material===mData||c.material===mWire?showEl:showPl);mepDirty=true}
+let mepDirty=false;mepVis();
 /* views and room tour */
 const V={front:{pos:[48,34,78],tg:[2,10,6]},back:{pos:[-46,36,-66],tg:[0,10,0]},gf:{pos:[22,64,52],tg:[0,PL,2]},ff:{pos:[22,74,52],tg:[0,Yf,2]},top:{pos:[0.1,120,6],tg:[0,0,0]}};
 const TOUR=[['Entrance foyer',0,13.5,39,20,30],['Hall',0,23,20.5,3,11.5],['Kitchen',0,10.6,2.5,1.5,7],['Dining',0,21.5,9.5,15,2],['Bedroom 1',0,10.5,38.5,4,30],['Bedroom 2',0,25.5,12.5,32,2],['Home theatre',0,30,21.5,30,39.5],['Common bath',0,25,19.5,28.5,15],['First-floor hall',1,14,26.5,32,18],['Bedroom 3',1,15,14.5,3,3],['Bedroom 4',1,21,14.5,33,3],['Open office',1,30,29.5,32,39],['Covered balcony',1,24,30,4,38]];
@@ -457,6 +572,8 @@ sel.addEventListener('change',()=>{if(sel.value==='')return;const [n,fl,x,y,tx,t
   fly([x-CX,Yb+5.3,y-CY],[tx-CX,Yb+3.6,ty-CY]);info.innerHTML='<b>'+n+'</b>Eye-level view · drag to look around';info.style.display='block'});
 document.querySelectorAll('#views [data-v]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.v)));
 const doorBtn=document.getElementById('doorBtn');doorBtn.addEventListener('click',()=>{doorT=doorT?0:3.9;doorBtn.setAttribute('aria-pressed',!!doorT);doorBtn.textContent=doorT?'Close theatre door':'Open theatre door'});
+const elBtn=document.getElementById('elBtn'),plBtn=document.getElementById('plBtn');
+elBtn.addEventListener('click',()=>{showEl=!showEl;elBtn.setAttribute('aria-pressed',showEl);mepVis()});plBtn.addEventListener('click',()=>{showPl=!showPl;plBtn.setAttribute('aria-pressed',showPl);mepVis()});
 const labBtn=document.getElementById('labBtn');labBtn.addEventListener('click',()=>{showLab=!showLab;labBtn.setAttribute('aria-pressed',showLab)});
 
 const rc=new THREE.Raycaster(),mv=new THREE.Vector2();let down=null;
@@ -503,6 +620,7 @@ function buildVRMerged(){
 function enterVR(){
   F.g.visible=slab.visible=R.visible=true;G.wg.scale.y=F.wg.scale.y=1;G.cg.visible=F.cg.visible=true;DOORS.forEach(d=>d.position.z=doorT);
   labels.forEach(l=>l.el.style.display='none');sun.castShadow=false;
+  if(mepDirty&&vrMerged){scene.remove(vrMerged);vrMerged=null}mepDirty=false;
   buildVRMerged();hiddenList=scene.children.filter(c=>c!==dolly&&!c.isLight&&c.visible);hiddenList.forEach(c=>c.visible=false);
   if(!vrMerged.parent)scene.add(vrMerged);vrMerged.visible=true;
   if(!doorHolder.parent)scene.add(doorHolder);doorHolder.visible=true;DOORS.forEach(d=>{doorHolder.attach(d);d.userData.z0=d.position.z-doorT});
