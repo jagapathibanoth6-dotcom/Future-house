@@ -112,14 +112,14 @@ const errBox=document.getElementById('err');
 const DOORS=[];let doorT=0;
 function build(){
 const CX=18,CY=20,PL=2,H=10,T=0.6,WH=H-0.5;
-const GF={rooms:[['Kitchen',0,0,12,10,'kitchen'],['Dining',12,0,12,10,'living'],['Hall',0,10,24,11,'living'],['Stairs',0,21,12,7,'circ'],['Passage',12,21,12,7,'living'],['Bedroom 1',0,28,12,12,'bed'],['Entrance foyer',12,28,12,12,'living'],['Bedroom 2',24,0,12,14,'bed'],['Common bath',24,14,6,6,'bath'],['Attached bath',30,14,6,6,'bath'],['Home theatre',24,20,12,20,'theatre'],['Sit-out',13,40,10,4,'outdoor',1]],
- open:[['h',40,16,20,'door'],['v',12,30,33,'door'],['v',24,22,26,'slide'],['h',28,12,24,'open'],['h',21,12,24,'open'],['v',12,24,28,'open'],['h',10,12,24,'open'],['v',12,0,10,'open'],['v',24,11,14,'door'],['h',14,31,34,'door'],['v',24,15,18,'door'],['h',0,10,14,'door'],
-  ['v',0,2,8,'win'],['h',0,16,22,'win'],['v',0,12,19,'win'],['v',0,22,27,'win'],['v',0,31,37,'win'],['h',40,3,9,'win'],['h',0,27,33,'win'],['v',36,3,11,'win'],['v',36,15,19,'win'],['h',40,13,15,'win'],['h',40,21,23,'win']],
- leaves:[['v',24,11,14,1],['h',14,31,34,1],['v',24,15,18,1,0,1],['v',12,30,33,-1],['h',40,16,20,-1,'main'],['h',0,10,14,1,'back']]};
-const FF={rooms:[['Bedroom 3',0,0,18,16,'bed'],['Bedroom 4',18,0,18,16,'bed'],['Bath (Bedroom 3)',0,9,7,7,'bath'],['Bath (Bedroom 4)',29,9,7,7,'bath'],['Hall',12,16,24,12,'living'],['Hall',0,16,12,5,'living'],['Stairs',0,21,12,7,'circ'],['Covered balcony',0,28,27,12,'deck',1],['Open office',27,28,9,12,'office']],
- open:[['h',16,13,16,'door'],['h',16,20,23,'door'],['v',7,10,13,'door'],['v',29,10,13,'door'],['v',12,16,21,'open'],['v',12,21,28,'open'],['h',28,14,22,'glass'],['h',28,27,36,'open'],['v',27,31,37,'glass'],['h',28,3,9,'win'],
+const GF={rooms:[['Kitchen',0,0,12,10,'kitchen'],['Back lobby',12,0,6,10,'living'],['Store room',18,0,6,6,'service'],['Store',18,6,2,4,'service'],['Pooja',20,6,4,4,'pooja'],['Hall',0,10,24,11,'living'],['Stairs',0,21,12,7,'circ'],['Passage',12,21,12,7,'living'],['Bedroom 1',0,28,12,12,'bed'],['Entrance foyer',12,28,12,12,'living'],['Bedroom 2',24,0,12,14,'bed'],['Common bath',24,14,6,8,'bath'],['Attached bath',30,14,6,8,'bath'],['Home theatre',24,22,12,18,'theatre'],['Sit-out',13,40,10,4,'outdoor',1]],
+ open:[['h',40,16,20,'door'],['v',12,30,33,'door'],['v',24,23,27,'slide'],['h',28,12,24,'open'],['h',21,12,24,'open'],['v',12,24,28,'open'],['h',10,12,18,'open'],['v',12,0,10,'open'],['v',24,11,14,'door'],['h',14,31,34,'door'],['v',24,15,18,'door'],['h',0,10,14,'door'],['v',18,1,4,'door'],['h',6,18,20,'open'],['h',10,21,23,'door'],
+  ['v',0,2,8,'win'],['h',0,14,17,'win'],['h',0,21,23,'win'],['v',0,12,19,'win'],['v',0,22,27,'win'],['v',0,31,37,'win'],['h',40,3,9,'win'],['h',0,27,33,'win'],['v',36,3,11,'win'],['v',36,15,19,'win'],['h',40,13,15,'win'],['h',40,21,23,'win']],
+ leaves:[['v',24,11,14,1],['h',14,31,34,1,0,1],['v',18,1,4,1,0,1],['h',10,21,23,-1,'pooja'],['v',24,15,18,1,0,1],['v',12,30,33,-1],['h',40,16,20,-1,'main'],['h',0,10,14,1,'back']]};
+const FF={rooms:[['Bedroom 3',0,0,18,16,'bed'],['Bedroom 4',18,0,18,16,'bed'],['Bath (Bedroom 3)',0,8,8,8,'bath'],['Bath (Bedroom 4)',28,8,8,8,'bath'],['Hall',12,16,24,12,'living'],['Hall',0,16,12,5,'living'],['Stairs',0,21,12,7,'circ'],['Covered balcony',0,28,27,12,'deck',1],['Open office',27,28,9,12,'office']],
+ open:[['h',16,13,16,'door'],['h',16,20,23,'door'],['v',8,10,13,'door'],['v',28,10,13,'door'],['v',12,16,21,'open'],['v',12,21,28,'open'],['h',28,14,22,'glass'],['h',28,27,36,'open'],['v',27,31,37,'glass'],['h',28,3,9,'win'],
   ['v',0,2,7,'win'],['h',0,8,15,'win'],['v',0,11,14,'win'],['h',0,21,28,'win'],['v',36,11,14,'win'],['v',36,2,7,'win'],['v',0,17,20,'win'],['v',36,17,27,'win'],['v',36,30,38,'win'],['h',40,29,34,'win'],['v',0,22,27,'win']],
- leaves:[['h',16,13,16,-1],['h',16,20,23,-1],['v',7,10,13,-1],['v',29,10,13,1]]};
+ leaves:[['h',16,13,16,-1],['h',16,20,23,-1],['v',8,10,13,-1],['v',28,10,13,1]]};
 
 /* renderer */
 const renderer=new THREE.WebGLRenderer({antialias:true});
@@ -256,7 +256,7 @@ function stool(g,Y,x,y){cyl(g,x,y,.08,Y,2.6,steel);cyl(g,x,y,.6,Y+2.6,.25,M('#3f
 
 /* ---------- finishing: paint, tiles, skirting, door shutters, curtains, sunshades ---------- */
 const EXT=['#e2d3bb','#f7f5f0'];
-const PAL=[{'Kitchen':'#f3efe6','Dining':'#f1e7d8','Hall':'#efe6d6','Stairs':'#f3efe8','Passage':'#efe6d6','Bedroom 1':'#eef0ea','Entrance foyer':'#efe4d2','Bedroom 2':'#f3ece8','Common bath':'#f6f6f3','Attached bath':'#f6f6f3','Home theatre':'#2b2430'},
+const PAL=[{'Kitchen':'#f3efe6','Dining':'#f1e7d8','Back lobby':'#f1e7d8','Store room':'#ece6da','Store':'#ece6da','Pooja':'#f6e3c2','Hall':'#efe6d6','Stairs':'#f3efe8','Passage':'#efe6d6','Bedroom 1':'#eef0ea','Entrance foyer':'#efe4d2','Bedroom 2':'#f3ece8','Common bath':'#f6f6f3','Attached bath':'#f6f6f3','Home theatre':'#2b2430'},
  {'Bedroom 3':'#edf1f4','Bedroom 4':'#f4eee6','Bath (Bedroom 3)':'#f6f6f3','Bath (Bedroom 4)':'#f6f6f3','Hall':'#f0e9dc','Stairs':'#f3efe8','Open office':'#eef0ec'}];
 const ACC=[[['h',21,-1,'#5f7d73'],['h',0,1,'#c9a07a',12,24],['v',24,-1,'#9b6a48',28,40],['h',28,1,'#8fa58b',0,12],['h',0,1,'#c99a9a',24,36]],
  [['v',0,1,'#7f9bb5',0,9],['v',36,-1,'#c47a55',0,9],['h',16,1,'#6f7f8f',24,36],['v',36,-1,'#5f7d6a',28,40]]];
@@ -288,7 +288,7 @@ function paintAll(fl,g,U,fi,W,D){
       if(n<list.length){st=list[n];pv=st}}}
 }
 const SWINGS=[];let allOpen=true;
-function leaves(g,list){list.forEach(([o,at,a0,b0,sd,kind,hb])=>{let a=a0,b=b0;const w=b-a;const m=kind==='main'?TM('wood',1,2):kind==='back'?M('#7a5236',{roughness:.6}):M('#e9e1d4',{roughness:.6});
+function leaves(g,list){list.forEach(([o,at,a0,b0,sd,kind,hb])=>{let a=a0,b=b0;const w=b-a;const m=kind==='pooja'?M('#8a5a3a',{roughness:.5}):kind==='main'?TM('wood',1,2):kind==='back'?M('#7a5236',{roughness:.6}):M('#e9e1d4',{roughness:.6});
   const pv=new THREE.Group();g.add(pv);let hx,hy,closed;
   if(o==='v'){const x0=sd>0?at+T/2:at-T/2-w+.12;hx=sd>0?at+T/2:at-T/2;hy=a+.12;box(pv,x0,a+.05,w-.12,.15,0,6.8,m);box(pv,sd>0?x0+w-.6:x0+.25,a+.2,.35,.08,3.1,.12,steel,false);box(pv,sd>0?x0+w-.6:x0+.25,a-.13,.35,.08,3.1,.12,steel,false);closed=sd>0?-Math.PI/2:Math.PI/2}
   else{const y0=sd>0?at+T/2:at-T/2-w+.12;hx=a+.12;hy=sd>0?at+T/2:at-T/2;box(pv,a+.05,y0,.15,w-.12,0,6.8,m);box(pv,a+.2,sd>0?y0+w-.6:y0+.25,.08,.35,3.1,.12,steel,false);box(pv,a-.13,sd>0?y0+w-.6:y0+.25,.08,.35,3.1,.12,steel,false);closed=sd>0?Math.PI/2:-Math.PI/2}
@@ -429,14 +429,32 @@ box(gf,12.7,4.1,.06,5.8,Y0+1.4,.08,oak,false);for(let i=1;i<3;i++)box(gf,12.68,4
 [[12.35,4.8,'#c56b4a'],[12.35,6.4,'#4c6f8a'],[12.35,8.6,'#d9b36c']].forEach(([x,y,c],i)=>box(gf,x,y-.5,.3,1,Y0+(i%2?1.5:.35),.9,M(c)));
 cyl(gf,12,5.2,.25,Y0+3,.9,M('#4c6f8a'));cyl(gf,12,8.6,.35,Y0+3,.4,M('#c9a86a'));
 pendant(gf,Y0,6,5,.4);
-/* dining */
-table(gf,Y0,15,3,6,3.6,2.5,teak);[16.2,18,19.8].forEach(x=>{chair(gf,Y0,x-.75,1.3,'n');chair(gf,Y0,x-.75,6.8,'s')});
-box(gf,22.5,2,1.3,6,Y0,6.2,walnut);for(let i=0;i<3;i++)box(gf,22.45,2.2+i*2,.06,1.6,Y0+3.5,2.4,glassM,false);
-[16.5,19.5].forEach(x=>pendant(gf,Y0,x,4.8,.55));rug(gf,Y0,14,2,8,5.6,'#c8b89c');
-/* hall */
-rug(gf,Y0,3,12,8,7,'#a99478');sofa(gf,Y0,2.5,11.6,7.4,3,'n','#6c7782');chair(gf,Y0,.8,15.3,'w','#c89f6c');chair(gf,Y0,10.6,15.3,'e','#c89f6c');
-table(gf,Y0,4.5,16,4.4,2.4,1.5,teak);tvUnit(gf,Y0,2,19.6,8,'s');plant(gf,Y0,.9,19.8,1);plant(gf,Y0,22.6,12,1.1);lamp(gf,Y0,11.2,12.4);
-
+/* back lobby: clear 6 ft path from the back door to the hall */
+rug(gf,Y0,13,3,4,5,'#b9a98f');plant(gf,Y0,16.8,.9,.9);box(gf,12.4,.3,1.2,1,Y0,1.5,walnut);[12.6,13.2].forEach(x=>box(gf,x,.5,.4,.6,Y0+1.5,.3,M('#6b4f3a')));/* shoe rack */
+/* store room (L-shaped, 6 ft wide): steel racks, rice bags, boxes */
+{const rack=M('#8d9399',{metalness:.3,roughness:.5});
+ const shelf=(x,y,w,d)=>{[0,1.6,3.2,4.8,6.4].forEach(z=>box(gf,x,y,w,d,Y0+.4+z,.06,rack));[[x,y],[x+w-.08,y],[x,y+d-.08],[x+w-.08,y+d-.08]].forEach(([a,b])=>box(gf,a,b,.08,.08,Y0,6.9,rack))};
+ shelf(18.35,.35,5.3,1.2);shelf(22.45,1.7,1.2,4);shelf(18.35,6.2,1.3,3.4);
+ [['#c8a165',18.6],['#b88e55',19.8],['#d6b278',21]].forEach(([c,x])=>{box(gf,x,.5,1,.9,Y0+.46,1.1,M(c));box(gf,x+.05,.55,.9,.8,Y0+2.06,.9,M('#e9dcc0'))});
+ [20.4,21.3].forEach((x,k)=>box(gf,x,4.4,.8,1.3,Y0,1.6-k*.2,M('#efe5cf',{roughness:1})));box(gf,22.6,2,.9,.9,Y0+2.06,.7,M('#3f6aa0'));box(gf,22.6,3.4,.9,.9,Y0+.46,1,M('#a33a2a'));
+ cyl(gf,18.9,7.2,.35,Y0+.46,1.1,M('#2f5b8a'));cyl(gf,18.9,8.6,.35,Y0+.46,1.1,M('#c0392b'))}
+/* pooja room: carved wooden mandir, diyas, bell, rangoli */
+{const teakP=M('#8a5a3a',{roughness:.5}),gold=M('#d4a83a',{metalness:.5,roughness:.3}),flame=M('#ffb347',{emissive:'#ff9d2e',emissiveIntensity:1.2});
+ box(gf,20.4,6.35,3.2,1.1,Y0,2.6,teakP);box(gf,20.35,6.3,3.3,1.2,Y0+2.6,.12,gold);/* base cabinet */
+ box(gf,20.6,6.35,2.8,.15,Y0+2.72,3.2,M('#f3e3c0'));box(gf,20.5,6.35,.18,.9,Y0+2.72,3.3,teakP);box(gf,23.32,6.35,.18,.9,Y0+2.72,3.3,teakP);/* back panel + pillars */
+ box(gf,20.4,6.35,3.2,1,Y0+6,.35,teakP);box(gf,21.2,6.35,1.6,.8,Y0+6.35,.6,teakP);box(gf,21.7,6.35,.6,.6,Y0+6.95,.45,gold);/* gopuram top */
+ box(gf,20.8,6.55,2.4,.7,Y0+3.6,.08,teakP);/* inner shelf */
+ [[21.3,1.1],[22,1.4],[22.7,1.1]].forEach(([x,h])=>box(gf,x-.2,6.6,.4,.3,Y0+2.72,h,gold));/* idols */
+ [[20.8,7.25],[23.2,7.25]].forEach(([x,y])=>{cyl(gf,x,y,.12,Y0+2.72,.06,gold);sph(gf,x,y,.06,Y0+2.86,flame)});/* diyas */
+ cyl(gf,22,7.1,.05,Y0+5.1,.9,gold);cyl(gf,22,7.1,.16,Y0+4.8,.3,gold,.05);/* bell */
+ [20.6,23.4].forEach(x=>sph(gf,x,7.4,.18,Y0+6.2,M('#f39c12')));/* marigold garland ends */
+ cyl(gf,22,8.7,.85,Y0+.1,.02,M('#e74c3c'));cyl(gf,22,8.7,.55,Y0+.12,.02,M('#f1c40f'));cyl(gf,22,8.7,.25,Y0+.14,.02,M('#ffffff'));/* rangoli */
+ box(gf,20.4,9.1,1.4,.5,Y0+.1,.12,M('#b03a2e'));/* sitting mat */
+ sph(gf,22,7.2,.3,Y0+7.8,glow)}
+/* hall + dining: sofa removed, 6-seat dining table */
+rug(gf,Y0,5.6,12.8,9.8,6.6,'#a99478');table(gf,Y0,7,14.3,7,3.4,2.5,teak);[8.2,10.5,12.8].forEach(x=>{chair(gf,Y0,x-.75,12.6,'n');chair(gf,Y0,x-.75,17.8,'s')});
+[8.7,12.3].forEach(x=>pendant(gf,Y0,x,16,.55));box(gf,.4,12.5,1.4,6,Y0,2.8,walnut);box(gf,.38,13,.06,5,Y0+3.6,2.6,mirror);/* sideboard + mirror */
+tvUnit(gf,Y0,2,19.6,8,'s');plant(gf,Y0,.9,19.8,1);plant(gf,Y0,22.8,20,1);lamp(gf,Y0,16.3,19.8);
 /* passage + foyer */
 rug(gf,Y0,14,22.5,8,4,'#9c8a73');box(gf,12.35,21.3,.06,2.4,Y0+3.5,2.4,M('#4c6f8a'),false);
 box(gf,12.3,34,1.4,5,Y0,3,walnut);box(gf,12.32,34.5,.06,4,Y0+4,3,mirror);
@@ -448,11 +466,13 @@ wardrobe(gf,Y0,10.2,34,1.8,5.6,'e');table(gf,Y0,3,38.2,4,1.6,2.5,oak);chair(gf,Y
 bed(gf,Y0,27,.3,6.5,6.8,'n','#9b6f8f');sideTable(gf,Y0,25.2,.6);sideTable(gf,Y0,33.7,.6);
 box(gf,34.6,7.6,1.3,4,Y0,2.7,oak);rug(gf,Y0,26,7.6,8,3,'#cbb79b');chair(gf,Y0,25,9,'w','#c8a77a');
 /* common + attached bath */
-/* common bath: shower NE, WC south, basin north, geyser SW */wc(gf,Y0,28,17.3,'s');vanity(gf,Y0,25.2,14.3,2.5,'n');shower(gf,Y0,27.9,14.3,1.8,2.3,27.9,16.6);geyser(gf,Y0,24.5,18.7,'s');towelRail(gf,Y0,24.4,19.2,2.4,'s','#c9a27e');bathMat(gf,Y0,25.4,16.2,2,1.1);bathMat(gf,Y0,26.1,16.8,1.6,1,'#d9cfc0');exhaust(gf,Y0,29.6,18.6,true);
-/* attached bath: shower NE, WC SE, basin south, geyser west */wc(gf,Y0,34.2,17.3,'s');vanity(gf,Y0,30.4,18.0,2.6,'s');shower(gf,Y0,33.6,14.3,2.1,2.4,33.6,16.7);geyser(gf,Y0,30.3,17.4,'w');towelRail(gf,Y0,30.3,15,2.2,'w','#9fb6c9');bathMat(gf,Y0,30.6,16.7,2.2,1.1);bathMat(gf,Y0,33.7,16.9,1.7,.9,'#d9cfc0');exhaust(gf,Y0,32.5,14.4,false);
+/* common bath 6x8: basin + WC on the east side, walk-in shower at the far end, geyser and towels by the door */
+vanity(gf,Y0,27.2,14.3,2.5,'n');wc(gf,Y0,27.3,16.5,'e');shower(gf,Y0,26.4,19,3.3,2.7,26.4,19);geyser(gf,Y0,24.4,20.7,'s');towelRail(gf,Y0,24.4,21.2,1.8,'s','#c9a27e');bathMat(gf,Y0,27.4,16.1,1.9,.9);bathMat(gf,Y0,26.6,18,2.2,.9,'#d9cfc0');exhaust(gf,Y0,29.6,20.6,true);
+/* attached bath 6x8: basin + WC on the west wall, shower in the far corner */
+vanity(gf,Y0,30.3,14.5,2.5,'w');wc(gf,Y0,30.3,18.7,'w');shower(gf,Y0,33.1,18.6,2.6,3.1,33.1,18.6);geyser(gf,Y0,30.5,20.7,'s');towelRail(gf,Y0,31.8,21.2,1.2,'s','#9fb6c9');bathMat(gf,Y0,32.1,15,1.1,1.8);bathMat(gf,Y0,33.3,17.6,2.2,.9,'#d9cfc0');exhaust(gf,Y0,33.8,21.6,false);
 /* theatre */
-box(gf,26.2,21.6,9.5,5,Y0,1.2,M('#3c1d25'));box(gf,25.4,23.2,.8,3,Y0,.6,M('#3c1d25'));
-[26.5,28.8,31.1,33.4].forEach(x=>{recliner(gf,Y0+1.2,x,22,'n');recliner(gf,Y0,x,27,'n')});
+box(gf,26.2,23.6,9.5,5,Y0,1.2,M('#3c1d25'));box(gf,25.4,25.2,.8,3,Y0,.6,M('#3c1d25'));
+[26.5,28.8,31.1,33.4].forEach(x=>{recliner(gf,Y0+1.2,x,24,'n');recliner(gf,Y0,x,29,'n')});
 /* theatre screen: 10-second movie clip, or the viewer's own video */
 const clipCv=document.createElement('canvas');clipCv.width=640;clipCv.height=360;const clipCx=clipCv.getContext('2d');
 const clipTex=new THREE.CanvasTexture(clipCv);clipTex.encoding=THREE.sRGBEncoding;const clipM=new THREE.MeshBasicMaterial({map:clipTex,toneMapped:false});
@@ -494,14 +514,16 @@ box(slab,12,40.3,12,.3,Yf-1.1,.6,charcoal);[[14,42],[18,42],[22,42]].forEach(([x
 const F=floor(FF,Yf,1),ff=F.g,Y1=Yf;
 [[10,8],[26,8],[22,22]].forEach(([x,y])=>fan(F.cg,x,y,Y1));ac(F.cg,.35,2.5,.8,3,Y1);ac(F.cg,34.85,2.5,.8,3,Y1);ac(F.cg,28,16.35,3,.8,Y1);
 /* bedroom 3 */
-bed(ff,Y1,.3,.8,6.8,6.4,'w','#6f8fa8');sideTable(ff,Y1,.4,7.4);wardrobe(ff,Y1,16.1,1,1.8,9,'e');
+bed(ff,Y1,.3,1.2,6.8,6.4,'w','#6f8fa8');box(ff,.4,.35,1.4,.8,Y1,1.9,walnut);cyl(ff,1.1,.75,.4,Y1+1.9,.6,M('#f3ead8',{emissive:'#ffdca0',emissiveIntensity:.25}),.3);wardrobe(ff,Y1,16.1,1,1.8,9,'e');
 rug(ff,Y1,7.6,2,6,4,'#cdbb9e');chair(ff,Y1,10,1,'n','#b9905f');chair(ff,Y1,12.2,1,'n','#b9905f');cyl(ff,11.95,2.9,.5,Y1,1.6,teak);lamp(ff,Y1,14.8,8);
 /* bedroom 4 */
-bed(ff,Y1,28.9,.8,6.8,6.4,'e','#a07a5c');sideTable(ff,Y1,34,7.4);wardrobe(ff,Y1,18.1,1,1.8,9,'w');
+bed(ff,Y1,28.9,1.2,6.8,6.4,'e','#a07a5c');box(ff,34.2,.35,1.4,.8,Y1,1.9,walnut);cyl(ff,34.9,.75,.4,Y1+1.9,.6,M('#f3ead8',{emissive:'#ffdca0',emissiveIntensity:.25}),.3);wardrobe(ff,Y1,18.1,1,1.8,9,'w');
 rug(ff,Y1,22,2,6,4,'#cdbb9e');table(ff,Y1,22.5,.4,4,1.6,2.5,oak);chair(ff,Y1,23.75,2.2,'s','#a8b3bd');lamp(ff,Y1,21.2,8);
 /* baths inside bedrooms */
-/* bath, Bedroom 3: basin north, WC west, shower SE, geyser south */wc(ff,Y1,.3,13.4,'w');vanity(ff,Y1,.4,9.3,2.5,'n');shower(ff,Y1,4.4,13.4,2.3,2.3,4.4,13.4);geyser(ff,Y1,2.8,14.7,'s');towelRail(ff,Y1,2.2,15.2,2,'s','#d9b98f');bathMat(ff,Y1,.6,11.1,2,1.1);bathMat(ff,Y1,3.1,13.6,1.2,1.7,'#d9cfc0');exhaust(ff,Y1,4.5,9.4,false);
-/* bath, Bedroom 4: basin north, WC east, shower SW, geyser south */wc(ff,Y1,33.3,13.4,'e');vanity(ff,Y1,33.1,9.3,2.5,'n');shower(ff,Y1,29.3,13.4,2.3,2.3,31.6,13.4);geyser(ff,Y1,32,14.7,'s');towelRail(ff,Y1,31.8,15.2,1.5,'s','#9fb6c9');bathMat(ff,Y1,33.4,11.1,2,1.1);bathMat(ff,Y1,31.8,13.6,1.2,1.7,'#d9cfc0');exhaust(ff,Y1,31.5,9.4,false);
+/* bath, Bedroom 3 (8x8): basin north, WC west, big shower in the far corner */
+wc(ff,Y1,.3,12.5,'w');vanity(ff,Y1,.5,8.3,2.6,'n');shower(ff,Y1,4.8,12.8,2.9,2.9,4.8,12.8);geyser(ff,Y1,3,14.7,'s');towelRail(ff,Y1,2.8,15.2,1.9,'s','#d9b98f');bathMat(ff,Y1,.8,10.1,2,1);bathMat(ff,Y1,3.6,13.3,1.1,1.8,'#d9cfc0');exhaust(ff,Y1,5.5,8.4,false);
+/* bath, Bedroom 4 (8x8): mirror image */
+wc(ff,Y1,33.3,12.5,'e');vanity(ff,Y1,32.9,8.3,2.6,'n');shower(ff,Y1,28.3,12.8,2.9,2.9,31.2,12.8);geyser(ff,Y1,31.7,14.7,'s');towelRail(ff,Y1,31.4,15.2,1.9,'s','#9fb6c9');bathMat(ff,Y1,33.2,10.1,2,1);bathMat(ff,Y1,31.3,13.3,1.1,1.8,'#d9cfc0');exhaust(ff,Y1,30.5,8.4,false);
 /* hall */
 rug(ff,Y1,26,19.6,7.4,6,'#a88f73');sofa(ff,Y1,26,16.6,7,2.9,'n','#5f6f7c');sofa(ff,Y1,33.1,19.4,2.9,7,'e','#5f6f7c');table(ff,Y1,27.5,21.2,4.5,2.8,1.5,teak);
 cyl(ff,15.5,19.5,.05,Y1+6.2,WH-6.2,dark);sph(ff,15.5,19.5,1.5,Y1+4.4,M('#c9a86a',{transparent:true,opacity:.85}));box(ff,14.6,18.6,1.8,1.8,Y1+3.4,.4,M('#e8dccb'));
@@ -556,15 +578,15 @@ for(let x of [-.5,36.2])for(let y of [4,16,34])box(R,x,y,.3,.3,PL,2*H-PL+3,M('#b
 
 const EL={0:{groups:[
   {sw:[10.4,3.6],pts:[['L',6,4.6],['L',2.2,8.6],['OL',12,-.6]]},
-  {sw:[23.55,8.6],pts:[['L',16.5,4.8],['L',19.5,4.8],['F',18,7.6]]},
+  {sw:[17.55,8.6],pts:[['L',15,3.5],['L',15,7],['F',15,5.2]]},{sw:[17.55,5],pts:[['L',21,3],['L',19,8]]},{sw:[20.4,10.45],pts:[['DL',22,7.6],['DL',22,9]]},
   {sw:[11,20.55],pts:[['L',4,13],['L',12,13],['L',20,13],['L',4,18.5],['L',20,18.5],['F',8,15.5],['F',17,15.5]]},
   {sw:[11.55,27.4],pts:[['L',6,24.5]]},
   {sw:[23.55,27.4],pts:[['L',15,24.5],['L',21,24.5]]},
   {sw:[15.2,39.5],pts:[['L',18,34],['L',18,30.5],['WL',15.3,40.6],['WL',20.7,40.6],['L',18,42]]},
   {sw:[11.55,34],pts:[['F',6,33.5],['L',6,37.5]]},
   {sw:[24.45,10.2],pts:[['F',30,7.6],['L',30,11.6]]},
-  {sw:[23.55,18.8],pts:[['L',27,17],['EF',27,14.5]]},
-  {sw:[34.6,13.55],pts:[['L',33,17],['EF',35.5,17.2]]},
+  {sw:[23.55,19.2],pts:[['L',27,18],['EF',29.5,20.6]]},
+  {sw:[34.6,13.55],pts:[['L',33,18],['EF',33.5,21.5]]},
   {sw:[24.45,27.2],pts:[['DL',27,23.5],['DL',33,23.5],['DL',27,30],['DL',33,30],['DL',27,36],['DL',33,36]]}],
  power:[['P',2.6,.45,'FR'],['P',7.6,.45,'MW'],['P',10,.45,'RO'],['P',.45,5.4,'CH'],['S',5,.45],['S',.45,8.6],['S',4,9.55],['S',8,9.55],
   ['S',23.55,3],['S',13.1,7],['P',9.1,9.55,'WM'],
@@ -572,45 +594,45 @@ const EL={0:{groups:[
   ['DB',12.75,29.8,.7,1.6],['M',13.8,40.8],['B',21.6,40.6],['S',23.55,36],
   ['AC',3.5,28.15,3,.6],['S',1.6,28.45],['S',9.6,28.45],['S',5,39.55],
   ['AC',28.5,.15,3,.6],['S',25.9,.45],['S',34.3,.45],['S',35.55,12.6],['TV',24.45,4],
-  ['P',25,19.55,'GY'],['P',30.45,15,'GY'],
+  ['P',25,21.55,'GY'],['P',31.1,21.55,'GY'],
   ['AC',35.15,31,.6,3],['PR',30,25.5],['S',25.6,39.55],['S',34.4,39.55],['D',30,39.55,'HDMI'],
   ['E',-3,30],['E',-3,26],['INV',5,22.8],['P',-2.6,9.8,'MTR']],
  tags:[['Main DB + RCCB',16.4,29.3],['Inverter under the stairs',6,27.5],['Earth pits',-3,33.4],['Motor starter',-2.6,11.6]]},
  1:{groups:[
   {sw:[16.6,15.55],pts:[['F',10,8],['L',13,12]]},
-  {sw:[7.45,9.4],pts:[['L',3.5,12.5],['EF',.5,12.5]]},
+  {sw:[8.45,13.5],pts:[['L',4,12],['EF',5.5,8.45]]},
   {sw:[23.6,15.55],pts:[['F',26,8],['L',23,12]]},
-  {sw:[28.55,9.4],pts:[['L',32.5,12.5],['EF',35.5,12.5]]},
+  {sw:[27.55,13.5],pts:[['L',32,12],['EF',30.5,8.45]]},
   {sw:[11,20.55],pts:[['L',6,18.5],['L',16,22],['L',23,19.5],['L',23,25],['L',33,22],['F',19,22],['F',29,22]]},
   {sw:[11.55,27.4],pts:[['L',6,24.5]]},
   {sw:[35.55,28.8],pts:[['L',31.5,32],['F',31.5,35]]},
   {sw:[13.4,27.55],pts:[['DL',6,32],['DL',13,32],['DL',20,32],['DL',6,37],['DL',13,37],['DL',20,37],['F',13,34.5]]}],
- power:[['AC',1,.15,3,.6],['S',.45,7.9],['S',10,.45],['S',12,15.55],['P',3.5,15.55,'GY'],
-  ['AC',32,.15,3,.6],['S',35.55,7.9],['S',24.5,.45],['S',20.45,13],['P',32.5,15.55,'GY'],
+ power:[['AC',1,.15,3,.6],['S',.45,6.6],['S',10,.45],['S',12,15.55],['P',3.6,15.55,'GY'],
+  ['AC',32,.15,3,.6],['S',35.55,6.6],['S',24.5,.45],['S',20.45,13],['P',32.3,15.55,'GY'],
   ['AC',28,16.15,3,.6],['S',25.6,16.45],['S',35.55,26.5],['S',13,27.55],['SDB',19.2,16.5,1.4,.6],
   ['S',30,39.55],['S',33,39.55],['D',31.5,39.55,'LAN'],['S',.45,31],['S',26.55,38.5]],
  tags:[['Sub DB',19.2,18.2],['AC outdoor unit, solar and water tanks are on the roof',18,-3]]}};
-const PLB={0:{fix:[['WC',28.8,18.6],['WB',26.6,14.8],['SH',28.9,15.3],['FT',27.5,17],['GY',25,19.4],
-   ['WC',35.1,18.6],['WB',31.6,19.2],['SH',35,15.2],['FT',33,17],['GY',30.5,15],
+const PLB={0:{fix:[['WC',28.9,17.3],['WB',28.45,14.8],['SH',28,20.4],['FT',27.6,19.6],['GY',25,21.5],
+   ['WC',31.5,19.5],['WB',30.8,15.7],['SH',34.4,20.2],['FT',33.6,19.4],['GY',31.1,21.5],
    ['KS',7.4,1.4],['TAP',9.6,1.1],['WM',9.1,9.1],['WS',9,-4.5],['TAP',14,-1],['TAP',-6,44],['TAP',24,46]],
-  cw:[[[36.6,16.5],[24.6,16.5]],[[35,16.5],[35,15.2]],[[35.1,16.5],[35.1,18.6]],[[31.6,16.5],[31.6,19.2]],[[30.5,16.5],[30.5,15]],[[28.9,16.5],[28.9,15.3]],[[28.8,16.5],[28.8,18.6]],[[26.6,16.5],[26.6,14.8]],[[25,16.5],[25,19.4]],
+  cw:[[[36.6,16.5],[36.6,17.5],[24.6,17.5]],[[28.45,17.5],[28.45,14.8]],[[28.9,17.5],[28.9,17.3]],[[28,17.5],[28,20.4]],[[25,17.5],[25,21.5]],[[30.8,17.5],[30.8,15.7]],[[31.5,17.5],[31.5,19.5]],[[34.4,17.5],[34.4,20.2]],[[31.1,17.5],[31.1,21.5]],
    [[-.6,6],[.3,6],[.3,.5],[9.6,.5]],[[7.4,.5],[7.4,1.4]],[[-.6,6],[-.6,-.8],[14,-.8]],[[9.6,.5],[10.7,.5],[10.7,9.1],[9.1,9.1]],[[9,-.8],[9,-4.5]],[[-6,40],[-6,44]],[[24,40.6],[24,46]]],
-  hw:[[[25,19.4],[25,15.6],[28.9,15.6]],[[25,15.6],[26.6,15.2]],[[30.5,15],[34.4,15]],[[30.5,15],[30.5,18.8],[31.6,18.8]]],
-  soil:[[[28.8,18.6],[28.8,19.4],[38.6,19.4]],[[35.1,18.6],[35.1,19.4]],[[36.6,12.5],[38.6,12.5]],[[38.6,19.4],[38.6,-8],[40,-8]],[[-.6,14],[-2,14],[-2,-8],[38.6,-8]]],
-  waste:[[[27.5,17],[37.6,17]],[[37.6,17],[38.6,17]],[[7.4,1.4],[7.4,-.2],[5,-.2],[5,-2]],[[9.1,9.1],[10.9,9.1],[10.9,-.2],[7.4,-.2]],[[9,-4.5],[5,-4.5],[5,-2]],[[5,-2],[5,-8]]],
+  hw:[[[25,21.5],[25,20.8],[28,20.8],[28,20.4]],[[25,20.8],[25,16.2],[28.45,16.2],[28.45,14.8]],[[31.1,21.5],[31.1,21],[34.4,21],[34.4,20.2]],[[31.1,21],[31.1,16.4],[30.8,16.4],[30.8,15.7]]],
+  soil:[[[28.9,17.3],[29.6,17.3],[29.6,18.4],[38.6,18.4]],[[31.5,19.5],[31.5,18.4]],[[36.6,12.5],[38.6,12.5]],[[38.6,18.4],[38.6,-8],[40,-8]],[[-.6,14],[-2,14],[-2,-8],[38.6,-8]]],
+  waste:[[[27.6,19.6],[27.6,19],[37.6,19]],[[37.6,19],[38.6,19]],[[7.4,1.4],[7.4,-.2],[5,-.2],[5,-2]],[[9.1,9.1],[10.9,9.1],[10.9,-.2],[7.4,-.2]],[[9,-4.5],[5,-4.5],[5,-2]],[[5,-2],[5,-8]]],
   rain:[[[-.6,40.6],[-10,40.6],[-10,37.8]],[[-.6,-.6],[-12,-.6],[-12,36],[-11.6,36]],[[36.6,-.6],[45,-.6],[45,28]],[[36.6,40.6],[45,40.6],[45,32]]],
   dlv:[[[-10,-12],[-10,0.6],[-9,1]],[[-2.4,8.6],[-2.4,22],[-.6,22]]],
-  items:[['RISER',36.6,16.5,'R1'],['RISER',-.6,6,'R2'],['SVP',36.6,12.5,'SVP2'],['SVP',-.6,14,'SVP1'],['GT',37.6,17],['GT',5,-2],
-   ['IC',38.6,19.4],['IC',38.6,6],['IC',38.6,-8],['IC',-2,14],['IC',-2,-8],['IC',5,-8],['IC',20,-8],
+  items:[['RISER',36.6,16.5,'R1'],['RISER',-.6,6,'R2'],['SVP',36.6,12.5,'SVP2'],['SVP',-.6,14,'SVP1'],['GT',37.6,19],['GT',5,-2],
+   ['IC',38.6,18.4],['IC',38.6,6],['IC',38.6,-8],['IC',-2,14],['IC',-2,-8],['IC',5,-8],['IC',20,-8],
    ['ST',40,-12,7,6],['SP',44,-16,2.2],['SUMP',-9,1,6,6],['BW',-10,-12],['MOTOR',-2.4,8.6],['RP',-10,36],['RP',45,30],
    ['RWP',-.6,-.6],['RWP',36.6,-.6],['RWP',-.6,40.6],['RWP',36.6,40.6]],
   tags:[['Septic tank',43.5,-4.6],['Soak pit',44,-12.6],['Sump 10,000 L',-6,4.4],['Borewell',-10,-14.4],['Motor',-2.4,7.2],['Delivery to tanks ↑',-7.2,23.6],['Recharge pit',-10,39.4],['Recharge pit',45,26.6]]},
- 1:{fix:[['WC',1.2,14.4],['WB',1.2,10.4],['SH',5.6,14.8],['FT',3.5,12.8],['GY',3.5,15.5],['WC',34.8,14.4],['WB',34.8,10.4],['SH',30.4,14.8],['FT',32.5,12.8],['GY',32.5,15.5],['FT',1,39]],
-  cw:[[[-.6,6],[-.6,12.2],[1.2,12.2]],[[1.2,12.2],[1.2,10.4]],[[1.2,12.2],[1.2,14.4]],[[1.2,12.2],[5.6,12.2],[5.6,14.8]],[[3.5,12.2],[3.5,15.5]],
-   [[36.6,16.5],[36.6,12.2],[34.8,12.2]],[[34.8,12.2],[34.8,10.4]],[[34.8,12.2],[34.8,14.4]],[[34.8,12.2],[30.4,12.2],[30.4,14.8]],[[32.5,12.2],[32.5,15.5]]],
-  hw:[[[3.5,15.5],[3.5,14.8],[5.6,14.8]],[[3.5,14.8],[2,14.8],[2,10.6],[1.4,10.6]],[[32.5,15.5],[32.5,14.8],[30.4,14.8]],[[32.5,14.8],[34,14.8],[34,10.6],[34.6,10.6]]],
-  soil:[[[1.2,14.4],[-.6,14.4],[-.6,14]],[[34.8,14.4],[36.6,14.4],[36.6,12.5]]],
-  waste:[[[5.6,14.8],[3.5,12.8],[-.6,13.4]],[[1.2,10.4],[-.6,13.4]],[[30.4,14.8],[32.5,12.8],[36.6,13]],[[34.8,10.4],[36.6,13]],[[1,39],[-.6,40.6]]],
+ 1:{fix:[['WC',1.5,13.3],['WB',1.8,8.8],['SH',6.2,14.2],['FT',5.5,13.5],['GY',3.6,15.5],['WC',34.5,13.3],['WB',34.2,8.8],['SH',29.8,14.2],['FT',30.5,13.5],['GY',32.3,15.5],['FT',1,39]],
+  cw:[[[-.6,6],[-.6,11.6],[1.8,11.6]],[[1.8,11.6],[1.8,8.8]],[[1.5,11.6],[1.5,13.3]],[[1.8,11.6],[6.2,11.6],[6.2,14.2]],[[3.6,11.6],[3.6,15.5]],
+   [[36.6,16.5],[36.6,11.6],[34.2,11.6]],[[34.2,11.6],[34.2,8.8]],[[34.5,11.6],[34.5,13.3]],[[34.2,11.6],[29.8,11.6],[29.8,14.2]],[[32.3,11.6],[32.3,15.5]]],
+  hw:[[[3.6,15.5],[3.6,14.9],[6.2,14.9],[6.2,14.2]],[[3.6,14.9],[2.6,14.9],[2.6,9.6],[1.8,9.6],[1.8,8.8]],[[32.3,15.5],[32.3,14.9],[29.8,14.9],[29.8,14.2]],[[32.3,14.9],[33.4,14.9],[33.4,9.6],[34.2,9.6],[34.2,8.8]]],
+  soil:[[[1.5,13.3],[-.6,13.3],[-.6,14]],[[34.5,13.3],[36.6,13.3],[36.6,12.5]]],
+  waste:[[[6.2,14.2],[5.5,13.5],[-.6,13.6]],[[1.8,8.8],[-.6,8.8],[-.6,13.6]],[[29.8,14.2],[30.5,13.5],[36.6,13.6]],[[34.2,8.8],[36.6,8.8],[36.6,13.6]],[[1,39],[-.6,40.6]]],
   rain:[],dlv:[],
   items:[['RISER',36.6,16.5,'R1'],['RISER',-.6,6,'R2'],['SVP',36.6,12.5,'SVP2'],['SVP',-.6,14,'SVP1'],['RWP',-.6,-.6],['RWP',36.6,-.6],['RWP',-.6,40.6],['RWP',36.6,40.6]],
   tags:[['Overhead tanks 2 × 1,500 L on the stair-room roof; down-takes R1 (east) and R2 (west)',18,-3],['Balcony floor drain → rainwater pipe',8,41.6]]}};
@@ -725,7 +747,7 @@ function setXray(on){xray=on;
   xrBtn.setAttribute('aria-pressed',on);mepVis()}
 /* views and room tour */
 const V={front:{pos:[48,34,78],tg:[2,10,6]},back:{pos:[-46,36,-66],tg:[0,10,0]},gf:{pos:[22,64,52],tg:[0,PL,2]},ff:{pos:[22,74,52],tg:[0,Yf,2]},top:{pos:[0.1,120,6],tg:[0,0,0]}};
-const TOUR=[['Entrance foyer',0,13.5,39,20,30],['Hall',0,23,20.5,3,11.5],['Kitchen',0,10.6,2.5,1.5,7],['Dining',0,21.5,9.5,15,2],['Bedroom 1',0,10.5,38.5,4,30],['Bedroom 2',0,25.5,12.5,32,2],['Home theatre',0,30,21.5,30,39.5],['Common bath',0,25,19.5,28.5,15],['First-floor hall',1,14,26.5,32,18],['Bedroom 3',1,15,14.5,3,3],['Bedroom 4',1,21,14.5,33,3],['Open office',1,30,29.5,32,39],['Covered balcony',1,24,30,4,38]];
+const TOUR=[['Entrance foyer',0,13.5,39,20,30],['Hall & dining',0,22,19.5,3,12],['Kitchen',0,10.6,2.5,1.5,7],['Back lobby',0,15,9,13,1],['Pooja room',0,22,11.4,22,6.5],['Store room',0,15.5,3,22,3],['Bedroom 1',0,10.5,38.5,4,30],['Bedroom 2',0,25.5,12.5,32,2],['Home theatre',0,30,23.5,30,39.5],['Common bath',0,25,17,28.5,21],['First-floor hall',1,14,26.5,32,18],['Bedroom 3',1,15,14.5,3,3],['Bedroom 4',1,21,14.5,33,3],['Open office',1,30,29.5,32,39],['Covered balcony',1,24,30,4,38]];
 const SCHED=[['Outside, ground floor','#e2d3bb',null,'Warm sand, charcoal band at the top'],['Outside, first floor','#f7f5f0','#3a3c40','Bright white with charcoal box frame'],['Theatre front','#8a5a3a',null,'Teak cladding with grooves'],['Hall (ground)','#efe6d6','#5f7d73','Ivory; deep teal-green TV wall'],['Dining','#f1e7d8','#c9a07a','Cream; camel back wall'],['Kitchen','#f3efe6','#cfe0d6','Off-white; mint tile backsplash'],['Entrance foyer','#efe4d2','#9b6a48','Beige; walnut-brown feature wall'],['Bedroom 1','#eef0ea','#8fa58b','Soft white; sage headboard wall'],['Bedroom 2','#f3ece8','#c99a9a','Blush white; dusty rose headboard wall'],['Bedroom 3','#edf1f4','#7f9bb5','Cool white; powder blue headboard wall'],['Bedroom 4','#f4eee6','#c47a55','Warm white; terracotta headboard wall'],['First-floor hall','#f0e9dc','#6f7f8f','Linen; slate blue sofa wall'],['Open office','#eef0ec','#5f7d6a','Light grey-white; forest green wall'],['Home theatre','#2b2430','#7a2533','Deep plum walls; maroon seats'],['Bathrooms','#e9f1f1','#f6f6f3','Light aqua tiles to 7 ft, white above'],['Doors and skirting','#e9e1d4','#6b5444','Cream laminate shutters, walnut skirting and frames']];
 document.getElementById('paint').innerHTML=SCHED.map(([n,a,b2,t])=>'<div><i style="background:'+a+'">'+(b2?'<b style="background:'+b2+';border-radius:0 4px 4px 0"></b>':'')+'</i><span><strong>'+n+'</strong><br>'+t+'</span></div>').join('');
 const sel=document.getElementById('tour');TOUR.forEach((t,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(t[1]?'First floor · ':'Ground floor · ')+t[0];sel.appendChild(o)});
@@ -773,7 +795,7 @@ const v3=new THREE.Vector3();
 const camW=new THREE.Vector3();
 let inTheatre=false;
 function theatreAudio(){const v=window.__theatreVideo();if(renderer.xr.isPresenting)renderer.xr.getCamera(cam).getWorldPosition(camW);else cam.getWorldPosition(camW);
-  const x=camW.x+CX,y=camW.z+CY,inside=x>24.3&&x<35.7&&y>20.3&&y<39.7&&camW.y>PL&&camW.y<Yf;
+  const x=camW.x+CX,y=camW.z+CY,inside=x>24.3&&x<35.7&&y>22.3&&y<39.7&&camW.y>PL&&camW.y<Yf;
   if(inside&&!inTheatre){inTheatre=true;try{v.currentTime=0}catch(e){}const act=!navigator.userActivation||navigator.userActivation.hasBeenActive;v.muted=!act;v.volume=1;
     v.play().catch(()=>{v.muted=true;v.play().catch(()=>{})})}
   else if(!inside&&inTheatre){inTheatre=false;v.pause();try{v.currentTime=0}catch(e){}v.muted=true;clipCx.fillStyle='#050505';clipCx.fillRect(0,0,640,360);clipTex.needsUpdate=true}
@@ -783,7 +805,7 @@ function autoDoors(){const live=renderer.xr.isPresenting||String(cur).startsWith
   const x=camW.x+CX,y=camW.z+CY,z=camW.y;
   SWINGS.forEach(d=>{const u=d.userData;if(u.manual&&performance.now()<u.manual)return;const sameFloor=Math.abs(z-(u.yb+5))<4.5;const dist=Math.hypot(x-u.mx,y-u.my);
     if(sameFloor&&dist<4.5)u.open=true;else if(!sameFloor||dist>6.5)u.open=false});
-  const td=Math.hypot(x-24,y-24),tf=z>PL&&z<Yf;if(!(window.__tdManual&&performance.now()<window.__tdManual)){if(tf&&td<5&&!doorT)setTheatreDoor(true);else if((!tf||td>7.5)&&doorT)setTheatreDoor(false)}}
+  const td=Math.hypot(x-24,y-25),tf=z>PL&&z<Yf;if(!(window.__tdManual&&performance.now()<window.__tdManual)){if(tf&&td<5&&!doorT)setTheatreDoor(true);else if((!tf||td>7.5)&&doorT)setTheatreDoor(false)}}
 function loop(now){window.__drawClip(now);animDoors(.15);theatreAudio();autoDoors();if(renderer.xr.isPresenting){vrStep(now);renderer.render(scene,cam);return}
   if(anim){let k=Math.min(1,(now-anim.t0)/800);k=k<.5?2*k*k:1-((-2*k+2)**2)/2;cam.position.lerpVectors(anim.fp,anim.tp,k);ctl.target.lerpVectors(anim.ft,anim.tt,k);if(k>=1)anim=null}
   DOORS.forEach(d=>{d.position.z+=(doorT-d.position.z)*.12});
