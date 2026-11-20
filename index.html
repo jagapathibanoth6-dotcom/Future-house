@@ -319,10 +319,11 @@ function floor(fl,Yb,idx){
   const U=walls(fl,wg);paintAll(fl,wg,U,idx,36,40);dressWindows(fl,wg,idx,36,40);leaves(wg,fl.leaves||[]);stairs(g,Yb);
   const cg=new THREE.Group();g.add(cg);scene.add(g);return {g,wg,cg};
 }
-function stairs(g,Yb){const m=M('#d8d0c4'),nose=walnut;
-  for(let i=0;i<8;i++){box(g,9-i,24.5,1,3.5,Yb,(i+1)*.625,m);box(g,9-i,24.5,.1,3.5,Yb+(i+1)*.625-.06,.08,nose)}
-  box(g,0,21,2,7,Yb,5,m);
-  for(let i=0;i<8;i++){box(g,2+i,21,1,3.5,Yb,5+(i+1)*.625,m);box(g,3+i-.1,21,.1,3.5,Yb+5+(i+1)*.625-.06,.08,nose)}
+function stairs(g,Yb){const m=M('#d8d0c4'),nose=walnut,fl=Yb>PL+1;/* upper flights float on a waist slab so you can see and walk beneath */
+  const step=(x,y,w,d,top)=>{if(fl){box(g,x,y,w,d,top-.62,.62,m)}else box(g,x,y,w,d,Yb,top-Yb,m)};
+  for(let i=0;i<8;i++){step(9-i,24.5,1,3.5,Yb+(i+1)*.625);box(g,9-i,24.5,.1,3.5,Yb+(i+1)*.625-.06,.08,nose)}
+  if(fl)box(g,0,21,2,7,Yb+4.5,.5,m);else box(g,0,21,2,7,Yb,5,m);
+  for(let i=0;i<8;i++){step(2+i,21,1,3.5,Yb+5+(i+1)*.625);box(g,3+i-.1,21,.1,3.5,Yb+5+(i+1)*.625-.06,.08,nose)}
   box(g,1.9,24.4,8.2,.12,Yb+5,3.4,glassM,false);
   const rail=M('#2f3134',{metalness:.5,roughness:.4});
   for(let i=0;i<8;i++){box(g,9-i+.45,24.47,.08,.08,Yb+(i+1)*.625,3.2,rail);box(g,2+i+.45,24.33,.08,.08,Yb+5+(i+1)*.625,3.2,rail)}
@@ -360,8 +361,6 @@ const per=new THREE.Group();scene.add(per);cyl(per,18,42.2,.65,PL,2.7,M('#2f3a4a
 
 /* ground floor */
 const G=floor(GF,PL,0),gf=G.g,Y0=PL;
-box(G.wg,16.08,39.85,3.84,.3,0,6.82,teak);box(G.wg,18.9,40.02,.1,1.4,3,.1,steel);
-box(G.wg,10.1,-.15,3.8,.25,0,6.82,teak);
 box(G.wg,15.2,40.32,.4,.2,5.6,.6,glow);box(G.wg,20.4,40.32,.4,.2,5.6,.6,glow);box(G.wg,13.4,40.3,1.3,.08,5,.8,M('#c9a86a'));
 /* kitchen: U-shape. Fridge back-left, sink + microwave on the back wall, hob + chimney on the west wall, prep counter along the hall wall */
 {const body=M('#e9e2d6',{roughness:.55}),door=M('#f4efe6',{roughness:.45}),gapM=M('#b8afa2'),hdl=M('#8a8f94',{metalness:.4,roughness:.3}),top=stoneTop,
@@ -547,7 +546,7 @@ const R=new THREE.Group();scene.add(R);
 [['h',0,0,36],['v',36,0,40],['h',40,0,36],['v',0,0,21],['v',0,28,40]].forEach(s=>{piece(R,s[0],s[1],s[2],s[3],Yr,3,wallM,T,T/2);piece(R,s[0],s[1],s[2],s[3],Yr+3,.25,M('#45484d'),T+.3,T/2)});
 [['h',21,0,12],['v',0,21,28],['h',28,0,12],['v',12,24,28]].forEach(s=>piece(R,s[0],s[1],s[2],s[3],Yr,8,wallM,T,T/2));
 piece(R,'v',12,21,24,Yr+7,1,wallM);box(R,-.5,20.5,13,8,Yr+8,.5,slabM);box(R,10,21,2,3.5,Yr-.5,.5,slabM);box(R,11.85,21.2,.25,2.6,Yr,6.8,teak);
-stairs(ff,Yf);
+
 cyl(R,3.3,24.5,2.2,Yr+8.5,4.4,M('#1f1f22'));cyl(R,8.7,24.5,2.2,Yr+8.5,4.4,M('#1f1f22'));
 box(R,-.9,39.4,37.8,2.4,Yr-1.6,4.85,charcoal);box(R,-.9,27.6,1.8,14.2,Yf-.5,H+4.35,charcoal);box(R,35.1,39.4,1.8,2.4,Yf-.5,H+4.35,charcoal);
 box(R,.3,28.3,26.1,11.4,Yr-.66,.16,TM('wood',6,3),false);
