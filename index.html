@@ -335,7 +335,10 @@ box(site,-14,-16,64,82,0,.05,TM('grass',16,20),false);
 box(site,-.5,-.5,37,41,0,PL,TM('stone',9,1));box(site,13,40,10,4,0,PL,TM('stone',3,1));
 box(site,13.2,40.2,9.6,3.6,PL,.04,TM('marble',5,2),false);
 for(let i=0;i<3;i++)box(site,14,44+i,8,1,0,PL-(i+1)*.5,M('#a59c8f'));
-box(site,6,-6,12,6,0,.25,TM('paver',3,1.5));box(site,7,-5.4,4,1.8,0,2.6,M('#9a9186'));cyl(site,9,-4.6,.08,2.6,.8,steel);
+box(site,6,-6,12,6,0,.25,TM('paver',3,1.5));
+/* back-door steps down to the wash area: 3 granite steps with a steel hand-rail */
+{const gr=M('#8d8a84',{roughness:.6}),nose=M('#6f6b66');[[0,1.5],[1,1],[2,.5]].forEach(([k,h])=>{box(site,10.2,-1-k,3.6,1,0,h+.25,gr);box(site,10.2,-1-k,3.6,.08,h+.17,.08,nose,false)});
+ cyl(site,13.95,-.2,.06,2,3.2,steel);cyl(site,13.95,-2.8,.06,.75,3.2,steel);const rl=new THREE.Mesh(cylG,steel);const A=new THREE.Vector3(13.95-CX,5.2,-.2-CY),B=new THREE.Vector3(13.95-CX,3.95,-2.8-CY);rl.scale.set(.06,A.distanceTo(B),.06);rl.position.copy(A).add(B).multiplyScalar(.5);rl.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),B.clone().sub(A).normalize());site.add(rl)}box(site,6.2,-5.4,3.6,1.8,0,2.6,M('#9a9186'));cyl(site,8.6,-4.6,.08,2.6,.8,steel);
 box(site,15,47,6,19,0,.14,TM('paver',2,6),false);box(site,25,48,20,12,0,.14,TM('paver',6,4),false);
 const cw=M('#e9e3d8');[[-14,-16,64,.6],[-14,65.4,27.5,.6],[22.5,65.4,27.5,.6]].forEach(([x,y,w,d])=>{box(site,x,y,w,d,0,4.5,cw);box(site,x-.1,y-.1,w+.2,d+.2,4.5,.25,charcoal)});
 [[-14,-16,.6,82],[49.4,-16,.6,82]].forEach(([x,y,w,d])=>{box(site,x,y,w,d,0,4.5,cw);box(site,x-.1,y-.1,w+.2,d+.2,4.5,.25,charcoal)});
@@ -408,6 +411,13 @@ box(G.wg,15.2,40.32,.4,.2,5.6,.6,glow);box(G.wg,20.4,40.32,.4,.2,5.6,.6,glow);bo
  box(gf,5.4,8.1,1.7,1.1,Y0+2.86,.1,M('#b07a4a'));sph(gf,5.8,8.5,.16,Y0+3.08,M('#d9381e'));sph(gf,6.15,8.6,.14,Y0+3.06,M('#e07b1b'));box(gf,6.4,8.35,.6,.12,Y0+2.96,.1,M('#4f8a2b'));box(gf,6.6,8.75,.35,.05,Y0+2.97,.03,M('#d0d4d8'),false);
  cyl(gf,7.8,8.7,.42,Y0+2.86,.3,M('#a87b4f'),.36);sph(gf,7.7,8.6,.16,Y0+3.2,M('#e8c23a'));sph(gf,7.95,8.75,.16,Y0+3.2,M('#d9381e'));sph(gf,7.75,8.95,.15,Y0+3.2,M('#7cb342'));
  cyl(gf,9.2,8.8,.3,Y0+2.86,.8,ss);cyl(gf,9.2,8.8,.31,Y0+3.66,.06,M('#2b2d31'));
+ /* front-loading washing machine under the prep counter */
+ box(gf,8.2,7.62,1.9,1.95,Y0+.05,2.6,M('#f6f7f8',{roughness:.35}));box(gf,8.25,7.6,1.8,.03,Y0+2.15,.45,M('#e2e5e8'),false);
+ {const dm=new THREE.Mesh(cylG,M('#9fb3c2',{transparent:true,opacity:.75,roughness:.05}));dm.scale.set(.55,.06,.55);dm.rotation.x=Math.PI/2;dm.position.set(9.15-CX,Y0+1.1,7.6-CY);gf.add(dm);
+  const rim=new THREE.Mesh(cylG,chrome);rim.scale.set(.66,.04,.66);rim.rotation.x=Math.PI/2;rim.position.set(9.15-CX,Y0+1.1,7.63-CY);gf.add(rim);
+  const knob=new THREE.Mesh(cylG,M('#c9ced3'));knob.scale.set(.14,.06,.14);knob.rotation.x=Math.PI/2;knob.position.set(9.75-CX,Y0+2.37,7.58-CY);gf.add(knob)}
+ box(gf,8.4,7.58,.6,.02,Y0+2.27,.2,M('#79c7ff',{emissive:'#3aa0ff',emissiveIntensity:.6}),false);box(gf,8.25,7.6,.5,.02,Y0+.15,.25,M('#d5d9dd'),false);
+ box(gf,3.2,7.35,.9,.6,Y0+.08,1.4,M('#7da1c4'));box(gf,3.15,7.3,1,.7,Y0+1.48,.08,M('#6b8db0'));/* laundry basket */
  /* floor runner, bin, window plant, hand towel */
  box(gf,3,3.2,1.6,4.2,Y0+.08,.04,M('#7a5c47',{roughness:1}),false);box(gf,6.2,2.7,2.2,1,Y0+.08,.04,M('#7a5c47',{roughness:1}),false);
  cyl(gf,2.15,9.35,.28,Y0,1.2,ss);cyl(gf,.25,2.6,.25,Y0+3.05,.35,potM);sph(gf,.25,2.6,.35,Y0+3.6,plantM);
@@ -558,7 +568,7 @@ const EL={0:{groups:[
   {sw:[34.6,13.55],pts:[['L',33,17],['EF',35.5,17.2]]},
   {sw:[24.45,27.2],pts:[['DL',27,23.5],['DL',33,23.5],['DL',27,30],['DL',33,30],['DL',27,36],['DL',33,36]]}],
  power:[['P',2.6,.45,'FR'],['P',7.6,.45,'MW'],['P',10,.45,'RO'],['P',.45,5.4,'CH'],['S',5,.45],['S',.45,8.6],['S',4,9.55],['S',8,9.55],
-  ['S',23.55,3],['S',13.1,7],['P',8,-.5,'WM'],
+  ['S',23.55,3],['S',13.1,7],['P',9.1,9.55,'WM'],
   ['AC',4.5,10.15,3,.6],['TV',6,20.55],['S',4,20.55],['S',8,20.55],['S',.45,12],['S',23.55,20.2],
   ['DB',12.75,29.8,.7,1.6],['M',13.8,40.8],['B',21.6,40.6],['S',23.55,36],
   ['AC',3.5,28.15,3,.6],['S',1.6,28.45],['S',9.6,28.45],['S',5,39.55],
@@ -583,12 +593,12 @@ const EL={0:{groups:[
  tags:[['Sub DB',19.2,18.2],['AC outdoor unit, solar and water tanks are on the roof',18,-3]]}};
 const PLB={0:{fix:[['WC',28.8,18.6],['WB',26.6,14.8],['SH',28.9,15.3],['FT',27.5,17],['GY',25,19.4],
    ['WC',35.1,18.6],['WB',31.6,19.2],['SH',35,15.2],['FT',33,17],['GY',30.5,15],
-   ['KS',7.4,1.4],['TAP',9.6,1.1],['WM',8,-1.4],['WS',9,-4.5],['TAP',14,-1],['TAP',-6,44],['TAP',24,46]],
+   ['KS',7.4,1.4],['TAP',9.6,1.1],['WM',9.1,9.1],['WS',9,-4.5],['TAP',14,-1],['TAP',-6,44],['TAP',24,46]],
   cw:[[[36.6,16.5],[24.6,16.5]],[[35,16.5],[35,15.2]],[[35.1,16.5],[35.1,18.6]],[[31.6,16.5],[31.6,19.2]],[[30.5,16.5],[30.5,15]],[[28.9,16.5],[28.9,15.3]],[[28.8,16.5],[28.8,18.6]],[[26.6,16.5],[26.6,14.8]],[[25,16.5],[25,19.4]],
-   [[-.6,6],[.3,6],[.3,.5],[9.6,.5]],[[7.4,.5],[7.4,1.4]],[[-.6,6],[-.6,-.8],[14,-.8]],[[8,-.8],[8,-1.4]],[[9,-.8],[9,-4.5]],[[-6,40],[-6,44]],[[24,40.6],[24,46]]],
+   [[-.6,6],[.3,6],[.3,.5],[9.6,.5]],[[7.4,.5],[7.4,1.4]],[[-.6,6],[-.6,-.8],[14,-.8]],[[9.6,.5],[10.7,.5],[10.7,9.1],[9.1,9.1]],[[9,-.8],[9,-4.5]],[[-6,40],[-6,44]],[[24,40.6],[24,46]]],
   hw:[[[25,19.4],[25,15.6],[28.9,15.6]],[[25,15.6],[26.6,15.2]],[[30.5,15],[34.4,15]],[[30.5,15],[30.5,18.8],[31.6,18.8]]],
   soil:[[[28.8,18.6],[28.8,19.4],[38.6,19.4]],[[35.1,18.6],[35.1,19.4]],[[36.6,12.5],[38.6,12.5]],[[38.6,19.4],[38.6,-8],[40,-8]],[[-.6,14],[-2,14],[-2,-8],[38.6,-8]]],
-  waste:[[[27.5,17],[37.6,17]],[[37.6,17],[38.6,17]],[[7.4,1.4],[7.4,-.2],[5,-.2],[5,-2]],[[8,-1.4],[5,-2]],[[9,-4.5],[5,-4.5],[5,-2]],[[5,-2],[5,-8]]],
+  waste:[[[27.5,17],[37.6,17]],[[37.6,17],[38.6,17]],[[7.4,1.4],[7.4,-.2],[5,-.2],[5,-2]],[[9.1,9.1],[10.9,9.1],[10.9,-.2],[7.4,-.2]],[[9,-4.5],[5,-4.5],[5,-2]],[[5,-2],[5,-8]]],
   rain:[[[-.6,40.6],[-10,40.6],[-10,37.8]],[[-.6,-.6],[-12,-.6],[-12,36],[-11.6,36]],[[36.6,-.6],[45,-.6],[45,28]],[[36.6,40.6],[45,40.6],[45,32]]],
   dlv:[[[-10,-12],[-10,0.6],[-9,1]],[[-2.4,8.6],[-2.4,22],[-.6,22]]],
   items:[['RISER',36.6,16.5,'R1'],['RISER',-.6,6,'R2'],['SVP',36.6,12.5,'SVP2'],['SVP',-.6,14,'SVP1'],['GT',37.6,17],['GT',5,-2],
@@ -826,7 +836,7 @@ function vrStep(now){const dt=lastT?Math.min(.1,(now-lastT)/1000):0;lastT=now;
   if(sh!==null&&vrLevel!==-1){onStair=true;lastSH=sh;ty=PL+sh}
   else{if(onStair){vrLevel=lastSH>7.5?1:0;onStair=false}
     const inside=px>-.5&&px<36.5&&py>-.5&&py<40.5;if(vrLevel===-1&&inside)vrLevel=0;else if(vrLevel===0&&!inside)vrLevel=-1;
-    ty=vrLevel===1?Yf:vrLevel===0?PL:0}
+    ty=vrLevel===1?Yf:vrLevel===0?PL:0;if(vrLevel===-1&&px>10&&px<14&&py>-3&&py<=-.5)ty=Math.max(.25,PL+.25+py*.5)}
   if(!flying)dolly.position.y+=(ty-dolly.position.y)*Math.min(1,dt*8);
   renderer.xr.getCamera(cam).getWorldDirection(vdir);vdir.y=0;if(vdir.lengthSq()<1e-6)return;vdir.normalize();vright.crossVectors(vdir,UP).normalize();
   for(const src of ses.inputSources){const gp=src.gamepad;if(!gp)continue;const ax=gp.axes[2]||0,ay=gp.axes[3]||0,h=src.handedness;
