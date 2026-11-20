@@ -47,11 +47,14 @@ input[type=number]{width:110px;font:inherit;font-size:16px;padding:6px 8px;borde
 .rate{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0 14px}
 .rate input{min-height:44px}
 .note{font-size:13px;color:var(--mute);margin:10px 0 0}
+.leg{display:flex;flex-wrap:wrap;gap:6px 18px;margin:12px 0 4px;font-size:14px}.leg span{display:inline-flex;align-items:center;gap:6px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:24px;margin:14px 0 8px}@media(max-width:800px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.grid2 h3{font-size:17px;margin:4px 0 6px}.flow{margin:0;padding-left:20px;font-size:15px}.flow li{padding:3px 0}
 </style>
 </head>
 <body>
 <div class="band wrap">
-  <h1>Parvathagiri house — plan v15</h1>
+  <h1>Parvathagiri house — plans, electrical and plumbing</h1>
   <p class="sub">A wider 36′ × 40′ G+1 house. The main door is in the middle and opens into a 12′ × 12′ entrance foyer. On the left: a narrower bedroom, then the stairs, then the hall, then the open kitchen at the back. On the right: the home theatre, then a second bedroom with attached bath. The front is at the bottom of each drawing.</p>
   <ul class="ideas">
     <li>Ground floor: 2 bedrooms, 12′ × 20′ theatre (entered from its back end through a light-proof sliding door), big entrance foyer, hall, dining, kitchen (walled off from the hall, with a 3 ft counter between it and the dining, storage underneath); back door between the kitchen and dining</li><li>Bedroom 2: wardrobe removed, its attached bath moved into that corner; the common washroom now sits next to it, opening off the hall</li>
@@ -63,11 +66,16 @@ input[type=number]{width:110px;font:inherit;font-size:16px;padding:6px 8px;borde
     <button data-f="2" aria-pressed="false">Site plan</button>
     <button data-f="0" aria-pressed="true">Ground floor</button>
     <button data-f="1" aria-pressed="false">First floor</button>
+    <button data-f="3" aria-pressed="false">Electrical · ground</button>
+    <button data-f="4" aria-pressed="false">Electrical · first</button>
+    <button data-f="5" aria-pressed="false">Plumbing · ground</button>
+    <button data-f="6" aria-pressed="false">Plumbing · first</button>
   </div>
 </div>
 <div class="wrap" style="padding:0 max(4vw,16px)">
   <div class="sheet"><svg id="plan" role="img" aria-label="Floor plan"></svg></div>
   <p class="cap">Inside sizes in feet. On a phone, scroll the drawing sideways or pinch to zoom.</p>
+  <div id="legend"></div>
 </div>
 <div class="band wrap">
   <div class="grid">
@@ -158,7 +166,144 @@ function site(){let s=`<rect x="-20" y="-22" width="82" height="96" fill="#fff"/
   s+=`<g transform="translate(54 -18)"><g transform="rotate(90)"><path d="M0 -2L.9 1L0 .3L-.9 1Z" fill="#16191d"/></g><text y="3.2" text-anchor="middle" font-size="1.2" font-weight="800" fill="#16191d">N</text></g>`;
   s+=`<text x="-18" y="71.6" font-size="2" font-weight="800" fill="#16191d">SITE PLAN</text><text x="-18" y="73.4" font-size="1" fill="#5d636b">Dashed = suggested compound (wall not in the budget) · north arrow assumes the front faces east</text>`;
   return s}
-function draw(fi){const fl=F[fi];svg.setAttribute('viewBox',fl.vb);svg.innerHTML=fi===2?site():plan(fl);svg.setAttribute('aria-label',fl.name);
+/* ===== electrical + plumbing drawings ===== */
+const MEPVB='-14 -20 64 76';
+const EL={0:{groups:[
+  {sw:[10.4,3.6],pts:[['L',6,4.6],['L',2.2,8.6],['OL',12,-.6]]},
+  {sw:[23.55,8.6],pts:[['L',16.5,4.8],['L',19.5,4.8],['F',18,7.6]]},
+  {sw:[11,20.55],pts:[['L',4,13],['L',12,13],['L',20,13],['L',4,18.5],['L',20,18.5],['F',8,15.5],['F',17,15.5]]},
+  {sw:[11.55,27.4],pts:[['L',6,24.5]]},
+  {sw:[23.55,27.4],pts:[['L',15,24.5],['L',21,24.5]]},
+  {sw:[15.2,39.5],pts:[['L',18,34],['L',18,30.5],['WL',15.3,40.6],['WL',20.7,40.6],['L',18,42]]},
+  {sw:[11.55,34],pts:[['F',6,33.5],['L',6,37.5]]},
+  {sw:[24.45,10.2],pts:[['F',30,7.6],['L',30,11.6]]},
+  {sw:[23.55,18.8],pts:[['L',27,17],['EF',27,14.5]]},
+  {sw:[34.6,13.55],pts:[['L',33,17],['EF',35.5,17.2]]},
+  {sw:[24.45,27.2],pts:[['DL',27,23.5],['DL',33,23.5],['DL',27,30],['DL',33,30],['DL',27,36],['DL',33,36]]}],
+ power:[['P',2.6,.45,'FR'],['P',7.6,.45,'MW'],['P',10,.45,'RO'],['P',.45,5.4,'CH'],['S',5,.45],['S',.45,8.6],['S',4,9.55],['S',8,9.55],
+  ['S',23.55,3],['S',13.1,7],['P',8,-.5,'WM'],
+  ['AC',4.5,10.15,3,.6],['TV',6,20.55],['S',4,20.55],['S',8,20.55],['S',.45,12],['S',23.55,20.2],
+  ['DB',12.75,29.8,.7,1.6],['M',13.8,40.8],['B',21.6,40.6],['S',23.55,36],
+  ['AC',3.5,28.15,3,.6],['S',1.6,28.45],['S',9.6,28.45],['S',5,39.55],
+  ['AC',28.5,.15,3,.6],['S',25.9,.45],['S',34.3,.45],['S',35.55,12.6],['TV',24.45,4],
+  ['P',25,19.55,'GY'],['P',30.45,15,'GY'],
+  ['AC',35.15,31,.6,3],['PR',30,25.5],['S',25.6,39.55],['S',34.4,39.55],['D',30,39.55,'HDMI'],
+  ['E',-3,30],['E',-3,26],['INV',5,22.8],['P',-2.6,9.8,'MTR']],
+ tags:[['Main DB + RCCB',16.4,29.3],['Inverter under the stairs',6,27.5],['Earth pits',-3,33.4],['Motor starter',-2.6,11.6]]},
+ 1:{groups:[
+  {sw:[16.6,15.55],pts:[['F',10,8],['L',13,12]]},
+  {sw:[7.45,9.4],pts:[['L',3.5,12.5],['EF',.5,12.5]]},
+  {sw:[23.6,15.55],pts:[['F',26,8],['L',23,12]]},
+  {sw:[28.55,9.4],pts:[['L',32.5,12.5],['EF',35.5,12.5]]},
+  {sw:[11,20.55],pts:[['L',6,18.5],['L',16,22],['L',23,19.5],['L',23,25],['L',33,22],['F',19,22],['F',29,22]]},
+  {sw:[11.55,27.4],pts:[['L',6,24.5]]},
+  {sw:[35.55,28.8],pts:[['L',31.5,32],['F',31.5,35]]},
+  {sw:[13.4,27.55],pts:[['DL',6,32],['DL',13,32],['DL',20,32],['DL',6,37],['DL',13,37],['DL',20,37],['F',13,34.5]]}],
+ power:[['AC',1,.15,3,.6],['S',.45,7.9],['S',10,.45],['S',12,15.55],['P',3.5,15.55,'GY'],
+  ['AC',32,.15,3,.6],['S',35.55,7.9],['S',24.5,.45],['S',20.45,13],['P',32.5,15.55,'GY'],
+  ['AC',28,16.15,3,.6],['S',25.6,16.45],['S',35.55,26.5],['S',13,27.55],['SDB',19.2,16.5,1.4,.6],
+  ['S',30,39.55],['S',33,39.55],['D',31.5,39.55,'LAN'],['S',.45,31],['S',26.55,38.5]],
+ tags:[['Sub DB',19.2,18.2],['AC outdoor unit, solar and water tanks are on the roof',18,-3]]}};
+const PLB={0:{fix:[['WC',28.8,18.6],['WB',26.6,14.8],['SH',28.9,15.3],['FT',27.5,17],['GY',25,19.4],
+   ['WC',35.1,18.6],['WB',31.6,19.2],['SH',35,15.2],['FT',33,17],['GY',30.5,15],
+   ['KS',7.4,1.4],['TAP',9.6,1.1],['WM',8,-1.4],['WS',9,-4.5],['TAP',14,-1],['TAP',-6,44],['TAP',24,46]],
+  cw:[[[36.6,16.5],[24.6,16.5]],[[35,16.5],[35,15.2]],[[35.1,16.5],[35.1,18.6]],[[31.6,16.5],[31.6,19.2]],[[30.5,16.5],[30.5,15]],[[28.9,16.5],[28.9,15.3]],[[28.8,16.5],[28.8,18.6]],[[26.6,16.5],[26.6,14.8]],[[25,16.5],[25,19.4]],
+   [[-.6,6],[.3,6],[.3,.5],[9.6,.5]],[[7.4,.5],[7.4,1.4]],[[-.6,6],[-.6,-.8],[14,-.8]],[[8,-.8],[8,-1.4]],[[9,-.8],[9,-4.5]],[[-6,40],[-6,44]],[[24,40.6],[24,46]]],
+  hw:[[[25,19.4],[25,15.6],[28.9,15.6]],[[25,15.6],[26.6,15.2]],[[30.5,15],[34.4,15]],[[30.5,15],[30.5,18.8],[31.6,18.8]]],
+  soil:[[[28.8,18.6],[28.8,19.4],[38.6,19.4]],[[35.1,18.6],[35.1,19.4]],[[36.6,12.5],[38.6,12.5]],[[38.6,19.4],[38.6,-8],[40,-8]],[[-.6,14],[-2,14],[-2,-8],[38.6,-8]]],
+  waste:[[[27.5,17],[37.6,17]],[[37.6,17],[38.6,17]],[[7.4,1.4],[7.4,-.2],[5,-.2],[5,-2]],[[8,-1.4],[5,-2]],[[9,-4.5],[5,-4.5],[5,-2]],[[5,-2],[5,-8]]],
+  rain:[[[-.6,40.6],[-10,40.6],[-10,37.8]],[[-.6,-.6],[-12,-.6],[-12,36],[-11.6,36]],[[36.6,-.6],[45,-.6],[45,28]],[[36.6,40.6],[45,40.6],[45,32]]],
+  dlv:[[[-10,-12],[-10,0.6],[-9,1]],[[-2.4,8.6],[-2.4,22],[-.6,22]]],
+  items:[['RISER',36.6,16.5,'R1'],['RISER',-.6,6,'R2'],['SVP',36.6,12.5,'SVP2'],['SVP',-.6,14,'SVP1'],['GT',37.6,17],['GT',5,-2],
+   ['IC',38.6,19.4],['IC',38.6,6],['IC',38.6,-8],['IC',-2,14],['IC',-2,-8],['IC',5,-8],['IC',20,-8],
+   ['ST',40,-12,7,6],['SP',44,-16,2.2],['SUMP',-9,1,6,6],['BW',-10,-12],['MOTOR',-2.4,8.6],['RP',-10,36],['RP',45,30],
+   ['RWP',-.6,-.6],['RWP',36.6,-.6],['RWP',-.6,40.6],['RWP',36.6,40.6]],
+  tags:[['Septic tank',43.5,-4.6],['Soak pit',44,-12.6],['Sump 10,000 L',-6,4.4],['Borewell',-10,-14.4],['Motor',-2.4,7.2],['Delivery to tanks ↑',-7.2,23.6],['Recharge pit',-10,39.4],['Recharge pit',45,26.6]]},
+ 1:{fix:[['WC',1.2,14.4],['WB',1.2,10.4],['SH',5.6,14.8],['FT',3.5,12.8],['GY',3.5,15.5],['WC',34.8,14.4],['WB',34.8,10.4],['SH',30.4,14.8],['FT',32.5,12.8],['GY',32.5,15.5],['FT',1,39]],
+  cw:[[[-.6,6],[-.6,12.2],[1.2,12.2]],[[1.2,12.2],[1.2,10.4]],[[1.2,12.2],[1.2,14.4]],[[1.2,12.2],[5.6,12.2],[5.6,14.8]],[[3.5,12.2],[3.5,15.5]],
+   [[36.6,16.5],[36.6,12.2],[34.8,12.2]],[[34.8,12.2],[34.8,10.4]],[[34.8,12.2],[34.8,14.4]],[[34.8,12.2],[30.4,12.2],[30.4,14.8]],[[32.5,12.2],[32.5,15.5]]],
+  hw:[[[3.5,15.5],[3.5,14.8],[5.6,14.8]],[[3.5,14.8],[2,14.8],[2,10.6],[1.4,10.6]],[[32.5,15.5],[32.5,14.8],[30.4,14.8]],[[32.5,14.8],[34,14.8],[34,10.6],[34.6,10.6]]],
+  soil:[[[1.2,14.4],[-.6,14.4],[-.6,14]],[[34.8,14.4],[36.6,14.4],[36.6,12.5]]],
+  waste:[[[5.6,14.8],[3.5,12.8],[-.6,13.4]],[[1.2,10.4],[-.6,13.4]],[[30.4,14.8],[32.5,12.8],[36.6,13]],[[34.8,10.4],[36.6,13]],[[1,39],[-.6,40.6]]],
+  rain:[],dlv:[],
+  items:[['RISER',36.6,16.5,'R1'],['RISER',-.6,6,'R2'],['SVP',36.6,12.5,'SVP2'],['SVP',-.6,14,'SVP1'],['RWP',-.6,-.6],['RWP',36.6,-.6],['RWP',-.6,40.6],['RWP',36.6,40.6]],
+  tags:[['Overhead tanks 2 × 1,500 L on the stair-room roof; down-takes R1 (east) and R2 (west)',18,-3],['Balcony floor drain → rainwater pipe',8,41.6]]}};
+const EC='#c77700',BL='#2563c9',RD='#dc2626',BR='#7c4a1e',GN='#16a34a';
+const txt=(x,y,t,fs,c,w)=>`<text x="${x}" y="${y}" text-anchor="middle" font-size="${fs||.7}" font-weight="${w||700}" fill="${c||'#16191d'}" paint-order="stroke" stroke="#fff" stroke-width=".22">${t}</text>`;
+function sym(k,x,y,a,b,c){switch(k){
+ case 'L':return `<circle cx="${x}" cy="${y}" r=".45" fill="#fff" stroke="${EC}" stroke-width=".12"/>`+ln(x-.32,y-.32,x+.32,y+.32,.08,EC)+ln(x-.32,y+.32,x+.32,y-.32,.08,EC);
+ case 'DL':return `<circle cx="${x}" cy="${y}" r=".32" fill="${EC}"/>`;
+ case 'WL':case 'OL':return `<circle cx="${x}" cy="${y}" r=".38" fill="#ffd27a" stroke="${EC}" stroke-width=".1"/>`;
+ case 'F':{let s=`<circle cx="${x}" cy="${y}" r=".75" fill="#fff" stroke="${EC}" stroke-width=".1"/>`;for(let i=0;i<3;i++){const t=i*2.094-1.57;s+=ln(x,y,x+Math.cos(t)*.62,y+Math.sin(t)*.62,.14,EC)}return s}
+ case 'EF':return `<circle cx="${x}" cy="${y}" r=".5" fill="#fff" stroke="${EC}" stroke-width=".1"/>`+txt(x,y+.22,'EF',.5,EC);
+ case 'SW':return `<rect x="${x-.45}" y="${y-.25}" width=".9" height=".5" rx=".08" fill="#16191d"/>`;
+ case 'S':return `<circle cx="${x}" cy="${y}" r=".3" fill="#fff" stroke="${BL}" stroke-width=".1"/>`+ln(x,y-.18,x,y+.18,.08,BL);
+ case 'P':return `<rect x="${x-.35}" y="${y-.35}" width=".7" height=".7" fill="#c2410c"/>`+(a?txt(x,y-.6,a,.55,'#c2410c'):'');
+ case 'AC':return `<rect x="${x}" y="${y}" width="${a}" height="${b}" fill="#e0f2fe" stroke="#0284c7" stroke-width=".08"/>`+txt(x+a/2,y+b/2+.22,'AC',.55,'#0284c7');
+ case 'TV':case 'D':return `<path d="M${x-.4} ${y+.3}L${x+.4} ${y+.3}L${x} ${y-.4}Z" fill="${GN}"/>`+txt(x,y-.6,k==='TV'?'TV':(a||'DATA'),.5,GN);
+ case 'DB':case 'SDB':return `<rect x="${x-a/2}" y="${y-b/2}" width="${a}" height="${b}" fill="#16191d"/>`+txt(x+(a>b?0:1.4),y+(a>b?-.6:.2),k,.55,'#16191d');
+ case 'M':return `<rect x="${x-.6}" y="${y-.35}" width="1.2" height=".7" fill="#16191d"/>`+txt(x,y+1.2,'EB meter',.55);
+ case 'B':return `<circle cx="${x}" cy="${y}" r=".28" fill="#16191d"/>`+txt(x+.9,y+.2,'bell',.5);
+ case 'E':return `<circle cx="${x}" cy="${y}" r=".6" fill="#fff" stroke="${GN}" stroke-width=".12"/>`+txt(x,y+.24,'E',.6,GN);
+ case 'INV':return `<rect x="${x-.8}" y="${y-.4}" width="1.6" height=".8" fill="#fff" stroke="#16191d" stroke-width=".1"/>`+txt(x,y+.2,'INV',.5);
+ case 'PR':return `<rect x="${x-.5}" y="${y-.3}" width="1" height=".6" fill="#16191d"/>`+txt(x,y-.6,'projector',.5);
+ case 'WC':return `<ellipse cx="${x}" cy="${y}" rx=".55" ry=".7" fill="#fff" stroke="#334155" stroke-width=".1"/>`+txt(x,y+.2,'WC',.45,'#334155');
+ case 'WB':return `<rect x="${x-.6}" y="${y-.4}" width="1.2" height=".8" rx=".3" fill="#fff" stroke="#334155" stroke-width=".1"/>`+txt(x,y+.18,'WB',.45,'#334155');
+ case 'SH':return `<rect x="${x-.6}" y="${y-.6}" width="1.2" height="1.2" fill="#fff" stroke="#334155" stroke-width=".1"/>`+ln(x-.6,y-.6,x+.6,y+.6,.06,'#334155')+ln(x-.6,y+.6,x+.6,y-.6,.06,'#334155');
+ case 'KS':return `<rect x="${x-.9}" y="${y-.5}" width="1.8" height="1" fill="#fff" stroke="#334155" stroke-width=".1"/><rect x="${x-.6}" y="${y-.3}" width="1.2" height=".6" fill="none" stroke="#334155" stroke-width=".06"/>`;
+ case 'WM':return `<rect x="${x-.7}" y="${y-.7}" width="1.4" height="1.4" fill="#fff" stroke="#334155" stroke-width=".1"/><circle cx="${x}" cy="${y}" r=".45" fill="none" stroke="#334155" stroke-width=".08"/>`;
+ case 'WS':return `<rect x="${x-1}" y="${y-.6}" width="2" height="1.2" fill="#e5e7eb" stroke="#334155" stroke-width=".08"/>`+txt(x,y+.2,'wash stone',.45,'#334155');
+ case 'FT':return `<circle cx="${x}" cy="${y}" r=".3" fill="${BR}"/>`;
+ case 'GY':return `<circle cx="${x}" cy="${y}" r=".42" fill="${RD}"/>`+txt(x,y+.17,'GY',.42,'#fff',800);
+ case 'TAP':return `<circle cx="${x}" cy="${y}" r=".32" fill="#fff" stroke="${BL}" stroke-width=".12"/>`+txt(x,y+.17,'T',.42,BL);
+ case 'RISER':return `<circle cx="${x}" cy="${y}" r=".45" fill="${BL}"/>`+txt(x+(x>18?1.2:-1.2),y+.2,a,.6,BL);
+ case 'SVP':return `<circle cx="${x}" cy="${y}" r=".45" fill="${BR}"/>`+txt(x+(x>18?1.6:-1.6),y+.2,a,.6,BR);
+ case 'GT':return `<circle cx="${x}" cy="${y}" r=".55" fill="#fff" stroke="${BR}" stroke-width=".12"/>`+txt(x,y+.2,'GT',.45,BR);
+ case 'IC':return `<rect x="${x-.6}" y="${y-.6}" width="1.2" height="1.2" fill="#fff" stroke="${BR}" stroke-width=".14"/>`+txt(x,y+.2,'IC',.45,BR);
+ case 'ST':return `<rect x="${x}" y="${y}" width="${a}" height="${b}" fill="#efe2d0" stroke="${BR}" stroke-width=".14"/>`+ln(x+a/2,y,x+a/2,y+b,.08,BR,'.3 .2');
+ case 'SP':return `<circle cx="${x}" cy="${y}" r="${a}" fill="#f6efe6" stroke="${BR}" stroke-width=".12" stroke-dasharray=".4 .3"/>`;
+ case 'SUMP':return `<rect x="${x}" y="${y}" width="${a}" height="${b}" fill="#dbeafe" stroke="${BL}" stroke-width=".14"/>`;
+ case 'BW':return `<circle cx="${x}" cy="${y}" r=".8" fill="#fff" stroke="${BL}" stroke-width=".14"/><circle cx="${x}" cy="${y}" r=".35" fill="${BL}"/>`;
+ case 'MOTOR':return `<rect x="${x-.6}" y="${y-.4}" width="1.2" height=".8" fill="${BL}"/>`;
+ case 'RP':return `<circle cx="${x}" cy="${y}" r="1.6" fill="#ecfdf3" stroke="${GN}" stroke-width=".12" stroke-dasharray=".4 .3"/>`+txt(x,y+.25,'RP',.6,GN);
+ case 'RWP':return `<circle cx="${x}" cy="${y}" r=".38" fill="${GN}"/>`;
+ }return ''}
+const pl=(pts,c,w,da)=>`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${c}" stroke-width="${w}"${da?` stroke-dasharray="${da}"`:''} stroke-linejoin="round" stroke-linecap="round"/>`;
+function mepBase(fl){const v=MEPVB.split(' ');let s=`<rect x="${v[0]}" y="${v[1]}" width="${v[2]}" height="${v[3]}" fill="#fff"/>`;
+  s+=fl.rooms.map(([n,x,y,w,d,t])=>`<rect x="${x}" y="${y}" width="${w}" height="${d}" fill="${t==='bath'?'#eef8f8':t==='kitchen'?'#fbf4e9':'#f8f7f4'}"/>`).join('');
+  s+=fl.dash.map(([x,y,w,d])=>`<rect x="${x}" y="${y}" width="${w}" height="${d}" fill="none" stroke="#9aa0a6" stroke-width=".1" stroke-dasharray=".5 .4"/>`).join('');
+  s+=`<g opacity=".5">${stairs(fl.st)}${walls(fl)}</g>`;
+  s+=fl.rooms.map(([n,x,y,w,d])=>`<text x="${x+w/2}" y="${y+d/2+.3}" text-anchor="middle" font-size=".9" fill="#9aa0a6" font-weight="600">${n.split('|')[0]}</text>`).join('');
+  return s}
+function mep(m){const fl=m.base,v=MEPVB.split(' ');let s=mepBase(fl);
+  if(m.kind==='el'){const d=EL[m.floor];
+    d.groups.forEach(g=>{g.pts.forEach(([k,x,y])=>{const mx=(g.sw[0]+x)/2,my=(g.sw[1]+y)/2,dx=x-g.sw[0],dy=y-g.sw[1];s+=`<path d="M${g.sw[0]} ${g.sw[1]}Q${mx-dy*.15} ${my+dx*.15} ${x} ${y}" fill="none" stroke="${EC}" stroke-width=".07" stroke-dasharray=".35 .25"/>`})});
+    d.power.forEach(p=>s+=sym(...p));d.groups.forEach(g=>{g.pts.forEach(p=>s+=sym(...p));s+=sym('SW',...g.sw)});
+    s+=d.tags.map(([t,x,y])=>txt(x,y,t,.8,'#b4462e')).join('')}
+  else{const d=PLB[m.floor];
+    d.rain.forEach(p=>s+=pl(p,GN,.14,'.5 .3'));d.waste.forEach(p=>s+=pl(p,BR,.14,'.45 .25'));d.soil.forEach(p=>s+=pl(p,BR,.24));
+    d.cw.forEach(p=>s+=pl(p,BL,.14));d.hw.forEach(p=>s+=pl(p,RD,.12));d.dlv.forEach(p=>s+=pl(p,BL,.26));
+    d.items.forEach(p=>s+=sym(...p));d.fix.forEach(p=>s+=sym(...p));s+=d.tags.map(([t,x,y])=>txt(x,y,t,.8,'#b4462e')).join('')}
+  s+=dims(fl.W,fl.D).replace(`translate(${fl.W+6} -6)`,'translate(46 47)')+`<text x="${+v[0]+1}" y="${fl.D+11}" font-size="1.5" font-weight="800" fill="#16191d">${m.name.toUpperCase()}</text><text x="${+v[0]+1}" y="${fl.D+12.9}" font-size=".9" fill="#5d636b">Layout for planning · not to scale for fixing positions · final sizes and loads to be checked by a licensed electrician / plumber</text>`;
+  return s}
+const LEG={el:[['L','Ceiling light'],['DL','Downlight'],['WL','Wall / outdoor light'],['F','Ceiling fan'],['EF','Exhaust fan'],['SW','Switchboard (near door, 4 ft)'],['S','6A socket'],['P','16A power socket (AC, geyser, fridge…)'],['AC','AC point (power + pipe provision; fit units where needed)'],['TV','TV / data point'],['DB','Distribution board'],['E','Earth pit'],['INV','Inverter']],
+ pl:[['RISER','Cold-water down-take from tank'],['SVP','Soil & vent pipe (stack)'],['WC','Western WC'],['WB','Wash basin'],['SH','Shower'],['GY','Geyser'],['FT','Floor trap'],['TAP','Tap point'],['IC','Inspection chamber'],['GT','Gully trap'],['RWP','Rainwater pipe'],['RP','Recharge pit']]};
+const LINES={el:[[EC,'.35 .25','Lighting wire run (switch to point)']],pl:[[BL,'','Cold water (CPVC)'],[RD,'','Hot water (CPVC)'],[BR,'','Soil pipe (WC), 110 mm'],[BR,'.45 .25','Waste water (basin, shower, sink)'],[GN,'.5 .3','Rainwater to recharge pit']]};
+function legend(kind,floor){
+  const ic=(k)=>`<svg viewBox="-1.2 -1.2 2.4 2.4" width="26" height="26" aria-hidden="true">${k==='AC'?sym('AC',-1,-.3,2,.6):k==='DB'?sym('DB',0,0,1.6,.8).replace(/<text.*<\/text>/,''):k==='SVP'||k==='RISER'?sym(k,0,0,''):k==='P'?sym('P',0,0):sym(k,0,0)}</svg>`;
+  let h='<div class="leg">'+LEG[kind].map(([k,t])=>`<span>${ic(k)}${t}</span>`).join('')+LINES[kind].map(([c,da,t])=>`<span><svg width="30" height="10" aria-hidden="true"><line x1="1" y1="5" x2="29" y2="5" stroke="${c}" stroke-width="${t.startsWith('Soil')?4:2.4}" ${da?`stroke-dasharray="${da.split(' ').map(n=>n*12).join(' ')}"`:''}/></svg>${t}</span>`).join('')+'</div>';
+  if(kind==='el'){const cnt=f=>{const d=EL[f];let c={L:0,F:0,S:0,P:0,AC:0,SW:d.groups.length,TV:0};d.groups.forEach(g=>g.pts.forEach(([k])=>{if(k==='F')c.F++;else if(k!=='EF')c.L++}));d.power.forEach(([k])=>{if(k==='S')c.S++;if(k==='P')c.P++;if(k==='AC')c.AC++;if(k==='TV'||k==='D')c.TV++});return c};
+    const a=cnt(0),b=cnt(1);
+    h+=`<div class="grid2"><div><h3>Point count</h3><table><thead><tr><th>Points</th><th class="n">Ground</th><th class="n">First</th><th class="n">Total</th></tr></thead><tbody>${[['Lights','L'],['Fans','F'],['Switchboards','SW'],['6A sockets','S'],['16A power points','P'],['AC points','AC'],['TV / data','TV']].map(([n,k])=>`<tr><td>${n}</td><td class="n">${a[k]}</td><td class="n">${b[k]}</td><td class="n">${a[k]+b[k]}</td></tr>`).join('')}</tbody></table></div>
+    <div><h3>Circuits at the main DB</h3><table class="stack"><thead><tr><th>Circuit</th><th>Wire</th><th>MCB</th></tr></thead><tbody>${[['C1 Ground-floor lights & fans','1.5 mm²','10 A'],['C2 First-floor lights & fans (via sub DB)','1.5 mm²','10 A'],['C3 Ground-floor 6A sockets','2.5 mm²','16 A'],['C4 First-floor 6A sockets','2.5 mm²','16 A'],['C5 Kitchen: fridge, microwave, RO, chimney','4 mm²','20 A'],['C6–C9 Geysers, one circuit each','4 mm²','20 A'],['C10 Washing machine + outdoor points','2.5 mm²','16 A'],['C11 Theatre: projector, sound, downlights','2.5 mm²','16 A'],['C12 AC indoor units','2.5 mm²','16 A'],['C13 AC outdoor unit (3-phase)','6 mm²','32 A TP'],['C14 Borewell motor (3-phase, via starter)','2.5 mm²','16 A TP'],['C15 Inverter-backed: lights, fans, Wi-Fi, CCTV','1.5–2.5 mm²','16 A'],['C16 Outdoor, compound & garden lights','2.5 mm²','10 A']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table>
+    <p class="note">3-phase supply with a 30 mA RCCB on every group. Two earth pits. Run all conduits in the slab and walls before plastering, and keep a spare 25 mm conduit from each floor to the roof for solar and future cables.</p></div></div>`}
+  else h+=`<div class="grid2"><div><h3>Pipe sizes</h3><table class="stack"><thead><tr><th>Line</th><th>Size</th><th>Material</th></tr></thead><tbody>${[['Borewell & motor delivery to tanks','32 mm (1¼″)','HDPE / CPVC'],['Down-takes R1, R2 from tanks','25 mm (1″)','CPVC'],['Branches to each bathroom / kitchen','20 mm (¾″)','CPVC'],['To each fixture','15 mm (½″)','CPVC'],['Hot water from geysers','15–20 mm','CPVC'],['Soil pipes from WCs, stacks SVP1/SVP2','110 mm (4″)','uPVC SWR'],['Waste from basins, showers, sink','50–75 mm','uPVC SWR'],['Rainwater pipes','110 mm (4″)','uPVC'],['Vent pipes above roof','75 mm (3″)','uPVC SWR']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div>
+    <div><h3>How the water moves</h3><ol class="flow"><li>Borewell → underground sump (10,000 L) beside the west wall.</li><li>Motor → delivery pipe up the west side → two 1,500 L tanks on the stair-room roof.</li><li>Down-take R1 feeds the east bathrooms (both floors); R2 feeds the kitchen, wash area and the west bathroom.</li><li>WCs → soil stacks / pipes → inspection chambers → septic tank → soak pit at the back right.</li><li>Basins, showers, sink, washing machine → gully traps → the same drain line.</li><li>Roof rain → 4 corner pipes → two recharge pits that refill the ground water for the borewell.</li></ol>
+    <p class="note">Keep 1:40 slope on drains, an inspection chamber at every turn, and the septic tank at least 15 m from the borewell where the site allows.</p></div></div>`;
+  return h}
+
+F.push({name:'Ground floor electrical',base:GF,kind:'el',floor:0},{name:'First floor electrical',base:FF,kind:'el',floor:1},{name:'Ground floor plumbing',base:GF,kind:'pl',floor:0},{name:'First floor plumbing',base:FF,kind:'pl',floor:1});
+function draw(fi){const fl=F[fi];const isM=fi>=3;svg.setAttribute('viewBox',isM?MEPVB:fl.vb);svg.innerHTML=isM?mep(fl):fi===2?site():plan(fl);svg.setAttribute('aria-label',fl.name);document.getElementById('legend').innerHTML=isM?legend(fl.kind,fl.floor):'';
   document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.f===fi))}
 document.querySelectorAll('#tabs button').forEach(b=>b.addEventListener('click',()=>draw(+b.dataset.f)));
 draw(0);
